@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/services/album.service.dart';
 import 'package:audioloca/services/audio.service.dart';
+import 'package:audioloca/services/audio.player.service.dart';
 import 'package:audioloca/models/album.model.dart';
 import 'package:audioloca/models/audio.model.dart';
 import 'package:audioloca/tab4/tab4.widgets/album.audio.dart';
 import 'package:audioloca/tab4/tab4.widgets/album.card.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/global/full.player.dart';
 
 final albumServices = AlbumServices();
 final audioServices = AudioServices();
+final playerService = AudioPlayerService();
 
 class AlbumScreen extends StatefulWidget {
   final String jwtToken;
@@ -91,10 +94,39 @@ class _AlbumScreenState extends State<AlbumScreen> {
                       final audio = audios[index];
                       return AudioListItem(
                         title: audio.audioTitle,
-                        plays: 1000,
-                        duration: "mm:ss",
-                        onTap: () {
-                          // TODO: play audio
+                        plays: 0, // update based on your model
+                        duration: audio.duration,
+                        onTap: () async {
+                          final audioUrl =
+                              '${Environment.audiolocaBaseUrl}/${audio.audioRecord}';
+                          final photoUrl =
+                              '${Environment.audiolocaBaseUrl}/${audio.audioPhoto}';
+
+                          try {
+                            await playerService.playFromUrl(
+                              url: audioUrl,
+                              title: audio.audioTitle,
+                              subtitle: album!.albumName,
+                              imageUrl: photoUrl,
+                            );
+
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const FullPlayerScreen(),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Failed to play audio'),
+                                ),
+                              );
+                            }
+                          }
                         },
                       );
                     },

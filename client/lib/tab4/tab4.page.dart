@@ -9,6 +9,7 @@ import 'package:audioloca/tab4/album.form.dart';
 import 'package:audioloca/tab4/audio.form.dart';
 import 'package:audioloca/tab4/album.screen.dart';
 import 'package:audioloca/models/album.model.dart';
+import 'package:audioloca/global/mini.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
@@ -236,6 +237,7 @@ class Tab4State extends State<Tab4> {
           ),
         ),
       ),
+      bottomNavigationBar: const MiniPlayer(),
     );
   }
 }

@@ -11,7 +11,7 @@ class AppTextStyles {
   static const title = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.bold,
-    color: AppColors.textLight,
+    color: AppColors.primary,
   );
 
   static const subtitle = TextStyle(
