@@ -32,6 +32,13 @@ android {
         ndk {
             abiFilters.add("armeabi-v7a")
         }
+
+        manifestPlaceholders.putAll(
+            mapOf(
+                "redirectSchemeName" to "audioloca",
+                "redirectHostName" to "callback"
+            )
+        )
     }
 
     buildTypes {
@@ -40,6 +47,10 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+
+    lint {
+        checkReleaseBuilds = false
     }
 }
 

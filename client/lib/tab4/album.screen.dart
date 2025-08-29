@@ -57,7 +57,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final imageUrl = '${Environment.audiolocaBaseUrl}/${album!.albumCover}';
+    final albumCoverUrl =
+        '${Environment.audiolocaBaseUrl}/${album!.albumCover}';
 
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +72,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: AlbumHeaderCard(
-              imageUrl: imageUrl,
+              albumCoverUrl: albumCoverUrl,
               albumName: album!.albumName,
               createdAt: album!.createdAt,
               description: album!.description,
@@ -93,8 +94,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
                     itemBuilder: (context, index) {
                       final audio = audios[index];
                       return AudioListItem(
+                        audioPhoto: audio.audioPhoto!,
                         title: audio.audioTitle,
-                        plays: 0, // update based on your model
+                        plays: 0,
                         duration: audio.duration,
                         onTap: () async {
                           final audioUrl =

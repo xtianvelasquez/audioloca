@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.security import verify_token
-from src.crud import store_audio, read_audio_type, read_all_audio, read_specific_audio, read_audio_album
+from src.crud import read_audio_type, read_audio_emotion, store_audio, read_specific_audio, read_all_audio, read_audio_album
 from src.utils import validate_file_extension
 from src.schemas import Audio_Type_Response, Audio_Response
 from src.config import VALID_PHOTO_EXTENSION, VALID_AUDIO_EXTENSION
@@ -17,6 +17,11 @@ router = APIRouter()
 async def audio_type_read(db: Session = Depends(get_db)):
   audio_types = read_audio_type(db)
   return audio_types
+
+router.post("/audioloca/audio/emotion", response_model=List[Audio_Response], status_code=200)
+async def audio_emotion_read(emotion_id: int = Body(..., embed=True), db: Session = Depends(get_db)):
+  audios = read_audio_emotion(db, emotion_id)
+  return audios
 
 @router.post("/audioloca/audio/create", status_code=201)
 async def audio_created(
@@ -84,17 +89,17 @@ async def audio_created(
 
   return { 'message': 'Audio has been successfully stored.' }
 
-@router.get("/audioloca/audio/read", response_model=List[Audio_Response], status_code=200)
-async def audio_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
-  user_id = token_payload.get('payload', {}).get('sub')
-  audios = read_all_audio(db, user_id)
-  return audios
-
 @router.post("/audioloca/audio", response_model=Audio_Response, status_code=200)
 async def specific_audio_read(audio_id: int, token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get('payload', {}).get('sub')
   audio = read_specific_audio(db, user_id, audio_id)
   return audio
+
+@router.get("/audioloca/audio/read", response_model=List[Audio_Response], status_code=200)
+async def audio_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
+  user_id = token_payload.get('payload', {}).get('sub')
+  audios = read_all_audio(db, user_id)
+  return audios
 
 @router.post("/audioloca/audio/album", response_model=List[Audio_Response], status_code=200)
 async def specific_audio_read(album_id: int = Body(..., embed=True), token_payload = Depends(verify_token), db: Session = Depends(get_db)):

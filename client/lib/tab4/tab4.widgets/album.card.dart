@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:audioloca/theme.dart';
 
 class AlbumHeaderCard extends StatelessWidget {
-  final String imageUrl;
+  final String albumCoverUrl;
   final String albumName;
   final DateTime createdAt;
   final String description;
@@ -13,7 +13,7 @@ class AlbumHeaderCard extends StatelessWidget {
 
   const AlbumHeaderCard({
     super.key,
-    required this.imageUrl,
+    required this.albumCoverUrl,
     required this.albumName,
     required this.createdAt,
     required this.description,
@@ -34,7 +34,7 @@ class AlbumHeaderCard extends StatelessWidget {
             Row(
               children: [
                 CachedNetworkImage(
-                  imageUrl: imageUrl,
+                  imageUrl: albumCoverUrl,
                   imageBuilder: (_, imageProvider) => Container(
                     height: 100,
                     width: 100,
@@ -76,7 +76,12 @@ class AlbumHeaderCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Text(description, maxLines: 4, overflow: TextOverflow.ellipsis),
+            Text(
+              description,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.bodySmall,
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,

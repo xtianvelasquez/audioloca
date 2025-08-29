@@ -41,6 +41,7 @@ class Spotify_Token_Request(BaseModel):
 
 class Token_Response(BaseModel):
   access_token: str
+  expires_at: datetime
   refresh_token: str
   jwt_token: str
 

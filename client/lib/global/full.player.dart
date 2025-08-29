@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioloca/services/audio.player.service.dart';
+import 'package:audioloca/models/player.model.dart';
 import 'package:audioloca/theme.dart';
 
 class FullPlayerScreen extends StatefulWidget {

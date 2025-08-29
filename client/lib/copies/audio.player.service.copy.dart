@@ -2,7 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:audioloca/models/player.model.dart';
+
+/// A small class that holds combined streams for UI convenience.
+class PlaybackStateData {
+  final Duration position;
+  final Duration bufferedPosition;
+  final Duration? duration;
+  final PlayerState playerState;
+
+  PlaybackStateData({
+    required this.position,
+    required this.bufferedPosition,
+    required this.duration,
+    required this.playerState,
+  });
+}
 
 class AudioPlayerService {
   AudioPlayerService._internal() {
@@ -13,10 +27,13 @@ class AudioPlayerService {
   factory AudioPlayerService() => _instance;
 
   final _player = AudioPlayer();
+  // Expose player publicly if needed:
   AudioPlayer get player => _player;
 
+  // Simple notifier to expose the current media metadata (title, image, subtitle)
   final ValueNotifier<Map<String, dynamic>?> currentMedia = ValueNotifier(null);
 
+  // Combined stream: position + buffered + duration + state
   Stream<PlaybackStateData> get playbackStateStream =>
       Rx.combineLatest4<
         Duration,
@@ -33,8 +50,8 @@ class AudioPlayerService {
           return PlaybackStateData(
             position: position,
             bufferedPosition: buffered,
-            duration: duration ?? Duration.zero,
-            playerState: PlayerStateInfo(playing: state.playing),
+            duration: duration,
+            playerState: state,
           );
         },
       );
@@ -42,6 +59,7 @@ class AudioPlayerService {
   Future<void> _init() async {
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.music());
+    // optional: handle audio interruptions automatically:
     _player.playbackEventStream.listen(
       (event) {},
       onError: (e, st) {
@@ -50,6 +68,7 @@ class AudioPlayerService {
     );
   }
 
+  /// Play a url. Also update metadata for UI.
   Future<void> playFromUrl({
     required String url,
     String? title,
@@ -64,6 +83,7 @@ class AudioPlayerService {
         'imageUrl': imageUrl ?? '',
       };
 
+      // If same url and already playing/paused, just call play() or seek(0)
       final current = _player.audioSource;
       final same =
           current is ProgressiveAudioSource && current.uri.toString() == url;
@@ -72,9 +92,11 @@ class AudioPlayerService {
         return;
       }
 
-      await _player.setUrl(url);
+      // Set source and play
+      await _player.setUrl(url); // streams from your FastAPI endpoint
       await _player.play();
     } catch (e) {
+      // handle error: show a snackbar on caller side
       rethrow;
     }
   }

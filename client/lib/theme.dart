@@ -17,10 +17,10 @@ class AppTextStyles {
   static const subtitle = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: AppColors.textLight,
+    color: AppColors.primary,
   );
 
-  static const bodySmall = TextStyle(fontSize: 12, color: AppColors.textLight);
+  static const bodySmall = TextStyle(fontSize: 12, color: AppColors.primary);
 }
 
 class AppTheme {

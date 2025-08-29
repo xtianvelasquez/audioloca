@@ -11,6 +11,7 @@ final log = Logger();
 
 class ApiEndpoints {
   static const String audioType = '/audioloca/audio/type';
+  static const String audioEmotion = '/audioloca/audio/emotion';
   static const String readAudios = '/audioloca/audio/read';
   static const String readAudio = '/audioloca/audio';
   static const String audioAlbum = '/audioloca/audio/album';
@@ -34,6 +35,23 @@ class AudioServices {
           return data.map((json) => AudioType.fromJson(json)).toList();
         }
         throw FormatException('Unexpected audio type format');
+      },
+    );
+  }
+
+  // =======================
+  // POST audio by emotion
+  // =======================
+  Future<List<Audio>> readAudioEmotion(String jwtToken, int emotionId) async {
+    return _post<List<Audio>>(
+      ApiEndpoints.audioEmotion,
+      headers: _headers(jwtToken),
+      body: {'emotion_id': emotionId},
+      parser: (data) {
+        if (data is List) {
+          return data.map((json) => Audio.fromJson(json)).toList();
+        }
+        throw FormatException('Unexpected audio emotion format');
       },
     );
   }

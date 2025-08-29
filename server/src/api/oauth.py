@@ -57,6 +57,7 @@ async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(ge
   access_token = token_data["access_token"]
   refresh_token = token_data["refresh_token"]
   expires_at = datetime.utcnow() + timedelta(seconds=token_data["expires_in"])
+  print(f"[FASTAPI] Access Token Expiration: {expires_at}")
   
   if not access_token or not refresh_token:
     raise HTTPException(status_code=500, detail="Token exchange failed.")
@@ -91,7 +92,12 @@ async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(ge
   store_token(db, user.user_id, refresh_token, TOKEN_TYPE["REFRESH_TOKEN"], None)
   store_token(db, user.user_id, jwt_token, TOKEN_TYPE["JWT_TOKEN"], TOKEN_EXPIRATION)
   
-  return { 'access_token': access_token, 'refresh_token': refresh_token, 'jwt_token': jwt_token }
+  return {
+    'access_token': access_token,
+    'expires_at': expires_at,
+    'refresh_token': refresh_token,
+    'jwt_token': jwt_token
+  }
 
 @router.post("/user/read", response_model=User_Response, status_code=200)
 async def user_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioloca/services/audio.player.service.dart';
 import 'package:audioloca/global/full.player.dart';
+import 'package:audioloca/models/player.model.dart';
 import 'package:audioloca/theme.dart';
 
 class MiniPlayer extends StatefulWidget {

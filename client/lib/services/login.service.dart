@@ -28,7 +28,8 @@ class OAuthService {
     log.i("[Flutter] Code Verifier: $codeVerifier");
     log.i("[Flutter] Code Challenge: $codeChallenge");
 
-    final scope = 'user-read-email user-read-private';
+    final scope =
+        'user-read-email user-read-private user-read-currently-playing user-modify-playback-state user-read-playback-state app-remote-control';
     final oauthUrl = Uri.https('accounts.spotify.com', '/authorize', {
       'response_type': 'code',
       'client_id': Environment.spotifyClientId,
@@ -66,17 +67,26 @@ class OAuthService {
     if (response.statusCode == 200) {
       final tokenData = jsonDecode(response.body);
       final accessToken = tokenData['access_token'];
+      final expirationRaw = tokenData['expires_at'];
+      final expiration = DateTime.tryParse(expirationRaw);
       final refreshToken = tokenData['refresh_token'];
       final jwtToken = tokenData['jwt_token'];
+
+      if (expiration != null) {
+        await storage.saveExpiresAt(expiration.toIso8601String());
+      } else {
+        log.e('[Flutter] Failed to parse expiration date: $expirationRaw');
+      }
 
       await storage.saveAccessToken(accessToken);
       await storage.saveRefreshToken(refreshToken);
       await storage.saveJwtToken(jwtToken);
       await storage.deleteCodeVerifier();
 
-      log.i('[Flutter] Access Token: ${tokenData['access_token']}');
-      log.i('[Flutter] Access Token: ${tokenData['refresh_token']}');
-      log.i('[Flutter] Access Token: ${tokenData['jwt_token']}');
+      log.i('[Flutter] Access Token: $accessToken');
+      log.i('[Flutter] Expires At: $expiration');
+      log.i('[Flutter] Refresh Token: $refreshToken');
+      log.i('[Flutter] JWT Token: $jwtToken');
 
       return true;
     } else {

@@ -38,7 +38,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="audioloca" android:host="callback" />
+                <data android:scheme="${redirectSchemeName}" android:host="${redirectHostName}" />
             </intent-filter>
         </activity>
     </application>
@@ -48,6 +48,7 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
+        <package android:name="com.spotify.music" />
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>

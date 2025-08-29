@@ -146,7 +146,7 @@ class AudioInputFormState extends State<AudioInputForm> {
       _showSnackBar("Audio duration is unknown. Please try again!");
       return;
     }
-    if (audioDuration.inSeconds > 15) {
+    if (audioDuration.inSeconds > 600) {
       _showSnackBar("Audio duration is too long. Please try again!");
       return;
     }

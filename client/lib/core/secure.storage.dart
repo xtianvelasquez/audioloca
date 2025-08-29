@@ -8,10 +8,16 @@ class SecureStorageService {
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
+  static const String _lastMood = 'last_mood';
   static const String _codeVerifier = 'code_verifier';
   static const String _accessTokenKey = 'access_token';
+  static const String _expiresAt = 'expires_at';
   static const String _refreshTokenKey = 'refresh_token';
   static const String _jwtTokenKey = 'jwt_token';
+
+  Future<void> saveLastMood(String mood) async {
+    await _secureStorage.write(key: _lastMood, value: mood);
+  }
 
   Future<void> saveCodeVerifier(String codeVerifier) async {
     await _secureStorage.write(key: _codeVerifier, value: codeVerifier);
@@ -19,6 +25,10 @@ class SecureStorageService {
 
   Future<void> saveAccessToken(String token) async {
     await _secureStorage.write(key: _accessTokenKey, value: token);
+  }
+
+  Future<void> saveExpiresAt(String expiration) async {
+    await _secureStorage.write(key: _expiresAt, value: expiration);
   }
 
   Future<void> saveRefreshToken(String token) async {
@@ -29,12 +39,20 @@ class SecureStorageService {
     await _secureStorage.write(key: _jwtTokenKey, value: token);
   }
 
+  Future<String?> getLastMood() async {
+    return await _secureStorage.read(key: _lastMood);
+  }
+
   Future<String?> getCodeVerifier() async {
     return await _secureStorage.read(key: _codeVerifier);
   }
 
   Future<String?> getAccessToken() async {
     return await _secureStorage.read(key: _accessTokenKey);
+  }
+
+  Future<String?> getExpiresAt() async {
+    return await _secureStorage.read(key: _expiresAt);
   }
 
   Future<String?> getRefreshToken() async {

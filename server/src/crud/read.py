@@ -104,3 +104,13 @@ def read_audio_album(db: Session, user_id: int, album_id: int):
 
   except Exception as e:
     raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
+
+def read_audio_emotion(db: Session, emotion_id: int):
+  try:
+    return (db.query(Audio).filter(Audio.visibility == 'public', Audio.emotion_id == emotion_id).order_by(desc(Audio.created_at)).all())
+
+  except SQLAlchemyError as e:
+    raise HTTPException(status_code=500, detail=f'Database error: {str(e)}')
+
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
