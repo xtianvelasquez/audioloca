@@ -36,10 +36,10 @@ class AlbumServices {
         if (data is List) {
           return data.map((json) => Album.fromJson(json)).toList();
         } else {
-          throw FormatException('Unexpected albums response format');
+          throw FormatException('Unexpected albums response format.');
         }
       } else {
-        throw HttpException('Failed to fetch albums: ${response.statusCode}');
+        throw HttpException('Failed to fetch albums: ${response.body}');
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching albums: $e $stackTrace');
@@ -67,10 +67,10 @@ class AlbumServices {
         if (data is Map<String, dynamic>) {
           return Album.fromJson(data);
         } else {
-          throw FormatException('Unexpected album response format');
+          throw FormatException('Unexpected album response format.');
         }
       } else {
-        throw HttpException('Failed to fetch album: ${response.statusCode}');
+        throw HttpException('Failed to fetch album: ${response.body}');
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching specific album: $e $stackTrace');
@@ -91,7 +91,7 @@ class AlbumServices {
       '${Environment.audiolocaBaseUrl}${ApiEndpoints.createAlbum}',
     );
 
-    final supportedPhotoTypes = ['image/jpeg', 'image/png'];
+    final supportedPhotoTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     final coverMime = lookupMimeType(albumCover.path);
     final safeCoverMime = supportedPhotoTypes.contains(coverMime)
         ? coverMime!
@@ -117,9 +117,7 @@ class AlbumServices {
         log.i('[Flutter] Album created successfully: ${responseBody.body}');
         return true;
       } else {
-        log.w(
-          '[Flutter] Album creation failed: ${response.statusCode} ${responseBody.body}',
-        );
+        log.w('[Flutter] Album creation failed: ${responseBody.body}');
         return false;
       }
     } catch (e, stackTrace) {

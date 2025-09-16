@@ -9,3 +9,6 @@ def generate_challenge_from_verifier(verifier: str) -> str:
 def validate_file_extension(file: UploadFile, valid_exts: list[str]) -> bool:
   _, ext = os.path.splitext(file.filename)
   return ext.lower() in valid_exts
+
+def normalize_coordinates(lat: float, lon: float, precision: int):
+  return round(lat, precision), round(lon, precision)

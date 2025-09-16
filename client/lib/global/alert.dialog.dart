@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioloca/theme.dart';
 
 class CustomAlertDialog {
   static void success(BuildContext context, String message) {
@@ -6,9 +7,9 @@ class CustomAlertDialog {
       context: context,
       title: 'Success',
       message: message,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.light,
       titleColor: Colors.green.shade800,
-      messageColor: Colors.black,
+      messageColor: AppColors.color1,
     );
   }
 
@@ -17,9 +18,9 @@ class CustomAlertDialog {
       context: context,
       title: 'Failed',
       message: message,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.light,
       titleColor: Colors.red.shade800,
-      messageColor: Colors.black,
+      messageColor: AppColors.color1,
     );
   }
 
@@ -53,7 +54,6 @@ class CustomAlertDialog {
             content: Text(
               message,
               style: TextStyle(color: messageColor, fontSize: 16),
-              textAlign: TextAlign.center,
             ),
             actionsAlignment: MainAxisAlignment.center,
             actions: [

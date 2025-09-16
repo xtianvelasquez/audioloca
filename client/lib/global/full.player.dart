@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:audioloca/services/audio.player.service.dart';
+import 'package:audioloca/services/local.player.service.dart';
+import 'package:audioloca/services/spotify.player.service.dart';
+import 'package:audioloca/global/player.manager.dart';
 import 'package:audioloca/models/player.model.dart';
 import 'package:audioloca/theme.dart';
 
@@ -10,13 +12,22 @@ class FullPlayerScreen extends StatefulWidget {
 }
 
 class _FullPlayerScreenState extends State<FullPlayerScreen> {
-  final _service = AudioPlayerService();
-  late final Stream<PlaybackStateData> _stateStream;
+  final local = LocalPlayerService();
+  final spotify = SpotifyPlayerService();
+  final manager = NowPlayingManager();
+
+  late Stream<PlaybackStateData> _stateStream;
+  late ValueNotifier<MediaMetadata?> _currentMedia;
+  late bool useSpotify;
 
   @override
   void initState() {
     super.initState();
-    _stateStream = _service.playbackStateStream;
+    useSpotify = manager.notifier.value == NowPlayingSource.spotify;
+    _stateStream = useSpotify
+        ? spotify.playbackStateStream
+        : local.playbackStateStream;
+    _currentMedia = useSpotify ? spotify.currentMedia : local.currentMedia;
   }
 
   String formatTime(Duration d) {
@@ -29,10 +40,10 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final media = _service.currentMedia.value;
-    final title = media?['title'] ?? '';
-    final subtitle = media?['subtitle'] ?? '';
-    final imageUrl = media?['imageUrl'] ?? '';
+    final media = _currentMedia.value;
+    final title = media?.title ?? '';
+    final subtitle = media?.subtitle ?? '';
+    final imageUrl = media?.imageUrl ?? '';
 
     return Scaffold(
       appBar: AppBar(
@@ -43,11 +54,12 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
       body: Column(
         children: [
           const SizedBox(height: 24),
-          // cover
+
+          // Cover image
           Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: imageUrl != null && imageUrl != ''
+              child: imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
                       height: 300,
@@ -57,6 +69,7 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
                   : Container(height: 300, width: 300, color: Colors.grey[300]),
             ),
           ),
+
           const SizedBox(height: 16),
           Text(title, style: AppTextStyles.title.copyWith(fontSize: 20)),
           const SizedBox(height: 6),
@@ -64,7 +77,7 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
 
           const Spacer(),
 
-          // playback slider + times
+          // Playback slider + time labels
           StreamBuilder<PlaybackStateData>(
             stream: _stateStream,
             builder: (context, snapshot) {
@@ -75,13 +88,10 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
               final playing = data?.playerState.playing ?? false;
 
               final max = duration.inMilliseconds.toDouble();
-              final value = position.inMilliseconds.toDouble().clamp(
-                0.0,
-                max > 0 ? max : 0.0,
-              );
+              final value = position.inMilliseconds.toDouble().clamp(0.0, max);
               final bufferedValue = buffered.inMilliseconds.toDouble().clamp(
                 0.0,
-                max > 0 ? max : 0.0,
+                max,
               );
 
               return Column(
@@ -89,7 +99,7 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
                   Stack(
                     alignment: Alignment.centerLeft,
                     children: [
-                      // buffered track (thin)
+                      // Buffered track
                       Container(
                         height: 4,
                         margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -102,13 +112,17 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
                           child: Container(color: Colors.grey.shade400),
                         ),
                       ),
-                      // main slider (transparent track)
+
+                      // Main slider
                       Slider(
                         min: 0,
                         max: max > 0 ? max : 1,
                         value: value,
                         onChanged: (val) {
-                          _service.seek(Duration(milliseconds: val.toInt()));
+                          final target = Duration(milliseconds: val.toInt());
+                          useSpotify
+                              ? spotify.seek(target)
+                              : local.seek(target);
                         },
                       ),
                     ],
@@ -133,14 +147,15 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
 
                   const SizedBox(height: 8),
 
-                  // controls
+                  // Playback controls
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         iconSize: 36,
                         icon: const Icon(Icons.replay_10),
-                        onPressed: () => _service.rewind10(),
+                        onPressed: () =>
+                            useSpotify ? spotify.rewind10() : local.rewind10(),
                       ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -152,9 +167,13 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
                         ),
                         onPressed: () {
                           if (playing) {
-                            _service.pause();
+                            useSpotify ? spotify.pause() : local.pause();
                           } else {
-                            _service.player.play();
+                            useSpotify
+                                ? spotify.resume()
+                                : local.player.play().catchError((e) {
+                                    debugPrint('Local play error: $e');
+                                  });
                           }
                         },
                       ),
@@ -162,7 +181,9 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
                       IconButton(
                         iconSize: 36,
                         icon: const Icon(Icons.forward_10),
-                        onPressed: () => _service.forward10(),
+                        onPressed: () => useSpotify
+                            ? spotify.forward10()
+                            : local.forward10(),
                       ),
                     ],
                   ),

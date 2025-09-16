@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/services/audio.player.service.dart';
+import 'package:audioloca/services/local.player.service.dart';
 import 'package:audioloca/models/player.model.dart';
 
 final log = Logger();
@@ -17,56 +17,67 @@ class SpotifyPlayerService {
       SpotifyPlayerService._internal();
   factory SpotifyPlayerService() => _instance;
 
-  final currentMedia = ValueNotifier<Map<String, dynamic>?>(null);
-
+  final ValueNotifier<MediaMetadata?> currentMedia = ValueNotifier(null);
   final _stateCtrl = StreamController<PlaybackStateData>.broadcast();
   Stream<PlaybackStateData> get playbackStateStream => _stateCtrl.stream;
 
-  int _lastPlaybackPositionMs = 0;
-  int _lastDurationMs = 0;
-  bool _connected = false;
+  int lastPlaybackPositionMs = 0;
+  int lastDurationMs = 0;
+  bool connected = false;
   StreamSubscription<PlayerState>? _playerSub;
 
   Future<void> _ensureConnected() async {
-    if (_connected) return;
+    if (connected) return;
 
     final token = await storage.getAccessToken();
+    if (token == null || token.isEmpty) {
+      log.e('[Spotify] Missing access token');
+      throw Exception('Spotify access token is missing');
+    }
 
     try {
-      _connected = await SpotifySdk.connectToSpotifyRemote(
+      connected = await SpotifySdk.connectToSpotifyRemote(
         clientId: Environment.spotifyClientId,
         redirectUrl: Environment.spotifyRedirectUri,
         accessToken: token,
       );
-      log.i('[Spotify] Connected: $_connected');
+      log.i('[Spotify] Connected: $connected');
 
       _playerSub?.cancel();
-      _playerSub = SpotifySdk.subscribePlayerState().listen((state) {
-        final track = state.track;
-        _lastPlaybackPositionMs = state.playbackPosition;
-        _lastDurationMs = track?.duration ?? 0;
-        final isPlaying = !state.isPaused;
-
-        if (track != null && currentMedia.value == null) {
-          currentMedia.value = {
-            'title': track.name,
-            'subtitle': track.artist.name,
-            'imageUrl': '',
-          };
-        }
-
-        _stateCtrl.add(
-          PlaybackStateData(
-            position: Duration(milliseconds: _lastPlaybackPositionMs),
-            bufferedPosition: Duration(milliseconds: _lastPlaybackPositionMs),
-            duration: Duration(milliseconds: _lastDurationMs),
-            playerState: PlayerStateInfo(playing: isPlaying),
-          ),
-        );
-      }, onError: (err) => log.e('[Spotify] player state error: $err'));
+      _playerSub = SpotifySdk.subscribePlayerState().listen(
+        _handlePlayerState,
+        onError: (err) => log.e('[Spotify] player state error: $err'),
+      );
     } catch (e, st) {
-      log.e('[Spotify] connect error: $e\n$st');
+      log.e('[Spotify] connect error: $e');
+      log.e(st.toString());
+      connected = false;
+      rethrow;
     }
+  }
+
+  void _handlePlayerState(PlayerState state) {
+    final track = state.track;
+    lastPlaybackPositionMs = state.playbackPosition;
+    lastDurationMs = track?.duration ?? 0;
+    final isPlaying = !state.isPaused;
+
+    if (track != null && currentMedia.value == null) {
+      currentMedia.value = MediaMetadata(
+        title: track.name,
+        subtitle: track.artist.name!,
+        imageUrl: '',
+      );
+    }
+
+    _stateCtrl.add(
+      PlaybackStateData(
+        position: Duration(milliseconds: lastPlaybackPositionMs),
+        bufferedPosition: Duration(milliseconds: lastPlaybackPositionMs),
+        duration: Duration(milliseconds: lastDurationMs),
+        playerState: PlayerStateInfo(playing: isPlaying),
+      ),
+    );
   }
 
   Future<void> playTrackUri({
@@ -78,57 +89,77 @@ class SpotifyPlayerService {
     await _ensureConnected();
 
     try {
-      await AudioPlayerService().pause();
-    } catch (_) {}
+      await LocalPlayerService().pause();
+    } catch (e) {
+      log.w('[Spotify] Failed to pause local player: $e');
+    }
 
-    currentMedia.value = {
-      'title': title ?? '',
-      'subtitle': subtitle ?? '',
-      'imageUrl': imageUrl ?? '',
-    };
+    currentMedia.value = MediaMetadata(
+      title: title ?? '',
+      subtitle: subtitle ?? '',
+      imageUrl: imageUrl ?? '',
+    );
 
-    await SpotifySdk.play(spotifyUri: spotifyUri);
+    try {
+      await SpotifySdk.play(spotifyUri: spotifyUri);
+    } catch (e, st) {
+      log.e('[Spotify] play error: $e');
+      log.e(st.toString());
+      throw Exception('Failed to play track');
+    }
   }
 
   Future<void> pause() async {
     await _ensureConnected();
-    await SpotifySdk.pause();
+    try {
+      await SpotifySdk.pause();
+    } catch (e) {
+      log.e('[Spotify] pause error: $e');
+    }
   }
 
   Future<void> resume() async {
     await _ensureConnected();
-    await SpotifySdk.resume();
+    try {
+      await SpotifySdk.resume();
+    } catch (e) {
+      log.e('[Spotify] resume error: $e');
+    }
   }
 
-  Future<void> stop() async {
-    await pause();
-  }
+  Future<void> stop() async => pause();
 
   Future<void> seek(Duration position) async {
     await _ensureConnected();
-    await SpotifySdk.seekTo(positionedMilliseconds: position.inMilliseconds);
+    try {
+      await SpotifySdk.seekTo(positionedMilliseconds: position.inMilliseconds);
+    } catch (e) {
+      log.e('[Spotify] seek error: $e');
+    }
   }
 
   Future<void> rewind10() async {
     final prev =
-        Duration(milliseconds: _lastPlaybackPositionMs) -
+        Duration(milliseconds: lastPlaybackPositionMs) -
         const Duration(seconds: 10);
     await seek(prev < Duration.zero ? Duration.zero : prev);
   }
 
   Future<void> forward10() async {
     final next =
-        Duration(milliseconds: _lastPlaybackPositionMs) +
+        Duration(milliseconds: lastPlaybackPositionMs) +
         const Duration(seconds: 10);
-    final max = Duration(milliseconds: _lastDurationMs);
+    final max = Duration(milliseconds: lastDurationMs);
     await seek(next > max ? max : next);
   }
 
   Future<void> disconnect() async {
     try {
       await SpotifySdk.disconnect();
-    } catch (_) {}
-    _connected = false;
+    } catch (e) {
+      log.w('[Spotify] disconnect error: $e');
+    }
+    connected = false;
   }
 
   void dispose() {

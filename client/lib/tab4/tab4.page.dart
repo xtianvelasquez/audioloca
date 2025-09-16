@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/login/login.page.dart';
@@ -10,6 +10,8 @@ import 'package:audioloca/tab4/audio.form.dart';
 import 'package:audioloca/tab4/album.screen.dart';
 import 'package:audioloca/models/album.model.dart';
 import 'package:audioloca/global/mini.player.dart';
+import 'package:audioloca/global/alert.dialog.dart';
+import 'package:audioloca/theme.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
@@ -35,10 +37,9 @@ class Tab4State extends State<Tab4> {
     final token = await storage.getJwtToken();
     if (token == null) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Authentication required. Please log in."),
-        ),
+      CustomAlertDialog.failed(
+        context,
+        "Authentication required. Please log in.",
       );
       Navigator.pushReplacement(
         context,
@@ -57,17 +58,17 @@ class Tab4State extends State<Tab4> {
         albums = data;
         isLoading = false;
       });
-    } catch (e) {
-      log.d('[Flutter] Error fetching albums: $e');
+    } catch (e, stackTrace) {
+      log.d("[Flutter] Error fetching albums: $e $stackTrace");
       setState(() => isLoading = false);
     }
   }
 
-  Future<void> _openFormModal(Widget form) async {
+  Future<void> openFormModal(Widget form) async {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.color3,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       builder: (context) {
         return SizedBox(
@@ -83,7 +84,7 @@ class Tab4State extends State<Tab4> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Form',
+                      "Form",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -128,7 +129,7 @@ class Tab4State extends State<Tab4> {
             children: [
               // Title
               const Text(
-                'AudioLoca',
+                "AudioLoca",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -139,10 +140,10 @@ class Tab4State extends State<Tab4> {
                   Expanded(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.library_add),
-                      label: const Text('Add Album'),
-                      onPressed: () => _openFormModal(const AlbumInputForm()),
+                      label: const Text("Add Album"),
+                      onPressed: () => openFormModal(const AlbumInputForm()),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor: AppColors.color1,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -155,10 +156,10 @@ class Tab4State extends State<Tab4> {
                   Expanded(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.music_note),
-                      label: const Text('Add Audio'),
-                      onPressed: () => _openFormModal(const AudioInputForm()),
+                      label: const Text("Add Audio"),
+                      onPressed: () => openFormModal(const AudioInputForm()),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor: AppColors.color1,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -173,7 +174,7 @@ class Tab4State extends State<Tab4> {
 
               // Albums header
               const Text(
-                'Your Albums',
+                "Your Albums",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -186,7 +187,7 @@ class Tab4State extends State<Tab4> {
                   child: Padding(
                     padding: EdgeInsets.all(24),
                     child: Text(
-                      "No albums found.\nTap 'Add Album' to create one.",
+                      'No albums found. Tap "Add Album" to create one.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.grey),
                     ),
@@ -206,7 +207,7 @@ class Tab4State extends State<Tab4> {
                   itemBuilder: (context, index) {
                     final album = albums[index];
                     final imageUrl =
-                        '${Environment.audiolocaBaseUrl}/${album.albumCover}';
+                        "${Environment.audiolocaBaseUrl}/${album.albumCover}";
 
                     return InkWell(
                       onTap: () {

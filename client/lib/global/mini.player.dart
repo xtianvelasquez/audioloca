@@ -1,35 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:audioloca/services/audio.player.service.dart';
-import 'package:audioloca/global/full.player.dart';
+import 'package:audioloca/services/local.player.service.dart';
+import 'package:audioloca/services/spotify.player.service.dart';
 import 'package:audioloca/models/player.model.dart';
+import 'package:audioloca/global/full.player.dart';
+import 'package:audioloca/global/player.manager.dart';
 import 'package:audioloca/theme.dart';
 
 class MiniPlayer extends StatefulWidget {
   const MiniPlayer({super.key});
+
   @override
-  State<MiniPlayer> createState() => _MiniPlayerState();
+  State<MiniPlayer> createState() => MiniPlayerState();
 }
 
-class _MiniPlayerState extends State<MiniPlayer> {
-  final _service = AudioPlayerService();
-  late final Stream<PlaybackStateData> _stateStream;
+class MiniPlayerState extends State<MiniPlayer> {
+  final local = LocalPlayerService();
+  final spotify = SpotifyPlayerService();
+  final manager = NowPlayingManager();
+
+  Stream<PlaybackStateData> stateStream = const Stream.empty();
+  ValueNotifier<MediaMetadata?> currentMedia = ValueNotifier(null);
 
   @override
   void initState() {
     super.initState();
-    _stateStream = _service.playbackStateStream;
+    bindToActive();
+    manager.notifier.addListener(bindToActive);
+  }
+
+  void bindToActive() {
+    final useSpotify = manager.notifier.value == NowPlayingSource.spotify;
+    final newStream = useSpotify
+        ? spotify.playbackStateStream
+        : local.playbackStateStream;
+    final newMedia = useSpotify ? spotify.currentMedia : local.currentMedia;
+
+    if (stateStream != newStream || currentMedia != newMedia) {
+      setState(() {
+        stateStream = newStream;
+        currentMedia = newMedia;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    manager.notifier.removeListener(bindToActive);
+    super.dispose();
+  }
+
+  String formatDuration(Duration d) {
+    final mm = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final ss = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '${d.inHours > 0 ? '${d.inHours}:' : ''}$mm:$ss';
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Map<String, dynamic>?>(
-      valueListenable: _service.currentMedia,
+    return ValueListenableBuilder<MediaMetadata?>(
+      valueListenable: currentMedia,
       builder: (context, media, child) {
         if (media == null) return const SizedBox.shrink();
 
-        final title = media['title'] as String? ?? '';
-        final subtitle = media['subtitle'] as String? ?? '';
-        final imageUrl = media['imageUrl'] as String? ?? '';
+        final title = media.title;
+        final subtitle = media.subtitle;
+        final imageUrl = media.imageUrl;
+        final useSpotify = manager.notifier.value == NowPlayingSource.spotify;
 
         return Container(
           height: 72,
@@ -39,7 +75,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
           ),
           child: Row(
             children: [
-              // cover
+              // Cover image
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ClipRRect(
@@ -59,58 +95,56 @@ class _MiniPlayerState extends State<MiniPlayer> {
                 ),
               ),
 
-              // title & subtitle + tap to open full player
+              // Title & subtitle
               Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullPlayerScreen(),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          fontWeight: FontWeight.bold,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FullPlayerScreen(),
                         ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            title,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            subtitle,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: Colors.grey[700],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
 
-              // play/pause and small progress
+              // Playback controls
               StreamBuilder<PlaybackStateData>(
-                stream: _stateStream,
+                stream: stateStream,
                 builder: (context, snapshot) {
                   final data = snapshot.data;
                   final position = data?.position ?? Duration.zero;
                   final playing = data?.playerState.playing ?? false;
-
-                  String shortTime(Duration d) {
-                    final mm = d.inMinutes
-                        .remainder(60)
-                        .toString()
-                        .padLeft(2, '0');
-                    final ss = d.inSeconds
-                        .remainder(60)
-                        .toString()
-                        .padLeft(2, '0');
-                    return "${d.inHours > 0 ? '${d.inHours}:' : ''}$mm:$ss";
-                  }
 
                   return Row(
                     children: [
@@ -123,16 +157,20 @@ class _MiniPlayerState extends State<MiniPlayer> {
                         ),
                         onPressed: () {
                           if (playing) {
-                            _service.pause();
+                            useSpotify ? spotify.pause() : local.pause();
                           } else {
-                            _service.player.play();
+                            useSpotify
+                                ? spotify.resume()
+                                : local.player.play().catchError((e) {
+                                    debugPrint('Local play error: $e');
+                                  });
                           }
                         },
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
-                          shortTime(position),
+                          formatDuration(position),
                           style: AppTextStyles.bodySmall,
                         ),
                       ),

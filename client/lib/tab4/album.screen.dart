@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/services/album.service.dart';
 import 'package:audioloca/services/audio.service.dart';
-import 'package:audioloca/services/audio.player.service.dart';
+import 'package:audioloca/services/local.player.service.dart';
 import 'package:audioloca/models/album.model.dart';
 import 'package:audioloca/models/audio.model.dart';
 import 'package:audioloca/tab4/tab4.widgets/album.audio.dart';
@@ -12,7 +12,7 @@ import 'package:audioloca/global/full.player.dart';
 
 final albumServices = AlbumServices();
 final audioServices = AudioServices();
-final playerService = AudioPlayerService();
+final playerService = LocalPlayerService();
 
 class AlbumScreen extends StatefulWidget {
   final String jwtToken;
@@ -21,10 +21,10 @@ class AlbumScreen extends StatefulWidget {
   const AlbumScreen({super.key, required this.jwtToken, required this.albumId});
 
   @override
-  State<AlbumScreen> createState() => _AlbumScreenState();
+  State<AlbumScreen> createState() => AlbumScreenState();
 }
 
-class _AlbumScreenState extends State<AlbumScreen> {
+class AlbumScreenState extends State<AlbumScreen> {
   Album? album;
   List<Audio> audios = [];
 
@@ -51,14 +51,27 @@ class _AlbumScreenState extends State<AlbumScreen> {
     });
   }
 
+  String formatDuration(String rawDuration) {
+    try {
+      final parts = rawDuration.split(":");
+      final minutes = int.parse(parts[1]);
+      final seconds = int.parse(parts[2].split("+")[0]);
+      return "${minutes.toString().padLeft(2, "0")}:${seconds.toString().padLeft(2, "0")}";
+    } catch (e) {
+      return rawDuration;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (album == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator(color: AppColors.color1)),
+      );
     }
 
     final albumCoverUrl =
-        '${Environment.audiolocaBaseUrl}/${album!.albumCover}';
+        "${Environment.audiolocaBaseUrl}/${album!.albumCover}";
 
     return Scaffold(
       appBar: AppBar(
@@ -84,7 +97,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
             child: audios.isEmpty
                 ? const Center(
                     child: Text(
-                      "No audio found",
+                      "No audio found.",
                       style: AppTextStyles.bodySmall,
                     ),
                   )
@@ -94,21 +107,21 @@ class _AlbumScreenState extends State<AlbumScreen> {
                     itemBuilder: (context, index) {
                       final audio = audios[index];
                       return AudioListItem(
-                        audioPhoto: audio.audioPhoto!,
+                        audioPhoto: audio.albumCover,
                         title: audio.audioTitle,
-                        plays: 0,
-                        duration: audio.duration,
+                        plays: audio.streamCount,
+                        duration: formatDuration(audio.duration),
                         onTap: () async {
                           final audioUrl =
-                              '${Environment.audiolocaBaseUrl}/${audio.audioRecord}';
+                              "${Environment.audiolocaBaseUrl}/${audio.audioRecord}";
                           final photoUrl =
-                              '${Environment.audiolocaBaseUrl}/${audio.audioPhoto}';
+                              "${Environment.audiolocaBaseUrl}/${audio.albumCover}";
 
                           try {
                             await playerService.playFromUrl(
                               url: audioUrl,
                               title: audio.audioTitle,
-                              subtitle: album!.albumName,
+                              subtitle: audio.username,
                               imageUrl: photoUrl,
                             );
 
@@ -124,7 +137,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Failed to play audio'),
+                                  content: Text("Failed to play audio"),
                                 ),
                               );
                             }

@@ -1,26 +1,16 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.dialects.postgresql import insert
+from typing import Optional
 
 from datetime import datetime
 
-from src.models import Emotions, Token_Type, Token, User, Album, Audio_Type, Audio
-
-def emotion_initializer(db: Session):
-  emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
-  emotion_to_add = []
-  
-  for emotion in emotions:
-    existing_emotion = db.query(Emotions).filter_by(emotion_label=emotion).first()
-    if not existing_emotion:
-      emotion_to_add.append(Emotions(emotion_label=emotion))
-
-  if emotion_to_add:
-    db.bulk_save_objects(emotion_to_add)
-    db.commit()
+from src.models import Genres, Token_Type, Token, User, Album, Audio, Locations, Streams
+from src.utils import normalize_coordinates
 
 def token_type_initializer(db: Session):
-  types = ['access_token', 'refresh_token', 'jwt_token']
+  types = ["access_token", "refresh_token", "jwt_token"]
   type_to_add = []
   
   for type in types:
@@ -32,17 +22,20 @@ def token_type_initializer(db: Session):
     db.bulk_save_objects(type_to_add)
     db.commit()
 
-def audio_type_initializer(db: Session):
-  types = ['song', 'speech', 'podcast', 'audiobook', 'spoken_poetry', 'convo']
-  type_to_add = []
-  
-  for type in types:
-    existing_type = db.query(Audio_Type).filter_by(type_name=type).first()
-    if not existing_type:
-      type_to_add.append(Audio_Type(type_name=type))
+def genre_initializer(db: Session):
+  genres = [
+    "pop", "hip-hop/rap", "rock", "jazz/blues", "classical", "folk/acoustic", "latin/world", "ambient/chill", "metal", "experimental", "country", "electronic"
+  ]
 
-  if type_to_add:
-    db.bulk_save_objects(type_to_add)
+  genre_to_add = []
+
+  for genre in genres:
+    existing_genre = db.query(Genres).filter_by(genre_name=genre).first()
+    if not existing_genre:
+      genre_to_add.append(Genres(genre_name=genre))
+
+  if genre_to_add:
+    db.bulk_save_objects(genre_to_add)
     db.commit()
 
 def store_token(db: Session, user_id: int, token_hash: str, token_type_id: int, expires_at: int):
@@ -64,18 +57,19 @@ def store_token(db: Session, user_id: int, token_hash: str, token_type_id: int, 
   
   except SQLAlchemyError as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Database error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
   
   except Exception as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
-def store_specific_user(db: Session, spotify_id: int, email: str, username: str):
+def store_specific_user(db: Session, spotify_id: int, email: str, username: str, password: str):
   try:
     new_user = User(
       spotify_id=spotify_id,
       email=email,
       username=username,
+      password=password,
     )
     db.add(new_user)
     db.commit()
@@ -85,11 +79,11 @@ def store_specific_user(db: Session, spotify_id: int, email: str, username: str)
   
   except SQLAlchemyError as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Database error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
   
   except Exception as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 def store_album(
     db: Session,
@@ -113,20 +107,18 @@ def store_album(
 
   except SQLAlchemyError as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Database error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
   
   except Exception as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 def store_audio(
     db: Session,
     user_id: int,
-    audio_type_id: int,
+    genre_id: int,
     album_id: int,
-    emotion_id: int,
     visibility: str,
-    audio_photo_path: str,
     audio_record_path: str,
     audio_title: str,
     description: str,
@@ -135,11 +127,9 @@ def store_audio(
   try:
     new_audio = Audio(
       user_id=user_id,
-      audio_type_id=audio_type_id,
+      genre_id=genre_id,
       album_id=album_id,
-      emotion_id=emotion_id,
       visibility=visibility,
-      audio_photo=audio_photo_path,
       audio_record=audio_record_path,
       audio_title=audio_title,
       description=description,
@@ -153,8 +143,58 @@ def store_audio(
 
   except SQLAlchemyError as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Database error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
   
   except Exception as e:
     db.rollback()
-    raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  
+def store_location(db: Session, latitude: float, longitude: float):
+  try:
+    norm_lat, norm_lon = normalize_coordinates(latitude, longitude, 3)
+    new_location = Locations(latitude=norm_lat, longitude=norm_lon)
+    db.add(new_location)
+    db.commit()
+    db.refresh(new_location)
+
+    return new_location
+
+  except SQLAlchemyError as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+  
+  except Exception as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+def store_stream(db: Session, user_id: int, location_id: int, audio_id: Optional[int], spotify_id: Optional[str], type: str):
+  try:
+    stmt = insert(Streams).values(
+      user_id=user_id,
+      location_id=location_id,
+      audio_id=audio_id,
+      spotify_id=spotify_id,
+      type=type,
+      stream_count=1,
+      last_played=datetime.utcnow().replace(second=0, microsecond=0)
+    )
+    
+    stmt = stmt.on_conflict_do_update(
+      constraint="uq_user_audio",
+      set_={
+        "stream_count": Streams.stream_count + 1,
+        "last_played": datetime.utcnow().replace(second=0, microsecond=0),
+      },
+    )
+
+    db.execute(stmt)
+    db.commit()
+    return stmt
+      
+  except SQLAlchemyError as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+  
+  except Exception as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")

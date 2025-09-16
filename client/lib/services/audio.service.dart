@@ -10,8 +10,7 @@ import 'package:audioloca/models/audio.model.dart';
 final log = Logger();
 
 class ApiEndpoints {
-  static const String audioType = '/audioloca/audio/type';
-  static const String audioEmotion = '/audioloca/audio/emotion';
+  static const String audioGenre = '/audioloca/audio/genre';
   static const String readAudios = '/audioloca/audio/read';
   static const String readAudio = '/audioloca/audio';
   static const String audioAlbum = '/audioloca/audio/album';
@@ -24,34 +23,18 @@ class AudioServices {
   AudioServices({http.Client? client}) : client = client ?? http.Client();
 
   // =======================
-  // GET audio type
+  // POST audio by genre
   // =======================
-  Future<List<AudioType>> readAudioType() async {
-    return _get<List<AudioType>>(
-      ApiEndpoints.audioType,
-      headers: {'Content-Type': 'application/json'},
-      parser: (data) {
-        if (data is List) {
-          return data.map((json) => AudioType.fromJson(json)).toList();
-        }
-        throw FormatException('Unexpected audio type format');
-      },
-    );
-  }
-
-  // =======================
-  // POST audio by emotion
-  // =======================
-  Future<List<Audio>> readAudioEmotion(String jwtToken, int emotionId) async {
+  Future<List<Audio>> readAudioGenre(String jwtToken, int genreId) async {
     return _post<List<Audio>>(
-      ApiEndpoints.audioEmotion,
+      ApiEndpoints.audioGenre,
       headers: _headers(jwtToken),
-      body: {'emotion_id': emotionId},
+      body: {'genre_id': genreId},
       parser: (data) {
         if (data is List) {
           return data.map((json) => Audio.fromJson(json)).toList();
         }
-        throw FormatException('Unexpected audio emotion format');
+        throw FormatException('Unexpected audio genre format.');
       },
     );
   }
@@ -67,7 +50,7 @@ class AudioServices {
         if (data is List) {
           return data.map((json) => Audio.fromJson(json)).toList();
         }
-        throw FormatException('Unexpected audio list format');
+        throw FormatException('Unexpected audio list format.');
       },
     );
   }
@@ -84,7 +67,7 @@ class AudioServices {
         if (data is Map<String, dynamic>) {
           return Audio.fromJson(data);
         }
-        throw FormatException('Unexpected audio format');
+        throw FormatException('Unexpected audio format.');
       },
     );
   }
@@ -101,7 +84,7 @@ class AudioServices {
         if (data is List) {
           return data.map((json) => Audio.fromJson(json)).toList();
         }
-        throw FormatException('Unexpected album audio format');
+        throw FormatException('Unexpected album audio format.');
       },
     );
   }
@@ -110,14 +93,12 @@ class AudioServices {
   // CREATE audio with multipart upload
   // =======================
   Future<bool> createAudio({
-    required int audioTypeID,
     required int albumID,
-    required int emotionID,
+    required int genreID,
     required String duration,
     required String visibility,
     required String audioTitle,
     required String description,
-    required File audioPhoto,
     required File audioRecord,
     required String jwtToken,
   }) async {
@@ -125,7 +106,6 @@ class AudioServices {
       '${Environment.audiolocaBaseUrl}${ApiEndpoints.createAudio}',
     );
 
-    final supportedPhotoTypes = ['image/jpeg', 'image/png'];
     final supportedAudioTypes = [
       'audio/mpeg', // standard MIME for mp3
       'audio/aac',
@@ -135,21 +115,13 @@ class AudioServices {
 
     final request = http.MultipartRequest('POST', uri)
       ..headers['Authorization'] = 'Bearer $jwtToken'
-      ..fields['audio_type_id'] = audioTypeID.toString()
       ..fields['album_id'] = albumID.toString()
-      ..fields['emotion_id'] = emotionID.toString()
+      ..fields['genre_id'] = genreID.toString()
       ..fields['duration'] = duration
       ..fields['visibility'] = visibility
       ..fields['audio_title'] = audioTitle
       ..fields['description'] = description;
 
-    await _addMultipartFile(
-      request,
-      'audio_photo',
-      audioPhoto,
-      supportedPhotoTypes,
-      'image/jpeg',
-    );
     await _addMultipartFile(
       request,
       'audio_record',

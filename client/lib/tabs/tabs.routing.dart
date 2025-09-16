@@ -4,33 +4,35 @@ import 'package:audioloca/tab2/tab2.page.dart';
 import 'package:audioloca/tab3/tab3.page.dart';
 import 'package:audioloca/tab4/tab4.page.dart';
 import 'package:audioloca/tab5/tab5.page.dart';
+import 'package:audioloca/theme.dart';
 
 class TabsRouting extends StatefulWidget {
   const TabsRouting({super.key});
+
   @override
-  State<TabsRouting> createState() => _TabsRoutingState();
+  State<TabsRouting> createState() => TabsRoutingState();
 }
 
-class _TabsRoutingState extends State<TabsRouting> {
-  int _selectedIndex = 0;
+class TabsRoutingState extends State<TabsRouting> {
+  int selectedIndex = 0;
 
-  final List<Widget> _pages = [Tab1(), Tab2(), Tab3(), Tab4(), Tab5()];
+  final List<Widget> pages = [Tab1(), Tab2(), Tab3(), Tab4(), Tab5()];
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _pages),
+      body: IndexedStack(index: selectedIndex, children: pages),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF4A148C),
-        unselectedItemColor: Color(0xFFCE93D8),
+        currentIndex: selectedIndex,
+        onTap: onItemTapped,
+        selectedItemColor: AppColors.color1,
+        unselectedItemColor: AppColors.color2,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),

@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
 from src.database import get_db
-from src.crud import read_spotify_user, read_specific_user, store_specific_user, store_token
-from src.security import create_jwt_token, verify_token
+from src.crud import read_spotify_user, read_local_user, read_username, store_specific_user, store_token
+from src.security import create_jwt_token, verify_token, verify_password, hash_password
 from src.utils import generate_challenge_from_verifier
 
-from src.schemas import User_Response, Spotify_Token_Request, Token_Response
+from src.schemas import User_Base, User_Create, User_Response, Spotify_Token_Request, Spotify_Token_Response, Local_Token_Response
 from src.config import TOKEN_EXPIRATION, TOKEN_TYPE
 
 from urllib.parse import urlencode
@@ -26,7 +26,7 @@ SEARCH_URL = "https://api.spotify.com/v1/search"
 
 router = APIRouter()
 
-@router.post("/spotify/callback", response_model=Token_Response, status_code=200)
+@router.post("/spotify/callback", response_model=Spotify_Token_Response, status_code=200)
 async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(get_db)):
   challenge = generate_challenge_from_verifier(data.code_verifier)
   print(f"[FASTAPI] Code: {data.code}")
@@ -81,7 +81,7 @@ async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(ge
   
   user = read_spotify_user(db, spotify_id)
   if not user:
-    user = store_specific_user(db, spotify_id, email, username)
+    user = store_specific_user(db, spotify_id, email, username, None)
 
     if not user:
       raise HTTPException(status_code=500, detail="User creation failed.")
@@ -93,14 +93,41 @@ async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(ge
   store_token(db, user.user_id, jwt_token, TOKEN_TYPE["JWT_TOKEN"], TOKEN_EXPIRATION)
   
   return {
-    'access_token': access_token,
-    'expires_at': expires_at,
-    'refresh_token': refresh_token,
-    'jwt_token': jwt_token
+    "access_token": access_token,
+    "expires_at": expires_at,
+    "refresh_token": refresh_token,
+    "jwt_token": jwt_token
   }
+
+@router.post("/audioloca/callback", response_model=Local_Token_Response, status_code=200)
+async def audioloca_callback(data: User_Base, db: Session = Depends(get_db)):
+  user = read_username(db, data.username)
+
+  if not user or not verify_password(data.password, user.password):
+    raise HTTPException(status_code=401, detail="Invalid username or password. Please try again.")
+  
+  jwt_token = create_jwt_token(user)
+  print(f"[FASTAPI] JWT TOKEN: {jwt_token}")
+  store_token(db, user.user_id, jwt_token, TOKEN_TYPE["JWT_TOKEN"], TOKEN_EXPIRATION)
+
+  return {
+    "jwt_token": jwt_token,
+    "token_type": "Bearer"
+  }
+
+@router.post("/audioloca/signup", status_code=201)
+async def audioloca_signup(data: User_Create, db: Session = Depends(get_db)):
+  existing_user = read_username(db, data.username)
+
+  if existing_user:
+    raise HTTPException(status_code=400, detail="Username already exists.")
+    
+  store_specific_user(db, None, data.email, data.username, hash_password(data.password))
+
+  return {"message": "User created successfully"}
 
 @router.post("/user/read", response_model=User_Response, status_code=200)
 async def user_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
-  user_id = token_payload.get('payload', {}).get('sub')
-  user = read_specific_user(db, user_id)
+  user_id = token_payload.get("payload", {}).get("sub")
+  user = read_local_user(db, user_id)
   return user

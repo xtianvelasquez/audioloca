@@ -25,7 +25,7 @@ class AlbumHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      color: AppColors.secondaryLight,
+      color: AppColors.color3,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -46,8 +46,9 @@ class AlbumHeaderCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  placeholder: (_, __) =>
-                      const Center(child: CircularProgressIndicator()),
+                  placeholder: (_, __) => const Center(
+                    child: CircularProgressIndicator(color: AppColors.color1),
+                  ),
                   errorWidget: (_, __, ___) => Container(
                     height: 100,
                     width: 100,
@@ -67,7 +68,7 @@ class AlbumHeaderCard extends StatelessWidget {
                       Text(albumName, style: AppTextStyles.subtitle),
                       const SizedBox(height: 4),
                       Text(
-                        DateFormat('MM/dd/yyyy').format(createdAt),
+                        DateFormat("MM/dd/yyyy").format(createdAt),
                         style: AppTextStyles.bodySmall,
                       ),
                     ],

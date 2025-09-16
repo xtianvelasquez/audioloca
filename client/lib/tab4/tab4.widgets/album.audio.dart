@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:audioloca/core/utils.dart';
 import 'package:audioloca/environment.dart';
+import 'package:audioloca/theme.dart';
 
 class AudioListItem extends StatelessWidget {
   final String audioPhoto;
@@ -21,11 +21,12 @@ class AudioListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final audioPhotoUrl = '${Environment.audiolocaBaseUrl}/$audioPhoto';
+    final audioPhotoUrl = "${Environment.audiolocaBaseUrl}/$audioPhoto";
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      color: AppColors.color3,
       child: ListTile(
         onTap: onTap,
         leading: ClipRRect(
@@ -35,8 +36,12 @@ class AudioListItem extends StatelessWidget {
             height: 50,
             fit: BoxFit.cover,
             imageUrl: audioPhotoUrl,
-            placeholder: (_, __) =>
-                const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            placeholder: (_, __) => const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.color1,
+                strokeWidth: 2,
+              ),
+            ),
             errorWidget: (_, __, ___) => Container(
               color: Colors.grey[300],
               child: Icon(
@@ -49,7 +54,7 @@ class AudioListItem extends StatelessWidget {
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text("$plays plays"),
-        trailing: Text(formatDuration(duration)),
+        trailing: Text(duration),
       ),
     );
   }

@@ -1,49 +1,58 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+from typing import Literal, Optional
 from datetime import datetime, time
+from enum import Enum
 
-# emotions
-class Emotions_Response(BaseModel):
-  emotion_id: int
-  emotion_label: str
+# visibility
+class Visibility(str, Enum):
+  public = "public"
+  private = "private"
 
-  class Config:
-    from_attributes = True
+# stream type
+class Type(str, Enum):
+  local = "local"
+  spotify = "spotify"
 
 # user
+class User_Base(BaseModel):
+  username: str
+  password: str
+
+class User_Create(User_Base):
+  email: str
+
 class User_Response(BaseModel):
   username: str
-  email:str
+  email: str
   joined_at: datetime
 
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 # token_type
 class Token_Type_Response(BaseModel):
   token_type_id: int
   type_name: str
 
-  class Config:
-    from_attributes = True
-
-# audio_type
-class Audio_Type_Response(BaseModel):
-  audio_type_id: int
-  type_name: str
-
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 # token
 class Spotify_Token_Request(BaseModel):
   code: str
   code_verifier: str
 
-class Token_Response(BaseModel):
+class Spotify_Token_Response(BaseModel):
   access_token: str
   expires_at: datetime
   refresh_token: str
   jwt_token: str
+
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
+
+class Local_Token_Response(BaseModel):
+  jwt_token: str
+  token_type: Literal["Bearer"]
+
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 # album
 class Album_Base(BaseModel):
@@ -56,19 +65,24 @@ class Album_Create(Album_Base):
 
 class Album_Response(Album_Base):
   album_id: int
+  username: str # from user table
   created_at: datetime
   modified_at: datetime
 
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True)
+
+# genres
+class Genres_Response(BaseModel):
+  genre_id: int
+  genre_name: str
+
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 # audio
 class Audio_Base(BaseModel):
-  audio_type_id: int
+  genre_id: int
   album_id: int
-  emotion_id: int
-  visibility: str
-  audio_photo: str
+  visibility: Visibility
   audio_record: str
   audio_title: str
   description: str
@@ -79,8 +93,38 @@ class Audio_Create(Audio_Base):
 
 class Audio_Response(Audio_Base):
   audio_id: int
+  username: str # from user table
+  album_cover: str # from album table
+  stream_count: int # from streams table
   created_at: datetime
   modified_at: datetime
 
-  class Config:
-    from_attributes = True
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
+
+# locations
+class Locations_Base(BaseModel):
+  latitude: float
+  longitude: float
+
+# streams
+class Streams_Create(Locations_Base):
+  audio_id: Optional[int] = None
+  spotify_id: Optional[str] = None
+  type: Type
+
+class Local_Streams_Response(BaseModel):
+  audio_id: int
+  username: str # from user table
+  album_cover: str # from album table
+  stream_count: int # from streams table
+  album_id: int
+  audio_record: str
+  audio_title: str
+  description: str
+  duration: time
+  type: Type
+
+class Spotify_Streams_Response(BaseModel):
+  spotify_id: str
+  stream_count: int
+  type: Type

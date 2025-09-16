@@ -61,10 +61,31 @@ async def album_created(
 async def album_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get('payload', {}).get('sub')
   albums = read_all_album(db, user_id)
-  return albums
+  return [
+    Album_Response(
+      album_cover=album.album_cover,
+      album_name=album.album_name,
+      description=album.description,
+      album_id=album.album_id,
+      username=album.user.username,
+      created_at=album.created_at,
+      modified_at=album.modified_at
+    )
+    
+    for album in albums
+  ]
 
 @router.post("/audioloca/album", response_model=Album_Response, status_code=200)
 async def specific_album_read(album_id: int = Body(..., embed=True), token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get('payload', {}).get('sub')
   album = read_specific_album(db, user_id, album_id)
-  return album
+
+  return Album_Response(
+    album_cover=album.album_cover,
+    album_name=album.album_name,
+    description=album.description,
+    album_id=album.album_id,
+    username=album.user.username,
+    created_at=album.created_at,
+    modified_at=album.modified_at
+  )

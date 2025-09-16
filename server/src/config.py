@@ -1,21 +1,11 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-MANILA = ZoneInfo('Asia/Manila')
+MANILA = ZoneInfo("Asia/Manila")
 TOKEN_EXPIRATION = datetime.utcnow().replace(second=0, microsecond=0) + timedelta(days=29) # Token expires in 29 days
 
 VALID_PHOTO_EXTENSION = [".jpg", ".jpeg", ".png"]
 VALID_AUDIO_EXTENSION = [".mp3", ".aac", ".wav", ".x-wav"]
-
-EMOTIONS = {
-  "ANGRY": 1,
-  "DISGUST": 2,
-  "FEAR": 3,
-  "HAPPY": 4,
-  "SAD": 5,
-  "SURPRISE": 6,
-  "NEUTRAL": 7
-}
 
 TOKEN_TYPE = {
   "ACCESS_TOKEN": 1,
@@ -23,11 +13,17 @@ TOKEN_TYPE = {
   "JWT_TOKEN": 3
 }
 
-AUDIO_TYPE = {
-  "SONG": 1,
-  "SPEECH": 2,
-  "PODCAST": 3,
-  "AUDIOBOOK": 4,
-  "SPOKEN_POETRY": 5,
-  "CONVO": 6
+GENRES = {
+  "pop": 1,
+  "hip-hop/rap": 2,
+  "rock": 3,
+  "jazz/blues": 4,
+  "classical": 5,
+  "folk/acoustic": 6,
+  "latin/world": 7,
+  "ambient/chill": 8,
+  "metal": 9,
+  "experimental": 10,
+  "country": 11,
+  "electronic": 12
 }

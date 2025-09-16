@@ -1,3 +1,17 @@
+class MediaMetadata {
+  final String? url;
+  final String title;
+  final String subtitle;
+  final String imageUrl;
+
+  const MediaMetadata({
+    this.url,
+    required this.title,
+    required this.subtitle,
+    required this.imageUrl,
+  });
+}
+
 class PlayerStateInfo {
   final bool playing;
   const PlayerStateInfo({required this.playing});

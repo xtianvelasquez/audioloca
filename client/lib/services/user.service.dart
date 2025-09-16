@@ -29,13 +29,13 @@ class UserServices {
         if (data is List) {
           return data.map((json) => User.fromJson(json)).toList();
         } else {
-          throw FormatException('Unexpected user response format');
+          throw FormatException('Unexpected user response format.');
         }
       } else {
-        throw HttpException('Failed to fetch user: ${response.statusCode}');
+        throw HttpException('Failed to fetch user: ${response.body}');
       }
     } catch (e, stackTrace) {
-      log.e('Error fetching user $e $stackTrace');
+      log.e('Error fetching user: $e $stackTrace');
       rethrow;
     }
   }

@@ -1,14 +1,16 @@
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:audioloca/core/emotion.recognition.dart';
-import 'package:audioloca/services/spotify.service.dart';
-import 'package:audioloca/tab1/tab1.widgets/emotion.recommender.dart';
+import 'package:audioloca/services/emotion.recommendation.service.dart';
+import 'package:audioloca/tab1/tab1.widgets/spotify.recommender.dart';
+import 'package:audioloca/tab1/tab1.widgets/local.recommender.dart';
 import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/models/audio.model.dart';
 import 'package:audioloca/global/mini.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
+final emotion = EmotionService();
 
 class Tab1 extends StatefulWidget {
   const Tab1({super.key});
@@ -16,47 +18,74 @@ class Tab1 extends StatefulWidget {
   State<Tab1> createState() => Tab1State();
 }
 
-class Tab1State extends State<Tab1> {
+class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
   String? detectedMood;
-  List<SpotifyTrack> tracks = [];
+
+  List<SpotifyTrack> spotifyTracks = [];
+  List<Audio> localTracks = [];
+
   bool isLoading = true;
+  late TabController tabController;
 
   @override
   void initState() {
     super.initState();
-    _loadTracks();
+    tabController = TabController(length: 2, vsync: this);
+    _initTracks();
   }
 
-  Future<void> _loadTracks({bool forceRefresh = false}) async {
+  Future<void> _initTracks({bool forceRefresh = false}) async {
     setState(() {
       isLoading = true;
-      tracks = [];
+      spotifyTracks = [];
+      localTracks = [];
     });
 
+    final service = EmotionRecommendationService();
+    final accessToken = await service.getValidAccessToken();
+
     try {
-      final rawResponse = await SpotifyService().fetchMoodRecommendations(
-        forceRefresh: forceRefresh,
-      );
-      final parsedTracks = rawResponse
-          .map((json) => SpotifyTrack.fromJson(json as Map<String, dynamic>))
-          .toList();
+      // Always load local
+      final local = await service.fetchMoodRecommendationsFromLocal();
+
+      // Conditionally load Spotify
+      List<SpotifyTrack> spotify = [];
+      if (accessToken != null) {
+        final rawSpotify = await service.fetchMoodRecommendationsFromSpotify(
+          forceRefresh: forceRefresh,
+        );
+
+        spotify = rawSpotify
+            .map((json) => SpotifyTrack.fromJson(json))
+            .toList();
+      } else {
+        log.i("[Flutter] No Spotify access token → local only.");
+      }
 
       setState(() {
-        tracks = parsedTracks;
+        localTracks = local;
+        spotifyTracks = spotify;
         isLoading = false;
       });
     } catch (e) {
-      log.e('Failed to fetch or parse tracks: $e');
-      setState(() {
-        isLoading = false;
-      });
+      log.e("Failed to fetch recommendations: $e");
+      setState(() => isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tab 1')),
+      appBar: AppBar(
+        title: const Text('Tab 1'),
+        bottom: TabBar(
+          controller: tabController,
+          tabs: const [
+            Tab(text: "Spotify"),
+            Tab(text: "Local"),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -67,23 +96,17 @@ class Tab1State extends State<Tab1> {
                 final result = await emotionService.requestCameraPermission();
 
                 if (result.isSuccess) {
-                  log.i('[Flutter] Emotion ID: ${result.emotionId}');
                   log.i('[Flutter] Label: ${result.emotionLabel}');
                   log.i(
                     '[Flutter] Confidence: ${result.confidenceScore?.toStringAsFixed(4)}',
                   );
 
-                  // Save mood to storage
                   if (result.emotionLabel != null) {
                     await storage.saveLastMood(result.emotionLabel!);
                     setState(() {
                       detectedMood = result.emotionLabel!;
                     });
-                    await _loadTracks(forceRefresh: true);
-                  } else {
-                    log.w(
-                      '[Flutter] No emotion label returned. Skipping mood save.',
-                    );
+                    await _initTracks(forceRefresh: true);
                   }
                 } else {
                   log.i('[Flutter] Error: ${result.errorMessage}');
@@ -107,7 +130,20 @@ class Tab1State extends State<Tab1> {
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : AudioListView(allTracks: tracks),
+                  : TabBarView(
+                      controller: tabController,
+                      children: [
+                        // Tab 1: Spotify
+                        spotifyTracks.isEmpty
+                            ? const Center(child: Text("No Spotify tracks"))
+                            : SpotifyListView(allTracks: spotifyTracks),
+
+                        // Tab 2: Local
+                        localTracks.isEmpty
+                            ? const Center(child: Text("No local tracks"))
+                            : LocalListView(allTracks: localTracks),
+                      ],
+                    ),
             ),
           ],
         ),
