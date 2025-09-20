@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioloca/environment.dart';
-import 'package:audioloca/models/genres.model.dart';
+import 'package:audioloca/local/models/genres.model.dart';
 
 final log = Logger();
 
@@ -28,7 +28,7 @@ class GenreServices {
         if (data is List) {
           return data.map((json) => Genres.fromJson(json)).toList();
         } else {
-          throw FormatException('Unexpected genres response format');
+          throw FormatException('Unexpected genre response format');
         }
       } else {
         throw HttpException('Failed to fetch genres: ${response.body}');

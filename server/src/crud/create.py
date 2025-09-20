@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.dialects.postgresql import insert
 from typing import Optional
+import logging
 
 from datetime import datetime
 
@@ -169,6 +170,13 @@ def store_location(db: Session, latitude: float, longitude: float):
 
 def store_stream(db: Session, user_id: int, location_id: int, audio_id: Optional[int], spotify_id: Optional[str], type: str):
   try:
+    now = datetime.utcnow().replace(second=0, microsecond=0)
+    if audio_id and spotify_id:
+      raise HTTPException(status_code=400, detail="Provide either audio_id or spotify_id, not both.")
+    if not audio_id and not spotify_id:
+      raise HTTPException(status_code=400, detail="Either audio_id or spotify_id must be provided.")
+
+    conflict_constraint = "uq_user_audio" if audio_id else "uq_user_spotify"
     stmt = insert(Streams).values(
       user_id=user_id,
       location_id=location_id,
@@ -176,25 +184,23 @@ def store_stream(db: Session, user_id: int, location_id: int, audio_id: Optional
       spotify_id=spotify_id,
       type=type,
       stream_count=1,
-      last_played=datetime.utcnow().replace(second=0, microsecond=0)
-    )
-    
-    stmt = stmt.on_conflict_do_update(
-      constraint="uq_user_audio",
+      last_played=now
+    ).on_conflict_do_update(
+      constraint=conflict_constraint,
       set_={
         "stream_count": Streams.stream_count + 1,
-        "last_played": datetime.utcnow().replace(second=0, microsecond=0),
-      },
+        "last_played": now,
+      }
     )
-
     db.execute(stmt)
     db.commit()
-    return stmt
-      
+    return {"status": "updated" if conflict_constraint else "inserted"}
+
   except SQLAlchemyError as e:
     db.rollback()
     raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
   
   except Exception as e:
     db.rollback()
+    logging.error(f"Unexpected error in store_stream: {e}", exc_info=True)
     raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")

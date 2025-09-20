@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:audioloca/theme.dart';
 import 'package:audioloca/environment.dart';
-import 'package:audioloca/services/album.service.dart';
-import 'package:audioloca/services/audio.service.dart';
-import 'package:audioloca/services/local.player.service.dart';
-import 'package:audioloca/models/album.model.dart';
-import 'package:audioloca/models/audio.model.dart';
+import 'package:audioloca/core/alert.dialog.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
+import 'package:audioloca/local/controllers/album.service.dart';
+import 'package:audioloca/local/controllers/audio.service.dart';
+import 'package:audioloca/local/models/album.model.dart';
+import 'package:audioloca/local/models/audio.model.dart';
 import 'package:audioloca/tab4/tab4.widgets/album.audio.dart';
 import 'package:audioloca/tab4/tab4.widgets/album.card.dart';
-import 'package:audioloca/theme.dart';
-import 'package:audioloca/global/full.player.dart';
+import 'package:audioloca/player/views/full.player.dart';
 
 final albumServices = AlbumServices();
 final audioServices = AudioServices();
@@ -35,7 +36,7 @@ class AlbumScreenState extends State<AlbumScreen> {
   }
 
   Future<void> fetchAlbumAndAudios() async {
-    final fetchedAlbum = await albumServices.readSpecificAlbum(
+    final fetchedAlbum = await albumServices.readAlbum(
       widget.jwtToken,
       widget.albumId,
     );
@@ -135,10 +136,9 @@ class AlbumScreenState extends State<AlbumScreen> {
                             }
                           } catch (e) {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Failed to play audio"),
-                                ),
+                              CustomAlertDialog.failed(
+                                context,
+                                "Failed to play audio. Please try again later.",
                               );
                             }
                           }

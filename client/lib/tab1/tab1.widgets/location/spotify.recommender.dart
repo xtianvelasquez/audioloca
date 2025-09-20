@@ -1,14 +1,16 @@
-import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:audioloca/services/local.player.service.dart';
-import 'package:audioloca/services/stream.location.service.dart';
-import 'package:audioloca/global/player.manager.dart';
-import 'package:audioloca/models/audio.model.dart';
-import 'package:audioloca/core/secure.storage.dart';
+import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/core/secure.storage.dart';
+import 'package:audioloca/player/player.manager.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
+import 'package:audioloca/player/controllers/spotify.player.dart';
+import 'package:audioloca/services/stream.service.dart';
+import 'package:audioloca/spotify/models/track.model.dart';
 
 final storage = SecureStorageService();
-final streamLocationServices = StreamLocationServices();
+final streamServices = StreamServices();
 
 class AudioListItem extends StatelessWidget {
   final String imageUrl;
@@ -64,20 +66,21 @@ class AudioListItem extends StatelessWidget {
   }
 }
 
-class LocationLocalListView extends StatefulWidget {
-  final List<LocalAudioLocation> allTracks;
+class LocationSpotifyListView extends StatefulWidget {
+  final List<SpotifyTrack> allTracks;
 
-  const LocationLocalListView({super.key, required this.allTracks});
+  const LocationSpotifyListView({super.key, required this.allTracks});
 
   @override
-  State<LocationLocalListView> createState() => LocationLocalListViewState();
+  State<LocationSpotifyListView> createState() =>
+      LocationSpotifyListViewState();
 }
 
-class LocationLocalListViewState extends State<LocationLocalListView> {
+class LocationSpotifyListViewState extends State<LocationSpotifyListView> {
   static const int initialLimit = 10;
   static const int increment = 10;
 
-  late List<LocalAudioLocation> visibleTracks;
+  late List<SpotifyTrack> visibleTracks;
   bool isLoadingMore = false;
 
   @override
@@ -100,44 +103,71 @@ class LocationLocalListViewState extends State<LocationLocalListView> {
     });
   }
 
-  Future<void> handleTrackTap(LocalAudioLocation audio) async {
-    final localPlayer = LocalPlayerService();
+  Future<void> handleTrackTap(SpotifyTrack track, {String? imageUrl}) async {
+    final spotify = SpotifyPlayerService();
     final manager = NowPlayingManager();
+    final uri = 'spotify:track:${track.id}';
+
+    bool shouldSendStream = false;
 
     try {
-      await localPlayer.playFromUrl(
-        url: audio.audioRecord ?? '',
-        title: audio.audioTitle,
-        subtitle: audio.username,
-        imageUrl: audio.albumCover,
+      await spotify.playTrackUri(
+        spotifyUri: uri,
+        title: track.name,
+        subtitle: track.artist,
+        imageUrl: imageUrl ?? '',
       );
-      manager.useLocal();
+      manager.useSpotify();
+      shouldSendStream = true;
+    } catch (e) {
+      if (track.previewUrl != null) {
+        await LocalPlayerService().playFromUrl(
+          url: track.previewUrl!,
+          title: track.name,
+          subtitle: track.artist,
+          imageUrl: imageUrl ?? '',
+        );
+        manager.useLocal();
+        shouldSendStream = true;
+      } else {
+        final uri = Uri.parse(track.externalUrl);
+        if (!mounted) return;
 
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to play. Opening in Spotify…')),
+        );
+
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
+          shouldSendStream = true;
+        } else {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not open Spotify link.')),
+          );
+        }
+      }
+    }
+
+    if (shouldSendStream && context.mounted) {
       final jwtToken = await storage.getAccessToken();
       if (jwtToken != null) {
-        await streamLocationServices.sendStream(
+        if (!mounted) return;
+        await streamServices.sendStream(
+          context,
           jwtToken,
-          audioId: audio.audioId,
-          type: "local",
+          spotifyId: track.id,
+          type: "spotify",
         );
       }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to play ${audio.audioTitle}')),
-      );
     }
   }
 
-  String formatDuration(String rawDuration) {
-    try {
-      final parts = rawDuration.split(':');
-      final minutes = int.parse(parts[1]);
-      final seconds = int.parse(parts[2].split('+')[0]);
-      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-    } catch (e) {
-      return rawDuration;
-    }
+  String formatDuration(int ms) {
+    final seconds = (ms / 1000).round();
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -149,13 +179,14 @@ class LocationLocalListViewState extends State<LocationLocalListView> {
             padding: const EdgeInsets.only(bottom: 80),
             itemCount: visibleTracks.length,
             itemBuilder: (context, index) {
-              final audio = visibleTracks[index];
+              final track = visibleTracks[index];
               return AudioListItem(
-                imageUrl: audio.albumCover,
-                title: audio.audioTitle,
-                subtitle: audio.username,
-                duration: formatDuration(audio.duration),
-                onTap: () => handleTrackTap(audio),
+                imageUrl:
+                    track.albumImageUrl ?? 'https://via.placeholder.com/50',
+                title: track.name,
+                subtitle: track.artist,
+                duration: formatDuration(track.durationMs),
+                onTap: () => handleTrackTap(track),
               );
             },
           ),

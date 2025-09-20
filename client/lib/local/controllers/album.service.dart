@@ -5,13 +5,13 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:audioloca/environment.dart';
-import 'package:audioloca/models/album.model.dart';
+import 'package:audioloca/local/models/album.model.dart';
 
 final log = Logger();
 
 class ApiEndpoints {
-  static const String readAlbums = '/audioloca/album/read';
-  static const String readAlbum = '/audioloca/album';
+  static const String readAlbums = '/audioloca/albums/read';
+  static const String readAlbum = '/audioloca/album/read';
   static const String createAlbum = '/audioloca/album/create';
 }
 
@@ -50,7 +50,7 @@ class AlbumServices {
   // =======================
   // POST specific album
   // =======================
-  Future<Album> readSpecificAlbum(String jwtToken, int albumId) async {
+  Future<Album> readAlbum(String jwtToken, int albumId) async {
     final url = Uri.parse(
       '${Environment.audiolocaBaseUrl}${ApiEndpoints.readAlbum}',
     );

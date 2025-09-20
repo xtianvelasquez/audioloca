@@ -2,7 +2,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/foundation.dart';
-import 'package:audioloca/models/player.model.dart';
+import 'package:audioloca/player/models/player.model.dart';
 
 class LocalPlayerService {
   LocalPlayerService._internal() {

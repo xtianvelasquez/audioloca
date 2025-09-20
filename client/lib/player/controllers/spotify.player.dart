@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'package:logger/logger.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:spotify_sdk/models/player_state.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/services/local.player.service.dart';
-import 'package:audioloca/models/player.model.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
+import 'package:audioloca/player/models/player.model.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
@@ -31,26 +32,25 @@ class SpotifyPlayerService {
 
     final token = await storage.getAccessToken();
     if (token == null || token.isEmpty) {
-      log.e('[Spotify] Missing access token');
-      throw Exception('Spotify access token is missing');
+      log.e('[Spotify Player] Missing access token.');
+      throw Exception('Spotify access token is missing.');
     }
 
     try {
       connected = await SpotifySdk.connectToSpotifyRemote(
         clientId: Environment.spotifyClientId,
         redirectUrl: Environment.spotifyRedirectUri,
-        accessToken: token,
       );
-      log.i('[Spotify] Connected: $connected');
+      log.i('[Spotify Player] Connected: $connected');
 
       _playerSub?.cancel();
       _playerSub = SpotifySdk.subscribePlayerState().listen(
         _handlePlayerState,
-        onError: (err) => log.e('[Spotify] player state error: $err'),
+        onError: (err) => log.e('[Spotify Player] player state error: $err'),
       );
-    } catch (e, st) {
+    } catch (e, stackTrace) {
       log.e('[Spotify] connect error: $e');
-      log.e(st.toString());
+      log.e(stackTrace.toString());
       connected = false;
       rethrow;
     }

@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:audioloca/services/local.player.service.dart';
-import 'package:audioloca/services/spotify.player.service.dart';
-import 'package:audioloca/services/stream.location.service.dart';
-import 'package:audioloca/global/player.manager.dart';
-import 'package:audioloca/models/audio.model.dart';
-import 'package:audioloca/core/secure.storage.dart';
+import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/core/secure.storage.dart';
+import 'package:audioloca/player/player.manager.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
+import 'package:audioloca/services/stream.service.dart';
+import 'package:audioloca/local/models/audio.model.dart';
 
 final storage = SecureStorageService();
-final streamLocationServices = StreamLocationServices();
+final streamServices = StreamServices();
 
 class AudioListItem extends StatelessWidget {
   final String imageUrl;
@@ -66,20 +64,20 @@ class AudioListItem extends StatelessWidget {
   }
 }
 
-class SpotifyListView extends StatefulWidget {
-  final List<SpotifyTrack> allTracks;
+class EmotionLocalListView extends StatefulWidget {
+  final List<Audio> allTracks;
 
-  const SpotifyListView({super.key, required this.allTracks});
+  const EmotionLocalListView({super.key, required this.allTracks});
 
   @override
-  State<SpotifyListView> createState() => SpotifyListViewState();
+  State<EmotionLocalListView> createState() => EmotionLocalListViewState();
 }
 
-class SpotifyListViewState extends State<SpotifyListView> {
+class EmotionLocalListViewState extends State<EmotionLocalListView> {
   static const int initialLimit = 10;
   static const int increment = 10;
 
-  late List<SpotifyTrack> visibleTracks;
+  late List<Audio> visibleTracks;
   bool isLoadingMore = false;
 
   @override
@@ -102,69 +100,50 @@ class SpotifyListViewState extends State<SpotifyListView> {
     });
   }
 
-  Future<void> handleTrackTap(SpotifyTrack track, {String? imageUrl}) async {
-    final spotify = SpotifyPlayerService();
+  Future<void> handleTrackTap(Audio audio) async {
+    final localPlayer = LocalPlayerService();
     final manager = NowPlayingManager();
 
-    bool played = false;
-
     try {
-      final uri = 'spotify:track:${track.id}';
-
-      await spotify.playTrackUri(
-        spotifyUri: uri,
-        title: track.name,
-        subtitle: track.artist,
-        imageUrl: imageUrl ?? '',
+      await localPlayer.playFromUrl(
+        url: audio.audioRecord ?? '',
+        title: audio.audioTitle,
+        subtitle: audio.username,
+        imageUrl: audio.albumCover,
       );
-      manager.useSpotify();
-      played = true;
-    } catch (e) {
-      if (track.previewUrl != null) {
-        await LocalPlayerService().playFromUrl(
-          url: track.previewUrl!,
-          title: track.name,
-          subtitle: track.artist,
-          imageUrl: imageUrl ?? '',
-        );
-        manager.useLocal();
-        played = true;
-      } else {
-        final uri = Uri.parse(track.externalUrl);
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to play. Opening in Spotify…')),
-        );
+      manager.useLocal();
 
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri);
-          played = true;
-        } else {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not open Spotify link')),
-          );
-        }
+      final jwtToken = await storage.getAccessToken();
+      if (jwtToken != null) {
+        if (!mounted) return;
+        await streamServices.sendStream(
+          context,
+          jwtToken,
+          audioId: audio.audioId,
+          type: "local",
+        );
       }
-    } finally {
-      if (played) {
-        final jwtToken = await storage.getAccessToken();
-        if (jwtToken != null) {
-          await streamLocationServices.sendStream(
-            jwtToken,
-            spotifyId: track.id,
-            type: "spotify",
-          );
-        }
-      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to play ${audio.audioTitle}. Please try again later.',
+          ),
+        ),
+      );
     }
   }
 
-  String formatDuration(int ms) {
-    final seconds = (ms / 1000).round();
-    final minutes = seconds ~/ 60;
-    final remainingSeconds = seconds % 60;
-    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+  String formatDuration(String rawDuration) {
+    try {
+      final parts = rawDuration.split(':');
+      final minutes = int.parse(parts[1]);
+      final seconds = int.parse(parts[2].split('+')[0]);
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    } catch (e) {
+      return rawDuration;
+    }
   }
 
   @override
@@ -176,14 +155,13 @@ class SpotifyListViewState extends State<SpotifyListView> {
             padding: const EdgeInsets.only(bottom: 80),
             itemCount: visibleTracks.length,
             itemBuilder: (context, index) {
-              final track = visibleTracks[index];
+              final audio = visibleTracks[index];
               return AudioListItem(
-                imageUrl:
-                    track.albumImageUrl ?? 'https://via.placeholder.com/50',
-                title: track.name,
-                subtitle: track.artist,
-                duration: formatDuration(track.durationMs),
-                onTap: () => handleTrackTap(track),
+                imageUrl: audio.albumCover,
+                title: audio.audioTitle,
+                subtitle: audio.username,
+                duration: formatDuration(audio.duration),
+                onTap: () => handleTrackTap(audio),
               );
             },
           ),

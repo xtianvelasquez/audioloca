@@ -1,0 +1,96 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:logger/logger.dart';
+
+final log = Logger();
+
+class LocationServices {
+  StreamSubscription<Position>? _positionStream;
+
+  Future<bool> ensureLocationReady(BuildContext context) async {
+    try {
+      final position = await getUserPosition();
+      log.i(
+        '[Flutter] Position acquired: ${position.latitude}, ${position.longitude}',
+      );
+      return true;
+    } catch (e) {
+      log.w('[Flutter] Location error: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+      return false;
+    }
+  }
+
+  Future<Position> getUserPosition() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      throw Exception('Please enable location services in settings.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception('Location permission denied.');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+      throw Exception(
+        'Location permission permanently denied. Enable it in app settings.',
+      );
+    }
+
+    final locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 0,
+    );
+
+    return await Geolocator.getCurrentPosition(
+      locationSettings: locationSettings,
+    );
+  }
+
+  Future<Position?> getLastKnownPosition() async {
+    final lastKnown = await Geolocator.getLastKnownPosition();
+    if (lastKnown != null) {
+      log.i(
+        '[Flutter] Last known position: ${lastKnown.latitude}, ${lastKnown.longitude}',
+      );
+    }
+    return lastKnown;
+  }
+
+  void startRealtimeTracking({
+    required void Function(Position position) onLocationUpdate,
+    LocationAccuracy accuracy = LocationAccuracy.high,
+    int distanceFilter = 100,
+  }) {
+    final locationSettings = LocationSettings(
+      accuracy: accuracy,
+      distanceFilter: distanceFilter,
+    );
+
+    _positionStream =
+        Geolocator.getPositionStream(
+          locationSettings: locationSettings,
+        ).listen((Position position) {
+          log.i(
+            '[Flutter] Real-time location: ${position.latitude}, ${position.longitude}',
+          );
+          onLocationUpdate(position);
+        });
+  }
+
+  void stopRealtimeTracking() {
+    _positionStream?.cancel();
+    _positionStream = null;
+  }
+}

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Literal, Optional
+from typing import Literal
 from datetime import datetime, time
 from enum import Enum
 
@@ -9,7 +9,7 @@ class Visibility(str, Enum):
   private = "private"
 
 # stream type
-class Type(str, Enum):
+class Stream_Type(str, Enum):
   local = "local"
   spotify = "spotify"
 
@@ -108,9 +108,9 @@ class Locations_Base(BaseModel):
 
 # streams
 class Streams_Create(Locations_Base):
-  audio_id: Optional[int] = None
-  spotify_id: Optional[str] = None
-  type: Type
+  audio_id: int | None = None
+  spotify_id: str | None = None
+  type: Stream_Type
 
 class Local_Streams_Response(BaseModel):
   audio_id: int
@@ -122,9 +122,9 @@ class Local_Streams_Response(BaseModel):
   audio_title: str
   description: str
   duration: time
-  type: Type
+  type: Stream_Type
 
 class Spotify_Streams_Response(BaseModel):
   spotify_id: str
   stream_count: int
-  type: Type
+  type: Stream_Type

@@ -13,7 +13,7 @@ from src.config import VALID_AUDIO_EXTENSION
 
 router = APIRouter()
 
-router.post("/audioloca/audio/genre", response_model=List[Audio_Response], status_code=200)
+@router.post("/audioloca/audio/genre", response_model=List[Audio_Response], status_code=200)
 async def audio_genre_read(genre_id: int = Body(..., embed=True), db: Session = Depends(get_db)):
   audios = read_audio_genre(db, genre_id)
   
@@ -89,7 +89,7 @@ async def audio_created(
 
   return { "message": "Audio has been successfully stored." }
 
-@router.post("/audioloca/audio", response_model=Audio_Response, status_code=200)
+@router.post("/audioloca/audio/read", response_model=Audio_Response, status_code=200)
 async def specific_audio_read(audio_id: int, token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get("payload", {}).get("sub")
   audio = read_specific_audio(db, user_id, audio_id)
@@ -110,7 +110,7 @@ async def specific_audio_read(audio_id: int, token_payload = Depends(verify_toke
     modified_at=audio.modified_at
   )
 
-@router.get("/audioloca/audio/read", response_model=List[Audio_Response], status_code=200)
+@router.get("/audioloca/audios/read", response_model=List[Audio_Response], status_code=200)
 async def audio_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get("payload", {}).get("sub")
   audios = read_all_audio(db, user_id)

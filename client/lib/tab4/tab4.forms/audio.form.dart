@@ -1,17 +1,18 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
-import 'package:audioloca/global/alert.dialog.dart';
-import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/services/genres.service.dart';
-import 'package:audioloca/services/album.service.dart';
-import 'package:audioloca/services/audio.service.dart';
-import 'package:audioloca/models/genres.model.dart';
-import 'package:audioloca/models/album.model.dart';
-import 'package:audioloca/login/login.page.dart';
+import 'package:flutter/material.dart';
+
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/core/alert.dialog.dart';
+import 'package:audioloca/core/secure.storage.dart';
+import 'package:audioloca/local/controllers/genre.service.dart';
+import 'package:audioloca/local/controllers/album.service.dart';
+import 'package:audioloca/local/controllers/audio.service.dart';
+import 'package:audioloca/local/models/genres.model.dart';
+import 'package:audioloca/local/models/album.model.dart';
+import 'package:audioloca/login/login.page.dart';
 
 final log = Logger();
 final storage = SecureStorageService();

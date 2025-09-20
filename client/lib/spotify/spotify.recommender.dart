@@ -1,23 +1,62 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:audioloca/spotify/models/track.model.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/services/genres.service.dart';
-import 'package:audioloca/services/audio.service.dart';
-import 'package:audioloca/models/genres.model.dart';
-import 'package:audioloca/models/audio.model.dart';
+import 'package:audioloca/spotify/controllers/track.service.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
 final random = Random();
+final trackServices = TrackServices();
 
-class EmotionRecommendationService {
+class SpotifyRecommender {
   String? cachedMood;
   List<dynamic> cachedTracks = [];
 
   /// ---- TOKEN HANDLING ----
+  Future<List<SpotifyTrack>> fetchLocationRecommendationsFromSpotify({
+    required double latitude,
+    required double longitude,
+  }) async {
+    final jwtToken = await storage.getJwtToken();
+    final accessToken = await storage.getAccessToken();
+    final lastMood = await storage.getLastMood();
+
+    if (jwtToken == null || lastMood == null) {
+      log.e('[Flutter] Missing JWT token or mood for Spotify fetch.');
+      return [];
+    }
+
+    final locationResults = await trackServices.fetchSpotifyAudioLocation(
+      latitude,
+      longitude,
+    );
+
+    final spotifyIds = locationResults
+        .map((location) => location.spotifyId)
+        .whereType<String>()
+        .toList();
+
+    if (spotifyIds.isEmpty) {
+      log.i('[Flutter] No Spotify IDs found for location.');
+      return [];
+    }
+
+    try {
+      final tracks = await trackServices.fetchSpotifyTracksMetadata(
+        accessToken!,
+        spotifyIds,
+      );
+      return tracks;
+    } catch (e, st) {
+      log.e('[Flutter] Failed to fetch Spotify metadata: $e\n$st');
+      return [];
+    }
+  }
+
   Future<String?> getValidAccessToken() async {
     final accessToken = await storage.getAccessToken();
     final refreshToken = await storage.getRefreshToken();
@@ -82,17 +121,6 @@ class EmotionRecommendationService {
     }
   }
 
-  /// ---- GET GENRES ----
-  Future<List<Genres>> fetchAllGenres() async {
-    try {
-      final genres = await GenreServices().readGenres();
-      return genres;
-    } catch (e, stackTrace) {
-      log.e('Failed to fetch genres: $e $stackTrace');
-      return [];
-    }
-  }
-
   /// ---- SPOTIFY FETCH ----
   Future<List<Map<String, dynamic>>> fetchMoodRecommendationsFromSpotify({
     bool forceRefresh = false,
@@ -149,50 +177,6 @@ class EmotionRecommendationService {
     }
   }
 
-  /// ---- LOCAL FALLBACK ----
-  Future<List<Audio>> fetchMoodRecommendationsFromLocal() async {
-    final jwtToken = await storage.getJwtToken();
-    final lastMood = await storage.getLastMood();
-
-    if (jwtToken == null || lastMood == null) {
-      log.e('[Flutter] Missing JWT token or mood for local fetch.');
-      return [];
-    }
-
-    final genreIds = moodToGenreIds[lastMood.toLowerCase()];
-    if (genreIds == null || genreIds.isEmpty) {
-      log.w('[Flutter] No mapped genres for mood "$lastMood"');
-      return [];
-    }
-
-    final allTracks = <Audio>[];
-
-    for (final genreId in genreIds) {
-      try {
-        final tracks = await AudioServices().readAudioGenre(jwtToken, genreId);
-        allTracks.addAll(tracks);
-      } catch (e, st) {
-        log.e('[Flutter] Error fetching genre $genreId: $e $st');
-      }
-    }
-
-    if (allTracks.isEmpty) {
-      log.w('[Flutter] No local tracks found for mood "$lastMood".');
-      return [];
-    }
-
-    allTracks.shuffle(random);
-
-    cachedMood = lastMood;
-    cachedTracks = allTracks;
-
-    log.i(
-      '[Flutter] Returning ${allTracks.length} local tracks for mood "$lastMood".',
-    );
-
-    return allTracks;
-  }
-
   /// ---- STATIC MAPPINGS ----
   static const Map<String, List<String>> moodToQueries = {
     'happiness': ['energetic', 'upbeat', 'party', 'dance'],
@@ -213,26 +197,5 @@ class EmotionRecommendationService {
     'angrily surprised': ['aggressive', 'punk', 'rap'],
     'angrily disgusted': ['hard rock', 'industrial', 'edgy'],
     'disgustedly surprised': ['experimental', 'weird pop', 'avant-garde'],
-  };
-
-  static const Map<String, List<int>> moodToGenreIds = {
-    'happiness': [1, 3, 12], // pop, rock, electronic
-    'sadness': [4, 6, 5], // jazz/blues, folk/acoustic, classical
-    'anger': [9, 2, 3], // metal, hip-hop/rap, rock
-    'fear': [8, 10, 5], // ambient/chill, experimental, classical
-    'disgust': [10, 9, 3], // experimental, metal, rock
-    'surprise': [1, 12, 7], // pop, electronic, latin/world
-    'neutral': [8, 6, 11], // ambient/chill, folk/acoustic, country
-    'happily surprised': [1, 7, 12],
-    'happily disgusted': [10, 3, 2],
-    'sadly fearful': [8, 5, 4],
-    'sadly angry': [9, 3, 2],
-    'sadly surprised': [6, 4, 5],
-    'sadly disgusted': [3, 10, 9],
-    'fearfully angry': [9, 2, 10],
-    'fearfully surprised': [8, 12, 5],
-    'angrily surprised': [3, 9, 2],
-    'angrily disgusted': [9, 3, 10],
-    'disgustedly surprised': [10, 12, 1],
   };
 }

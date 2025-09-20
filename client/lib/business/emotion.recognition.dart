@@ -12,7 +12,7 @@ import 'package:audioloca/core/secure.storage.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
-final EmotionService emotionService = EmotionService();
+final EmotionRecognition emotionService = EmotionRecognition();
 
 class EmotionResult {
   final String? emotionLabel;
@@ -24,10 +24,10 @@ class EmotionResult {
   bool get isSuccess => emotionLabel != null;
 }
 
-class EmotionService {
-  static final EmotionService _instance = EmotionService._internal();
-  factory EmotionService() => _instance;
-  EmotionService._internal();
+class EmotionRecognition {
+  static final EmotionRecognition instance = EmotionRecognition._internal();
+  factory EmotionRecognition() => instance;
+  EmotionRecognition._internal();
 
   final List<String> emotionLabels = const [
     'surprise',

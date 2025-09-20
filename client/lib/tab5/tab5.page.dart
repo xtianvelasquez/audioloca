@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:audioloca/global/mini.player.dart';
+import 'package:audioloca/player/views/mini.player.dart';
 
 class Tab5 extends StatelessWidget {
   const Tab5({super.key});

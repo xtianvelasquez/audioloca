@@ -20,7 +20,12 @@ class Streams(Base):
   last_played = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
 
   __table_args__ = (
-    UniqueConstraint("user_id", "audio_id", "spotify_id", name="uq_user_audio"),
+    UniqueConstraint(
+      'user_id', 'location_id', 'audio_id', name='uq_user_audio'
+    ),
+    UniqueConstraint(
+      'user_id', 'location_id', 'spotify_id', name='uq_user_spotify'
+    ),
   )
 
   user = relationship("User", back_populates="streams")

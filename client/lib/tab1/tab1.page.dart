@@ -1,16 +1,28 @@
+import 'dart:async';
 import 'package:logger/logger.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
-import 'package:audioloca/core/emotion.recognition.dart';
-import 'package:audioloca/services/emotion.recommendation.service.dart';
-import 'package:audioloca/tab1/tab1.widgets/spotify.recommender.dart';
-import 'package:audioloca/tab1/tab1.widgets/local.recommender.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/models/audio.model.dart';
-import 'package:audioloca/global/mini.player.dart';
+import 'package:audioloca/core/alert.dialog.dart';
+import 'package:audioloca/business/emotion.recognition.dart';
+import 'package:audioloca/business/location.services.dart';
+import 'package:audioloca/player/views/mini.player.dart';
+import 'package:audioloca/local/local.recommender.dart';
+import 'package:audioloca/spotify/spotify.recommender.dart';
+import 'package:audioloca/tab1/tab1.widgets/emotion/local.recommender.dart';
+import 'package:audioloca/tab1/tab1.widgets/location/local.recommender.dart';
+import 'package:audioloca/tab1/tab1.widgets/emotion/spotify.recommender.dart';
+import 'package:audioloca/local/models/audio.model.dart';
+import 'package:audioloca/spotify/controllers/track.service.dart';
+import 'package:audioloca/spotify/models/track.model.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
-final emotion = EmotionService();
+final emotionRecognition = EmotionRecognition();
+final localRecommender = LocalRecommender();
+final spotifyRecommender = SpotifyRecommender();
+final locationServices = LocationServices();
+final trackServices = TrackServices();
 
 class Tab1 extends StatefulWidget {
   const Tab1({super.key});
@@ -23,66 +35,119 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
 
   List<SpotifyTrack> spotifyTracks = [];
   List<Audio> localTracks = [];
+  List<LocalAudioLocation> localAudioLocationTracks = [];
+  List<SpotifyTrack> spotifyAudioLocationTracks = [];
 
   bool isLoading = true;
   late TabController tabController;
 
+  StreamSubscription<Position>? locationStream;
+
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
-    _initTracks();
+    tabController = TabController(length: 4, vsync: this);
+    initTracks();
   }
 
-  Future<void> _initTracks({bool forceRefresh = false}) async {
+  Future<void> initTracks({bool forceRefresh = false}) async {
     setState(() {
       isLoading = true;
       spotifyTracks = [];
       localTracks = [];
+      spotifyAudioLocationTracks = [];
+      localAudioLocationTracks = [];
     });
 
-    final service = EmotionRecommendationService();
-    final accessToken = await service.getValidAccessToken();
+    locationServices.stopRealtimeTracking();
+
+    final accessToken = await spotifyRecommender.getValidAccessToken();
 
     try {
-      // Always load local
-      final local = await service.fetchMoodRecommendationsFromLocal();
+      final local = await localRecommender.fetchMoodRecommendationsFromLocal();
 
-      // Conditionally load Spotify
+      locationServices.startRealtimeTracking(
+        distanceFilter: 100,
+        onLocationUpdate: (position) async {
+          final roundedLat = double.parse(position.latitude.toStringAsFixed(3));
+          final roundedLng = double.parse(
+            position.longitude.toStringAsFixed(3),
+          );
+
+          final localRecommendations = await localRecommender
+              .fetchLocationRecommendationFromLocal(
+                latitude: roundedLat,
+                longitude: roundedLng,
+              );
+
+          List<SpotifyTrack> spotifyLocationRecommendations = [];
+
+          if (accessToken != null) {
+            spotifyLocationRecommendations = await spotifyRecommender
+                .fetchLocationRecommendationsFromSpotify(
+                  latitude: roundedLat,
+                  longitude: roundedLng,
+                );
+          }
+
+          if (mounted) {
+            setState(() {
+              localAudioLocationTracks = localRecommendations;
+              spotifyAudioLocationTracks = spotifyLocationRecommendations;
+            });
+          }
+        },
+      );
+
       List<SpotifyTrack> spotify = [];
       if (accessToken != null) {
-        final rawSpotify = await service.fetchMoodRecommendationsFromSpotify(
-          forceRefresh: forceRefresh,
-        );
+        final rawSpotify = await spotifyRecommender
+            .fetchMoodRecommendationsFromSpotify(forceRefresh: forceRefresh);
 
         spotify = rawSpotify
             .map((json) => SpotifyTrack.fromJson(json))
             .toList();
       } else {
-        log.i("[Flutter] No Spotify access token → local only.");
+        log.i("[Flutter] No Spotify access token. Local only.");
       }
 
-      setState(() {
-        localTracks = local;
-        spotifyTracks = spotify;
-        isLoading = false;
-      });
-    } catch (e) {
-      log.e("Failed to fetch recommendations: $e");
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() {
+          localTracks = local;
+          spotifyTracks = spotify;
+          isLoading = false;
+        });
+      }
+    } catch (e, stackTrace) {
+      log.e("Failed to fetch recommendations: $e $stackTrace");
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    locationServices.stopRealtimeTracking();
+    tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tab 1'),
+        title: const Text(
+          'AudioLoca',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         bottom: TabBar(
           controller: tabController,
           tabs: const [
             Tab(text: "Spotify"),
             Tab(text: "Local"),
+            Tab(text: "Spotify Location"),
+            Tab(text: "Local Location"),
           ],
         ),
       ),
@@ -93,7 +158,8 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                final result = await emotionService.requestCameraPermission();
+                final result = await emotionRecognition
+                    .requestCameraPermission();
 
                 if (result.isSuccess) {
                   log.i('[Flutter] Label: ${result.emotionLabel}');
@@ -106,10 +172,13 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
                     setState(() {
                       detectedMood = result.emotionLabel!;
                     });
-                    await _initTracks(forceRefresh: true);
+                    await initTracks(forceRefresh: true);
                   }
                 } else {
                   log.i('[Flutter] Error: ${result.errorMessage}');
+                  if (context.mounted) {
+                    CustomAlertDialog.failed(context, result.errorMessage!);
+                  }
                 }
               },
               child: const Text('SCAN MY MOOD'),
@@ -136,12 +205,30 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
                         // Tab 1: Spotify
                         spotifyTracks.isEmpty
                             ? const Center(child: Text("No Spotify tracks"))
-                            : SpotifyListView(allTracks: spotifyTracks),
+                            : EmotionSpotifyListView(allTracks: spotifyTracks),
 
                         // Tab 2: Local
                         localTracks.isEmpty
                             ? const Center(child: Text("No local tracks"))
-                            : LocalListView(allTracks: localTracks),
+                            : EmotionLocalListView(allTracks: localTracks),
+
+                        // Tab 2: Local
+                        spotifyAudioLocationTracks.isEmpty
+                            ? const Center(
+                                child: Text("No spotify location tracks"),
+                              )
+                            : EmotionSpotifyListView(
+                                allTracks: spotifyAudioLocationTracks,
+                              ),
+
+                        // Tab 4: Local location
+                        localAudioLocationTracks.isEmpty
+                            ? const Center(
+                                child: Text("No local location tracks"),
+                              )
+                            : LocationLocalListView(
+                                allTracks: localAudioLocationTracks,
+                              ),
                       ],
                     ),
             ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:audioloca/services/local.player.service.dart';
-import 'package:audioloca/services/spotify.player.service.dart';
-import 'package:audioloca/models/player.model.dart';
-import 'package:audioloca/global/full.player.dart';
-import 'package:audioloca/global/player.manager.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
+import 'package:audioloca/player/controllers/spotify.player.dart';
+import 'package:audioloca/player/models/player.model.dart';
+import 'package:audioloca/player/views/full.player.dart';
+import 'package:audioloca/player/player.manager.dart';
 import 'package:audioloca/theme.dart';
 
 class MiniPlayer extends StatefulWidget {

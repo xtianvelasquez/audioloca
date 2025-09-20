@@ -25,7 +25,7 @@ async def send_stream(data: Streams_Create, token_payload=Depends(verify_token),
 
   return {"message": "Stream recorded successfully."}
 
-@router.get("/audioloca/audio/location", response_model=List[Local_Streams_Response], status_code=200)
+@router.post("/audioloca/audio/location", response_model=List[Local_Streams_Response], status_code=200)
 async def audio_location_local(data: Locations_Base, db: Session = Depends(get_db)):
   for precision in [3, 2, 1]:
     location = read_location(db, data.latitude, data.longitude, precision)

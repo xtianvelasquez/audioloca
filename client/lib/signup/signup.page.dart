@@ -1,13 +1,15 @@
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:audioloca/global/alert.dialog.dart';
-import 'package:audioloca/services/oauth.service.dart';
-import 'package:audioloca/tabs/tabs.routing.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/core/alert.dialog.dart';
+import 'package:audioloca/local/controllers/user.service.dart';
+import 'package:audioloca/spotify/controllers/oauth.service.dart';
+import 'package:audioloca/tabs/tabs.routing.dart';
 import 'package:audioloca/login/login.page.dart';
 
 final log = Logger();
-final oauthService = OAuthService();
+final userServices = UserServices();
+final ouathServices = OAuthServices();
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -90,7 +92,7 @@ class SignupPageState extends State<SignupPage>
     setState(() => isAuthenticating = true);
 
     try {
-      final success = await oauthService.localSignup(email, username, password);
+      final success = await userServices.localSignup(email, username, password);
 
       if (success) {
         log.i('[Flutter] Signup successful!');
@@ -121,7 +123,7 @@ class SignupPageState extends State<SignupPage>
     setState(() => isAuthenticating = true);
 
     try {
-      final oauth = await oauthService.spotifyLogin();
+      final oauth = await ouathServices.spotifyLogin();
 
       if (oauth) {
         log.i('[Flutter] Spotify login successful!');

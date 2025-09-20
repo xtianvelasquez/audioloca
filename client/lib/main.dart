@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/core/emotion.recognition.dart';
+import 'package:audioloca/business/emotion.recognition.dart';
 import 'package:audioloca/login/login.page.dart';
 import 'package:audioloca/tabs/tabs.routing.dart';
 

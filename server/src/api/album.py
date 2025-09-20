@@ -57,7 +57,7 @@ async def album_created(
 
   return { 'message': 'Album has been successfully stored.' }
 
-@router.get("/audioloca/album/read", response_model=List[Album_Response], status_code=200)
+@router.get("/audioloca/albums/read", response_model=List[Album_Response], status_code=200)
 async def album_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get('payload', {}).get('sub')
   albums = read_all_album(db, user_id)
@@ -75,7 +75,7 @@ async def album_read(token_payload = Depends(verify_token), db: Session = Depend
     for album in albums
   ]
 
-@router.post("/audioloca/album", response_model=Album_Response, status_code=200)
+@router.post("/audioloca/album/read", response_model=Album_Response, status_code=200)
 async def specific_album_read(album_id: int = Body(..., embed=True), token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get('payload', {}).get('sub')
   album = read_specific_album(db, user_id, album_id)

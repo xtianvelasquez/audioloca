@@ -5,15 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:audioloca/environment.dart';
-import 'package:audioloca/models/audio.model.dart';
+import 'package:audioloca/local/models/audio.model.dart';
 
 final log = Logger();
 
 class ApiEndpoints {
+  static const String locationAudio = '/audioloca/audio/location';
   static const String audioGenre = '/audioloca/audio/genre';
-  static const String readAudios = '/audioloca/audio/read';
-  static const String readAudio = '/audioloca/audio';
   static const String audioAlbum = '/audioloca/audio/album';
+  static const String readAudios = '/audioloca/audios/read';
+  static const String readAudio = '/audioloca/audio/read';
   static const String createAudio = '/audioloca/audio/create';
 }
 
@@ -23,18 +24,55 @@ class AudioServices {
   AudioServices({http.Client? client}) : client = client ?? http.Client();
 
   // =======================
+  // POST audio by location
+  // =======================
+  Future<List<LocalAudioLocation>> readAudioLocation(
+    double latitude,
+    double longitude,
+  ) async {
+    return _post<List<LocalAudioLocation>>(
+      ApiEndpoints.locationAudio,
+      headers: {'Content-Type': 'application/json'},
+      body: {'latitude': latitude, 'longitude': longitude},
+      parser: (data) {
+        if (data is List) {
+          return data.map((json) => LocalAudioLocation.fromJson(json)).toList();
+        }
+        throw FormatException('Unexpected audio location format.');
+      },
+    );
+  }
+
+  // =======================
   // POST audio by genre
   // =======================
-  Future<List<Audio>> readAudioGenre(String jwtToken, int genreId) async {
+  Future<List<Audio>> readAudioGenre(int genreId) async {
     return _post<List<Audio>>(
       ApiEndpoints.audioGenre,
-      headers: _headers(jwtToken),
+      headers: {'Content-Type': 'application/json'},
       body: {'genre_id': genreId},
       parser: (data) {
         if (data is List) {
           return data.map((json) => Audio.fromJson(json)).toList();
         }
         throw FormatException('Unexpected audio genre format.');
+      },
+    );
+  }
+
+  // =======================
+  // POST audios from an album
+  // =======================
+  Future<List<Audio>> readAudioAlbum(String jwtToken, int albumId) async {
+    return _post<List<Audio>>(
+      ApiEndpoints.audioAlbum,
+      headers: _headers(jwtToken),
+      body: {'album_id': albumId},
+      parser: (data) {
+        if (data is List) {
+          return data.map((json) => Audio.fromJson(json)).toList();
+        }
+        throw FormatException('Unexpected album audio format.');
       },
     );
   }
@@ -58,7 +96,7 @@ class AudioServices {
   // =======================
   // POST specific audio
   // =======================
-  Future<Audio> readSpecificAudio(String jwtToken, int audioId) async {
+  Future<Audio> readAudio(String jwtToken, int audioId) async {
     return _post<Audio>(
       ApiEndpoints.readAudio,
       headers: _headers(jwtToken),
@@ -68,23 +106,6 @@ class AudioServices {
           return Audio.fromJson(data);
         }
         throw FormatException('Unexpected audio format.');
-      },
-    );
-  }
-
-  // =======================
-  // POST audios from an album
-  // =======================
-  Future<List<Audio>> readAudioAlbum(String jwtToken, int albumId) async {
-    return _post<List<Audio>>(
-      ApiEndpoints.audioAlbum,
-      headers: _headers(jwtToken),
-      body: {'album_id': albumId},
-      parser: (data) {
-        if (data is List) {
-          return data.map((json) => Audio.fromJson(json)).toList();
-        }
-        throw FormatException('Unexpected album audio format.');
       },
     );
   }
