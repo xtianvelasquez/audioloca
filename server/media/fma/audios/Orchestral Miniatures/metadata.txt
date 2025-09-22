@@ -1,0 +1,43 @@
+CLASSICAL
+[
+  {
+    "filename": "Joseph R. Lilore - July 2025.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "July 2025",
+    "artist": "Joseph R. Lilore",
+    "genre": "Classical, Soundtrack",
+    "duration": 02:57
+  },
+  {
+    "filename": "Joseph R. Lilore - A Journey Continued _Aleatoric Composition_.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "A Journey Continued Aleatoric Composition",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:42
+  },
+  {
+    "filename": "Joseph R. Lilore - Dreamscape.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "Dreamscape",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:57
+  },
+  {
+    "filename": "Joseph R. Lilore - NOVEMBER.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "NOVEMBER",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:59
+  },
+  {
+    "filename": "Joseph R. Lilore - DRONE.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "DRONE",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:40
+  },
+]

@@ -1,0 +1,43 @@
+JAZZ
+[
+  {
+    "filename": "Ketsa - My Biz.mp3",
+    "album": "Vintage Beats",
+    "title": "My Biz",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 02:57
+  },
+  {
+    "filename": "Ketsa - Sun Slides.mp3",
+    "album": "Vintage Beats",
+    "title": "Sun Slides",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 03:12
+  },
+  {
+    "filename": "Ketsa - To do.mp3",
+    "album": "Vintage Beats",
+    "title": "To do",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 02:53
+  },
+  {
+    "filename": "Ketsa - Make Me Sad.mp3",
+    "album": "Vintage Beats",
+    "title": "Make Me Sad",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 03:13
+  },
+  {
+    "filename": "Ketsa - Grand Rising.mp3",
+    "album": "Vintage Beats",
+    "title": "Grand Rising,
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 03:30
+  },
+]

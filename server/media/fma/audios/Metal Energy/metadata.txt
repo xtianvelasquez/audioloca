@@ -1,0 +1,43 @@
+METAL
+[
+  {
+    "filename": "Lite Saturation - Metal Energy - Medium2.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Medium2",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 01:22
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Short.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Short",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 00:29
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Medium1.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Medium1",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 01:54
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 02:05
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Loop.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Loop",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 02:50
+  },
+]

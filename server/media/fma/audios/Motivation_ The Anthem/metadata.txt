@@ -1,0 +1,43 @@
+ROCK
+[
+  {
+    "filename": "Carlos Javed - No Excuses.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "No Excuses",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 03:07
+  },
+  {
+    "filename": "Carlos Javed - Born to Win.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "Born to Win",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 03:56
+  },
+  {
+    "filename": "Carlos Javed - Pain Into Power.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "Pain Into Power",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 02:49
+  },
+  {
+    "filename": "Carlos Javed - The Champion Within.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "The Champion Within",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 03:24
+  },
+  {
+    "filename": "Carlos Javed - Motivation_ The Anthem.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "Motivation: The Anthem",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 02:52
+  },
+]

@@ -1,0 +1,44 @@
+COUNTRY
+[
+  {
+    "filename": "Mr Smith - Webster.mp3",
+    "album": "Kerplunk",
+    "title": "Webster",
+    "artist": "Mr Smith",
+    "genre": "Country, Rock, Soundtrack, Instrumental",
+    "duration": 00:44
+  },
+  {
+    "filename": "Mr Smith - Flea Bop.mp3",
+    "album": "Kerplunk",
+    "title": "Flea Bop",
+    "title": "Funky jazz instrumental with a Flea inspired outro."
+    "artist": "Mr Smith",
+    "genre": "Country, Jazz, Soundtrack, Instrumental",
+    "duration": 01:09
+  },
+  {
+    "filename": "Mr Smith - Carter.mp3",
+    "album": "Kerplunk",
+    "title": "Carter",
+    "artist": "Mr Smith",
+    "genre": "Country, Jazz, Soundtrack, Instrumental",
+    "duration": 01:45
+  },
+  {
+    "filename": "Mr Smith - Castaway.mp3",
+    "album": "Kerplunk",
+    "title": "Castaway",
+    "artist": "Mr Smith",
+    "genre": "Country, Rock, Soundtrack, Instrumental",
+    "duration": 01:32
+  },
+  {
+    "filename": "Mr Smith - Ffwd.mp3",
+    "album": "Kerplunk",
+    "title": "Ffwd",
+    "artist": "Mr Smith",
+    "genre": "Country, Rock, Soundtrack, Instrumental",
+    "duration": 01:23
+  },
+]

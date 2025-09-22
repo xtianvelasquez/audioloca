@@ -14,16 +14,16 @@ TOKEN_TYPE = {
 }
 
 GENRES = {
-  "pop": 1,
-  "hip-hop/rap": 2,
-  "rock": 3,
-  "jazz/blues": 4,
-  "classical": 5,
-  "folk/acoustic": 6,
+  "pop": 1, # Moonbow Songs, Vol. 1, PARNI NA RAIONE
+  "hip-hop/rap": 2, # Ain't no holding back, SCAMMER
+  "rock": 3, # Motivation_ The Anthem, Taylor & Lopker
+  "jazz/blues": 4, # Vintage Beats, recognition blues
+  "classical": 5, # Orchestral Miniatures
+  "folk/acoustic": 6, # Ancient lands, Celtic Routes
   "latin/world": 7,
-  "ambient/chill": 8,
-  "metal": 9,
-  "experimental": 10,
-  "country": 11,
-  "electronic": 12
+  "ambient/chill": 8, # Fathomless - Ambient, Ambient Atmospheres
+  "metal": 9, # Iron Metal I Rock on the Hole, Metal Energy
+  "experimental": 10, # Metamorphosis, Wires on Words
+  "country": 11, # Citizens Unite, Kurplunk
+  "electronic": 12 # Marginal
 }

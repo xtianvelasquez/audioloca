@@ -1,0 +1,43 @@
+FOLK
+[
+  {
+    "filename": "alsander - Haze of History.mp3",
+    "album": "Celtic Routes",
+    "title": "Haze of History",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 02:23
+  },
+  {
+    "filename": "alsander - gentle.mp3",
+    "album": "Celtic Routes",
+    "title": "gentle",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 02:05
+  },
+  {
+    "filename": "alsander - Sunset Teardops.mp3",
+    "album": "Celtic Routes",
+    "title": "Sunset Teardops",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 03:40
+  },
+  {
+    "filename": "alsander - So long, so long, so long.mp3",
+    "album": "Celtic Routes",
+    "title": "So long, so long, so long",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 01:29
+  },
+  {
+    "filename": "alsander - Countess Come Home.mp3",
+    "album": "Celtic Routes",
+    "title": "Countess Come Home",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 03:46
+  },
+]

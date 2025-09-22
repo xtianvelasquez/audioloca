@@ -9,9 +9,8 @@ class Album(Base):
   user_id = Column(Integer, ForeignKey("user.user_id", ondelete="CASCADE"), nullable=True) 
   album_cover = Column(String(1000), index=True)
   album_name = Column(String(50), nullable=False, index=True)
-  description = Column(String(1000), nullable=False, index=True)
-  created_at = Column(DateTime(timezone=True), default=func.now())
-  modified_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
+  created_at = Column(DateTime(timezone=True), server_default=func.now())
+  modified_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
   user = relationship("User", back_populates="album")
   audio = relationship("Audio", back_populates="album", uselist=False)

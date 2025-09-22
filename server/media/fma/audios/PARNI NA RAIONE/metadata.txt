@@ -1,0 +1,43 @@
+POP
+[
+  {
+    "filename": "CODESCORN - xchaikapro.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "xchaikapro",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 02:44
+  },
+  {
+    "filename": "CODESCORN - easysotrudnik.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "easysotrudnik",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 02:39
+  },
+  {
+    "filename": "CODESCORN - goryachiy matras.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "goryachiy matras",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 03:25
+  },
+  {
+    "filename": "CODESCORN - kurinuepalochki.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "kurinuepalochki",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 03:59
+  },
+  {
+    "filename": "CODESCORN - moychaika.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "moychaika",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 03:05
+  },
+]

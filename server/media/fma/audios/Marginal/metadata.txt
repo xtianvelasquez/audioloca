@@ -1,0 +1,43 @@
+ELECTRONIC
+[
+  {
+    "filename": "Silicon Transmitter - Echelon.mp3",
+    "album": "Marginal",
+    "title": "Echelon",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Noise, Drone",
+    "duration": 03:02
+  },
+  {
+    "filename": "Silicon Transmitter - Fall to Earth.mp3",
+    "album": "Marginal",
+    "title": "Fall to Earth",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Avant-Garde, Experimental",
+    "duration": 02:55
+  },
+  {
+    "filename": "Silicon Transmitter - Fluctuate.mp3",
+    "album": "Marginal",
+    "title": "Fluctuate",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Drone, Ambient",
+    "duration": 02:46
+  },
+  {
+    "filename": "Silicon Transmitter - Switch.mp3",
+    "album": "Marginal",
+    "title": "Switch",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Avant-Garde, Experimental",
+    "duration": 01:09
+  },
+  {
+    "filename": "Silicon Transmitter - Beam.mp3",
+    "album": "Marginal",
+    "title": "Beam",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Instrumental, Experimental",
+    "duration": 02:57
+  },
+]

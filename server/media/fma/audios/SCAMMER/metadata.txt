@@ -1,0 +1,43 @@
+RAP
+[
+  {
+    "filename": "CODESCORN - 220w[oldscoolstyle].mp3",
+    "album": "SCAMMER",
+    "title": "220w[oldscoolstyle]",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 01:40
+  },
+  {
+    "filename": "CODESCORN - 220wscammer[raggafemalefreestyle].mp3",
+    "album": "SCAMMER",
+    "title": "220wscammer[raggafemalefreestyle]",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 02:05
+  },
+  {
+    "filename": "CODESCORN - 50let[classichiphop].mp3",
+    "album": "SCAMMER",
+    "title": "50let[classichiphop]",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 03:16
+  },
+  {
+    "filename": "CODESCORN - 50let.exe.mp3",
+    "album": "SCAMMER",
+    "title": "50let.exe",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 02:12
+  },
+  {
+    "filename": "CODESCORN - 220wscammer.mp3",
+    "album": "SCAMMER",
+    "title": "220wscammer",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 02:06
+  },
+]

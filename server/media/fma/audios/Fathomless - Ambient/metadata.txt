@@ -1,0 +1,43 @@
+AMBIENT
+[
+  {
+    "filename": "Podington Bear - Undersea Garden.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Undersea Garden",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:22
+  },
+  {
+    "filename": "Podington Bear - Pink Gradient.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Pink Gradient",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:30
+  },
+  {
+    "filename": "Podington Bear - Submerging Blue-Black.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Submerging Blue-Black",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:38
+  },
+  {
+    "filename": "Podington Bear - Loll.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Loll",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 01:45
+  },
+  {
+    "filename": "Podington Bear - Trinity Alps.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Trinity Alps",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:18
+  },
+]

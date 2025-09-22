@@ -1,0 +1,43 @@
+META
+[
+  {
+    "filename": "Iron Metal - Intro - Rock the Cops to Town.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Undersea Garden",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 01:57
+  },
+  {
+    "filename": "Iron Metal - Whiskey Wine Woman.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Whiskey Wine Woman",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 01:33
+  },
+  {
+    "filename": "Iron Metal - Band Introductions - Love of My Woman.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Love of My Woman",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 01:07
+  },
+  {
+    "filename": "Iron Metal - Get Rockin'.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Get Rockin'",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 02:10
+  },
+  {
+    "filename": "Iron Metal - Cocaine Nose.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Cocaine Nose",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 00:58
+  },
+]

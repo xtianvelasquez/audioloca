@@ -1,0 +1,43 @@
+EXPERIMENTAL
+[
+  {
+    "filename": "Mark Lingard - Metamorphosis.mp3",
+    "album": "Metamorphosis",
+    "title": "Metamorphosis",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental, Drone",
+    "duration": 04:35
+  },
+  {
+    "filename": "Mark Lingard - Awakening.mp3",
+    "album": "Metamorphosis",
+    "title": "Awakening",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental, Drone",
+    "duration": 04:42
+  },
+  {
+    "filename": "Mark Lingard - The door.mp3",
+    "album": "Metamorphosis",
+    "title": "The door",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental, Drone",
+    "duration": 10:22
+  },
+  {
+    "filename": "Mark Lingard - Under the couch.mp3",
+    "album": "Metamorphosis",
+    "title": "Under the couch",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental",
+    "duration": 09:13
+  },
+  {
+    "filename": "Mark Lingard - Acceptance.mp3",
+    "album": "Metamorphosis",
+    "title": "Acceptance",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental",
+    "duration": 07:02
+  },
+]

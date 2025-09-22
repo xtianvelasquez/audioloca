@@ -1,0 +1,402 @@
+[
+  {
+    "filename": "Chris Wolverine Matthew - BACK TO LIFE.mp3",
+    "album": "Ain't no holding back",
+    "title": "BACK TO LIFE",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:01
+  },
+  {
+    "filename": "Chris Wolverine Matthew - BIG BANK.mp3",
+    "album": "Ain't no holding back",
+    "title": "BIG BANK",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:14
+  },
+  {
+    "filename": "Chris Wolverine Matthew - CRASHOUT.mp3",
+    "album": "Ain't no holding back",
+    "title": "CRASHOUT",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:08
+  },
+  {
+    "filename": "Chris Wolverine Matthew - For the love of money.mp3",
+    "album": "Ain't no holding back",
+    "title": "For the love of money",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 01:58
+  },
+  {
+    "filename": "Chris Wolverine Matthew - LOOSE LIPS.mp3",
+    "album": "Ain't no holding back",
+    "title": "LOOSE LIPS",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:12
+  },
+  {
+    "filename": "Chad Crouch - Amaranthus.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Amaranthus",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 01:30
+  },
+  {
+    "filename": "Chad Crouch - Coral.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Coral",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 02:15
+  },
+  {
+    "filename": "Chad Crouch - Ruby.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Ruby",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 02:25
+  },
+  {
+    "filename": "Chad Crouch - Taut.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Taut",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 03:15
+  },
+  {
+    "filename": "Chad Crouch - Tuscan Sun.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Tuscan Sun",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 03:20
+  },
+  {
+    "filename": "Mark Lingard - The Fae.mp3",
+    "album": "Ancient lands",
+    "title": "The Fae",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Celtic, British Folk",
+    "duration": 04:29
+  },
+  {
+    "filename": "Mark Lingard - The Singing Stones.mp3",
+    "album": "Ancient lands",
+    "title": "The Singing Stones",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Soundtrack, British Folk",
+    "duration": 03:47
+  },
+  {
+    "filename": "Mark Lingard - snowdrop woods.mp3",
+    "album": "Ancient lands",
+    "title": "snowdrop woods",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Celtic, British Folk",
+    "duration": 01:35
+  },
+  {
+    "filename": "Mark Lingard - mist oe'r fells.mp3",
+    "album": "Ancient lands",
+    "title": "mist oe'r fells",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Celtic, British Folk",
+    "duration": 02:17
+  },
+  {
+    "filename": "Mark Lingard - Wyrd bið ful āræd.mp3",
+    "album": "Ancient lands",
+    "title": "Wyrd bið ful āræd.",
+    "artist": "Mark Lingard",
+    "genre": "Celtic, British Folk",
+    "duration": 02:39
+  },
+  {
+    "filename": "alsander - Haze of History.mp3",
+    "album": "Celtic Routes",
+    "title": "Haze of History",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 02:23
+  },
+  {
+    "filename": "alsander - gentle.mp3",
+    "album": "Celtic Routes",
+    "title": "gentle",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 02:05
+  },
+  {
+    "filename": "alsander - Sunset Teardops.mp3",
+    "album": "Celtic Routes",
+    "title": "Sunset Teardops",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 03:40
+  },
+  {
+    "filename": "alsander - So long, so long, so long.mp3",
+    "album": "Celtic Routes",
+    "title": "So long, so long, so long",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 01:29
+  },
+  {
+    "filename": "alsander - Countess Come Home.mp3",
+    "album": "Celtic Routes",
+    "title": "Countess Come Home",
+    "artist": "alsander",
+    "genre": "Easy Listening, Folk, Instrumental",
+    "duration": 03:46
+  },
+    "filename": "LOPKERJO - Mystic Choir - Texas.mp3",
+    "album": "Citizens Unite",
+    "title": "Mystic Choir - Texas",
+    "artist": "LOPKERJO",
+    "genre": "Country, Folk, Experimental",
+    "duration": 01:25
+  },
+  {
+    "filename": "LOPKERJO - Sierra Nevada Summer.mp3",
+    "album": "Citizens Unite",
+    "title": "Sierra Nevada Summer",
+    "artist": "LOPKERJO",
+    "genre": "Country, Blues, Classical, Instrumental",
+    "duration": 04:01
+  },
+  {
+    "filename": "LOPKERJO - Citizens Unite _ Folk Protest Song.mp3",
+    "album": "Citizens Unite",
+    "title": "Citizens Unite | Folk Protest Song",
+    "artist": "LOPKERJO",
+    "genre": "Blues, Novelty, Historic, Pop, Rock, Soul-RnB, Folk, Spoken, Jazz, Country",
+    "duration": 02:57
+  },
+  {
+    "filename": "LOPKERJO - Citizens Unite _ Jazz Ballad.mp3",
+    "album": "Citizens Unite",
+    "title": "Citizens Unite | Jazz Ballad",
+    "artist": "LOPKERJO",
+    "genre": "Novelty, Historic, Country, Pop, Folk, Jazz",
+    "duration": 03:46
+  },
+  {
+    "filename": "LOPKERJO - Red States Blue _ Power to the People.mp3",
+    "album": "Citizens Unite",
+    "title": "Red States Blue | Power to the People",
+    "artist": "LOPKERJO",
+    "genre": "Country, Pop, Folk, Singer-Songwriter",
+    "duration": 01:59
+  },
+  {
+    "filename": "Podington Bear - Undersea Garden.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Undersea Garden",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:22
+  },
+  {
+    "filename": "Podington Bear - Pink Gradient.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Pink Gradient",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:30
+  },
+  {
+    "filename": "Podington Bear - Submerging Blue-Black.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Submerging Blue-Black",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:38
+  },
+  {
+    "filename": "Podington Bear - Loll.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Loll",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 01:45
+  },
+  {
+    "filename": "Podington Bear - Trinity Alps.mp3",
+    "album": "Fathomless - Ambient",
+    "title": "Trinity Alps",
+    "artist": "Podington Bear",
+    "genre": "Electronic, Soundtrack, Ambient, Instrumental",
+    "duration": 02:18
+  },
+  {
+    "filename": "Iron Metal - Intro - Rock the Cops to Town.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Undersea Garden",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 01:57
+  },
+  {
+    "filename": "Iron Metal - Whiskey Wine Woman.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Whiskey Wine Woman",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 01:33
+  },
+  {
+    "filename": "Iron Metal - Band Introductions - Love of My Woman.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Love of My Woman",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 01:07
+  },
+  {
+    "filename": "Iron Metal - Get Rockin'.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Get Rockin'",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 02:10
+  },
+  {
+    "filename": "Iron Metal - Cocaine Nose.mp3",
+    "album": "Iron Metal I Rock on the Hole",
+    "title": "Cocaine Nose",
+    "artist": "Iron Metal",
+    "genre": "Lo-fi Rock, Metal",
+    "duration": 00:58
+  },
+  {
+    "filename": "Mr Smith - Webster.mp3",
+    "album": "Kerplunk",
+    "title": "Webster",
+    "artist": "Mr Smith",
+    "genre": "Country, Rock, Soundtrack, Instrumental",
+    "duration": 00:44
+  },
+  {
+    "filename": "Mr Smith - Flea Bop.mp3",
+    "album": "Kerplunk",
+    "title": "Flea Bop",
+    "title": "Funky jazz instrumental with a Flea inspired outro."
+    "artist": "Mr Smith",
+    "genre": "Country, Jazz, Soundtrack, Instrumental",
+    "duration": 01:09
+  },
+  {
+    "filename": "Mr Smith - Carter.mp3",
+    "album": "Kerplunk",
+    "title": "Carter",
+    "artist": "Mr Smith",
+    "genre": "Country, Jazz, Soundtrack, Instrumental",
+    "duration": 01:45
+  },
+  {
+    "filename": "Mr Smith - Castaway.mp3",
+    "album": "Kerplunk",
+    "title": "Castaway",
+    "artist": "Mr Smith",
+    "genre": "Country, Rock, Soundtrack, Instrumental",
+    "duration": 01:32
+  },
+  {
+    "filename": "Mr Smith - Ffwd.mp3",
+    "album": "Kerplunk",
+    "title": "Ffwd",
+    "artist": "Mr Smith",
+    "genre": "Country, Rock, Soundtrack, Instrumental",
+    "duration": 01:23
+  },
+  {
+    "filename": "Silicon Transmitter - Echelon.mp3",
+    "album": "Marginal",
+    "title": "Echelon",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Noise, Drone",
+    "duration": 03:02
+  },
+  {
+    "filename": "Silicon Transmitter - Fall to Earth.mp3",
+    "album": "Marginal",
+    "title": "Fall to Earth",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Avant-Garde, Experimental",
+    "duration": 02:55
+  },
+  {
+    "filename": "Silicon Transmitter - Fluctuate.mp3",
+    "album": "Marginal",
+    "title": "Fluctuate",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Drone, Ambient",
+    "duration": 02:46
+  },
+  {
+    "filename": "Silicon Transmitter - Switch.mp3",
+    "album": "Marginal",
+    "title": "Switch",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Avant-Garde, Experimental",
+    "duration": 01:09
+  },
+  {
+    "filename": "Silicon Transmitter - Beam.mp3",
+    "album": "Marginal",
+    "title": "Beam",
+    "artist": "Silicon Transmitter",
+    "genre": "Electronic, Instrumental, Experimental",
+    "duration": 02:57
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Medium2.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Medium2",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 01:22
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Short.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Short",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 00:29
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Medium1.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Medium1",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 01:54
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 02:05
+  },
+  {
+    "filename": "Lite Saturation - Metal Energy - Loop.mp3",
+    "album": "Metal Energy",
+    "title": "Metal Energy - Loop",
+    "artist": "Lite Saturation",
+    "genre": "Rock, Instrumental, Metal",
+    "duration": 02:50
+  },
+]

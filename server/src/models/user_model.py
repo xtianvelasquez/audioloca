@@ -10,7 +10,7 @@ class User(Base):
   email = Column(String(255), unique=True, nullable=False)
   username = Column(String(50), unique=True, nullable=False, index=True)
   password = Column(String(255), nullable=True, index=True)
-  joined_at = Column(DateTime(timezone=True), default=func.now())
+  joined_at = Column(DateTime(timezone=True), server_default=func.now())
 
   token = relationship("Token", back_populates="user", uselist=False)
   album = relationship("Album", back_populates="user", cascade="all, delete-orphan")

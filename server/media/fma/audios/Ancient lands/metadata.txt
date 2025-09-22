@@ -1,0 +1,43 @@
+FOLKS
+[
+  {
+    "filename": "Mark Lingard - The Fae.mp3",
+    "album": "Ancient lands",
+    "title": "The Fae",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Celtic, British Folk",
+    "duration": 04:29
+  },
+  {
+    "filename": "Mark Lingard - The Singing Stones.mp3",
+    "album": "Ancient lands",
+    "title": "The Singing Stones",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Soundtrack, British Folk",
+    "duration": 03:47
+  },
+  {
+    "filename": "Mark Lingard - snowdrop woods.mp3",
+    "album": "Ancient lands",
+    "title": "snowdrop woods",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Celtic, British Folk",
+    "duration": 01:35
+  },
+  {
+    "filename": "Mark Lingard - mist oe'r fells.mp3",
+    "album": "Ancient lands",
+    "title": "mist oe'r fells",
+    "artist": "Mark Lingard",
+    "genre": "Folk, Celtic, British Folk",
+    "duration": 02:17
+  },
+  {
+    "filename": "Mark Lingard - Wyrd bið ful āræd.mp3",
+    "album": "Ancient lands",
+    "title": "Wyrd bið ful āræd.",
+    "artist": "Mark Lingard",
+    "genre": "Celtic, British Folk",
+    "duration": 02:39
+  },
+]

@@ -1,0 +1,401 @@
+EXPERIMENTAL
+[
+  {
+    "filename": "Mark Lingard - Metamorphosis.mp3",
+    "album": "Metamorphosis",
+    "title": "Metamorphosis",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental, Drone",
+    "duration": 04:35
+  },
+  {
+    "filename": "Mark Lingard - Awakening.mp3",
+    "album": "Metamorphosis",
+    "title": "Awakening",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental, Drone",
+    "duration": 04:42
+  },
+  {
+    "filename": "Mark Lingard - The door.mp3",
+    "album": "Metamorphosis",
+    "title": "The door",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental, Drone",
+    "duration": 10:22
+  },
+  {
+    "filename": "Mark Lingard - Under the couch.mp3",
+    "album": "Metamorphosis",
+    "title": "Under the couch",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental",
+    "duration": 09:13
+  },
+  {
+    "filename": "Mark Lingard - Acceptance.mp3",
+    "album": "Metamorphosis",
+    "title": "Acceptance",
+    "artist": "Mark Lingard",
+    "genre": "Soundtrack, Experimental",
+    "duration": 07:02
+  },
+  {
+    "filename": "Pamela Yuen - Joy.mp3",
+    "album": "Moonbow Songs, Vol. 1",
+    "title": "Joy",
+    "artist": "Pamela Yuen",
+    "genre": "Jazz, Pop, Instrumental",
+    "duration": 01:08
+  },
+  {
+    "filename": "Pamela Yuen - Fun Day Out.mp3",
+    "album": "Moonbow Songs, Vol. 1",
+    "title": "Fun Day Out",
+    "artist": "Pamela Yuen",
+    "genre": "Pop, Indie-Rock, Instrumental",
+    "duration": 01:10
+  },
+  {
+    "filename": "Pamela Yuen - Conversation.mp3",
+    "album": "Moonbow Songs, Vol. 1",
+    "title": "Conversation",
+    "artist": "Pamela Yuen",
+    "genre": "Pop, Instrumental, Acoustic",
+    "duration": 01:31
+  },
+  {
+    "filename": "Pamela Yuen - This Is The Way U Do It.mp3",
+    "album": "Moonbow Songs, Vol. 1",
+    "title": "This Is The Way U Do It",
+    "artist": "Pamela Yuen",
+    "genre": "Pop, Hip-Hop, Instrumental",
+    "duration": 01:57
+  },
+  {
+    "filename": "Pamela Yuen - Tiptoe From East To West.mp3",
+    "album": "Moonbow Songs, Vol. 1",
+    "title": "Tiptoe From East To West",
+    "artist": "Pamela Yuen",
+    "genre": "Pop, Instrumental, Acoustic",
+    "duration": 01:22
+  },
+  {
+    "filename": "Carlos Javed - No Excuses.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "No Excuses",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 03:07
+  },
+  {
+    "filename": "Carlos Javed - Born to Win.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "Born to Win",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 03:56
+  },
+  {
+    "filename": "Carlos Javed - Pain Into Power.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "Pain Into Power",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 02:49
+  },
+  {
+    "filename": "Carlos Javed - The Champion Within.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "The Champion Within",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 03:24
+  },
+  {
+    "filename": "Carlos Javed - Motivation_ The Anthem.mp3",
+    "album": "Motivation: The Anthem",
+    "title": "Motivation: The Anthem",
+    "artist": "Carlos Javed",
+    "genre": "Pop, Rock, Reggae - Dub",
+    "duration": 02:52
+  },
+  {
+    "filename": "Joseph R. Lilore - July 2025.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "July 2025",
+    "artist": "Joseph R. Lilore",
+    "genre": "Classical, Soundtrack",
+    "duration": 02:57
+  },
+  {
+    "filename": "Joseph R. Lilore - A Journey Continued _Aleatoric Composition_.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "A Journey Continued Aleatoric Composition",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:42
+  },
+  {
+    "filename": "Joseph R. Lilore - Dreamscape.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "Dreamscape",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:57
+  },
+  {
+    "filename": "Joseph R. Lilore - NOVEMBER.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "NOVEMBER",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:59
+  },
+  {
+    "filename": "Joseph R. Lilore - DRONE.mp3",
+    "album": "Orchestral Miniatures",
+    "title": "DRONE",
+    "artist": "Joseph R. Lilore",
+    "genre": "Soundtrack, Sound Poetry, Classical",
+    "duration": 02:40
+  },
+  {
+    "filename": "CODESCORN - xchaikapro.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "xchaikapro",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 02:44
+  },
+  {
+    "filename": "CODESCORN - easysotrudnik.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "easysotrudnik",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 02:39
+  },
+  {
+    "filename": "CODESCORN - goryachiy matras.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "goryachiy matras",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 03:25
+  },
+  {
+    "filename": "CODESCORN - kurinuepalochki.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "kurinuepalochki",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 03:59
+  },
+  {
+    "filename": "CODESCORN - moychaika.mp3",
+    "album": "PARNI NA RAIONE",
+    "title": "moychaika",
+    "artist": "CODESCORN",
+    "genre": "Pop, Experimental Pop, House",
+    "duration": 03:05
+  },
+    "filename": "Bernado - Autumn_is_done.mp3",
+    "album": "recognition blues",
+    "title": "Autumn_is_done",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:25
+  },
+  {
+    "filename": "Bernado - I_dont_mind.mp3",
+    "album": "recognition blues",
+    "title": "I_dont_mind",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:11
+  },
+  {
+    "filename": "Bernado - love_raining.mp3",
+    "album": "recognition blues",
+    "title": "love_raining",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:30
+  },
+  {
+    "filename": "Bernado - mamas_cadillac.mp3",
+    "album": "recognition blues",
+    "title": "mamas_cadillac",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 04:18
+  },
+  {
+    "filename": "Bernado - recognition_blues.mp3",
+    "album": "recognition blues",
+    "title": "recognition_blues",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:53
+  },
+  {
+    "filename": "CODESCORN - 220w[oldscoolstyle].mp3",
+    "album": "SCAMMER",
+    "title": "220w[oldscoolstyle]",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 01:40
+  },
+  {
+    "filename": "CODESCORN - 220wscammer[raggafemalefreestyle].mp3",
+    "album": "SCAMMER",
+    "title": "220wscammer[raggafemalefreestyle]",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 02:05
+  },
+  {
+    "filename": "CODESCORN - 50let[classichiphop].mp3",
+    "album": "SCAMMER",
+    "title": "50let[classichiphop]",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 03:16
+  },
+  {
+    "filename": "CODESCORN - 50let.exe.mp3",
+    "album": "SCAMMER",
+    "title": "50let.exe",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 02:12
+  },
+  {
+    "filename": "CODESCORN - 220wscammer.mp3",
+    "album": "SCAMMER",
+    "title": "220wscammer",
+    "artist": "CODESCORN",
+    "genre": "Hardcore, Rap, hiphop",
+    "duration": 02:06
+  },
+    "filename": "Taylor & Lopker - Jimmy Kimmel We Love You.mp3",
+    "album": "Taylor & Lopker",
+    "title": "Jimmy Kimmel We Love You",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 02:38
+  },
+  {
+    "filename": "Love Jimmy Kimmel - Boycott Disney ABC Hulu ESPN.mp3",
+    "album": "Taylor & Lopker",
+    "title": "Love Jimmy Kimmel - Boycott Disney ABC Hulu ESPN",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 03:19
+  },
+  {
+    "filename": "Taylor & Lopker - 60 Plus 9 _ Poetic Therapy _ Electronic Dance & Rock Song.mp3",
+    "album": "Taylor & Lopker",
+    "title": "60 Plus 9 | Poetic Therapy | Electronic Dance & Rock Song",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 05:10
+  },
+  {
+    "filename": "Taylor & Lopker - Letter To Melissa _ Melissa Etheridge Tribute.mp3",
+    "album": "Taylor & Lopker",
+    "title": "Letter To Melissa | Melissa Etheridge Tribute",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 02:18
+  },
+  {
+    "filename": "Taylor & Lopker - THEM _ Survived Abuse by Them.mp3",
+    "album": "Taylor & Lopker",
+    "title": "THEM | Survived Abuse by Them",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 03:39
+  },
+  {
+    "filename": "Ketsa - My Biz.mp3",
+    "album": "Vintage Beats",
+    "title": "My Biz",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 02:57
+  },
+  {
+    "filename": "Ketsa - Sun Slides.mp3",
+    "album": "Vintage Beats",
+    "title": "Sun Slides",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 03:12
+  },
+  {
+    "filename": "Ketsa - To do.mp3",
+    "album": "Vintage Beats",
+    "title": "To do",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 02:53
+  },
+  {
+    "filename": "Ketsa - Make Me Sad.mp3",
+    "album": "Vintage Beats",
+    "title": "Make Me Sad",
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 03:13
+  },
+  {
+    "filename": "Ketsa - Grand Rising.mp3",
+    "album": "Vintage Beats",
+    "title": "Grand Rising,
+    "artist": "Ketsa",
+    "genre": "Jazz, Hip-Hop Beats, Instrumental",
+    "duration": 03:30
+  },
+  {
+    "filename": "Kuuleminen Asiat - Sharpenin Man.mp3",
+    "album": "Wires on Words",
+    "title": "Sharpenin Man",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 01:36
+  },
+  {
+    "filename": "Kuuleminen Asiat - Artist Messages.mp3",
+    "album": "Wires on Words",
+    "title": "Artist Messages",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 05:27
+  },
+  {
+    "filename": "Kuuleminen Asiat - Acetylene.mp3",
+    "album": "Wires on Words",
+    "title": "Acetylene",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 06:35
+  },
+  {
+    "filename": "Kuuleminen Asiat - Barren Lands.mp3",
+    "album": "Wires on Words",
+    "title": "Barren Lands",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 04:59
+  },
+  {
+    "filename": "Kuuleminen Asiat - Dead Concrete.mp3",
+    "album": "Wires on Words",
+    "title": "Dead Concrete",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 08:03
+  },
+]

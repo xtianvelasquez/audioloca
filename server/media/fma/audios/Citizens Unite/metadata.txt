@@ -1,0 +1,43 @@
+COUNTRY
+[
+  {
+    "filename": "LOPKERJO - Mystic Choir - Texas.mp3",
+    "album": "Citizens Unite",
+    "title": "Mystic Choir - Texas",
+    "artist": "LOPKERJO",
+    "genre": "Country, Folk, Experimental",
+    "duration": 01:25
+  },
+  {
+    "filename": "LOPKERJO - Sierra Nevada Summer.mp3",
+    "album": "Citizens Unite",
+    "title": "Sierra Nevada Summer",
+    "artist": "LOPKERJO",
+    "genre": "Country, Blues, Classical, Instrumental",
+    "duration": 04:01
+  },
+  {
+    "filename": "LOPKERJO - Citizens Unite _ Folk Protest Song.mp3",
+    "album": "Citizens Unite",
+    "title": "Citizens Unite | Folk Protest Song",
+    "artist": "LOPKERJO",
+    "genre": "Blues, Novelty, Historic, Pop, Rock, Soul-RnB, Folk, Spoken, Jazz, Country",
+    "duration": 02:57
+  },
+  {
+    "filename": "LOPKERJO - Citizens Unite _ Jazz Ballad.mp3",
+    "album": "Citizens Unite",
+    "title": "Citizens Unite | Jazz Ballad",
+    "artist": "LOPKERJO",
+    "genre": "Novelty, Historic, Country, Pop, Folk, Jazz",
+    "duration": 03:46
+  },
+  {
+    "filename": "LOPKERJO - Red States Blue _ Power to the People.mp3",
+    "album": "Citizens Unite",
+    "title": "Red States Blue | Power to the People",
+    "artist": "LOPKERJO",
+    "genre": "Country, Pop, Folk, Singer-Songwriter",
+    "duration": 01:59
+  },
+]

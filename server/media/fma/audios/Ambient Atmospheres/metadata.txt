@@ -1,0 +1,43 @@
+AMBIENT
+[
+  {
+    "filename": "Chad Crouch - Amaranthus.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Amaranthus",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 01:30
+  },
+  {
+    "filename": "Chad Crouch - Coral.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Coral",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 02:15
+  },
+  {
+    "filename": "Chad Crouch - Ruby.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Ruby",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 02:25
+  },
+  {
+    "filename": "Chad Crouch - Taut.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Taut",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 03:15
+  },
+  {
+    "filename": "Chad Crouch - Tuscan Sun.mp3",
+    "album": "Ambient Atmospheres",
+    "title": "Tuscan Sun",
+    "artist": "Chad Crouch",
+    "genre": "Ambient, Electronic, Soundtrack, Instrumental",
+    "duration": 03:20
+  },
+]

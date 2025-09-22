@@ -17,10 +17,9 @@ class Audio(Base):
   visibility = Column(SqlEnum(Audio_Visibility, name="audio_visibility"), nullable=False)
   audio_record = Column(String(1000), index=True)
   audio_title = Column(String(50), nullable=False, index=True)
-  description = Column(String(1000), nullable=False, index=True)
   duration = Column(Time(timezone=True), nullable=False, index=True)
-  created_at = Column(DateTime(timezone=True), default=func.now())
-  modified_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
+  created_at = Column(DateTime(timezone=True), server_default=func.now())
+  modified_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
   user = relationship("User", back_populates="audio")
   genre = relationship("Genres", back_populates="audio")

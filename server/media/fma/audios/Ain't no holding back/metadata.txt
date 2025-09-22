@@ -1,0 +1,43 @@
+Hip-Hop
+[
+  {
+    "filename": "Chris Wolverine Matthew - BACK TO LIFE.mp3",
+    "album": "Ain't no holding back",
+    "title": "BACK TO LIFE",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:01
+  },
+  {
+    "filename": "Chris Wolverine Matthew - BIG BANK.mp3",
+    "album": "Ain't no holding back",
+    "title": "BIG BANK",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:14
+  },
+  {
+    "filename": "Chris Wolverine Matthew - CRASHOUT.mp3",
+    "album": "Ain't no holding back",
+    "title": "CRASHOUT",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:08
+  },
+  {
+    "filename": "Chris Wolverine Matthew - For the love of money.mp3",
+    "album": "Ain't no holding back",
+    "title": "For the love of money",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 01:58
+  },
+  {
+    "filename": "Chris Wolverine Matthew - LOOSE LIPS.mp3",
+    "album": "Ain't no holding back",
+    "title": "LOOSE LIPS",
+    "artist": "Chris Wolverine Matthew",
+    "genre": "Alternative Hip-Hop, Rap, hip-hop",
+    "duration": 02:12
+  },
+]

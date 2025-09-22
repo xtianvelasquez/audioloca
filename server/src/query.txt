@@ -1,0 +1,50 @@
+-- USER
+INSERT INTO "user" (email, username, password)
+VALUES 
+  ('chrismatthew@fma.com', 'Chris Wolverine Matthew', 'password123'),
+  ('chadcrouch@fma.com', 'Chad Crouch', 'password123'),
+  ('marklingard@fma.com', 'Mark Lingard', 'password123'),
+  ('alsander@fma.com', 'alsander', 'password123'),
+  ('lopkerjo@fma.com', 'LOPKERJO', 'password123'),
+  ('podingtonbear@fma.com', 'Podington Bear', 'password123'),
+  ('ironmetal@fma.com', 'Iron Metal', 'password123'),
+  ('mrsmith@fma.com', 'Mr Smith', 'password123'),
+  ('silicontransmitter@fma.com', 'Silicon Transmitter', 'password123'),
+  ('litesaturation@fma.com', 'Lite Saturation', 'password123'),
+  ('pamelayuen@fma.com', 'Pamela Yuen', 'password123'),
+  ('carlosjaved@fma.com', 'Carlos Javed', 'password123'),
+  ('josephlilore@fma.com', 'Joseph R. Lilore', 'password123'),
+  ('codescorn@fma.com', 'CODESCORN', 'password123'),
+  ('bernardo@fma.com', 'Bernardo', 'password123'),
+  ('taylorlopker@fma.com', 'Taylor & Lopker', 'password123'),
+  ('ketsa@fma.com', 'Ketsa', 'password123'),
+  ('kuuleminen@fma.com', 'Kuuleminen Asiat', 'password123');
+
+-- ALBUMS
+INSERT INTO album (user_id, album_cover, album_name)
+VALUES
+((SELECT user_id FROM "user" WHERE username='Chris Wolverine Matthew'), 'media/fma/covers/Ain''t no holding back.jpg', 'Ain''t no holding back'),
+((SELECT user_id FROM "user" WHERE username='Chad Crouch'), 'media/fma/covers/Ambient Atmospheres.jpg', 'Ambient Atmospheres'),
+((SELECT user_id FROM "user" WHERE username='Mark Lingard'), 'media/fma/covers/Ancient lands.jpg', 'Ancient lands'),
+((SELECT user_id FROM "user" WHERE username='alsander'), 'media/fma/covers/Celtic Routes.jpg', 'Celtic Routes'),
+((SELECT user_id FROM "user" WHERE username='LOPKERJO'), 'media/fma/covers/Citizens Unite.jpg', 'Citizens Unite'),
+((SELECT user_id FROM "user" WHERE username='Podington Bear'), 'media/fma/covers/Fathomless - Ambient.jpg', 'Fathomless - Ambient'),
+((SELECT user_id FROM "user" WHERE username='Iron Metal'), 'media/fma/covers/Iron Metal I Rock on the Hole.jpg', 'Iron Metal I Rock on the Hole'),
+((SELECT user_id FROM "user" WHERE username='Mr Smith'), 'media/fma/covers/Kerplunk.jpg', 'Kerplunk'),
+((SELECT user_id FROM "user" WHERE username='Silicon Transmitter'), 'media/fma/covers/Marginal.jpg', 'Marginal'),
+((SELECT user_id FROM "user" WHERE username='Lite Saturation'), 'media/fma/covers/Metal Energy.jpg', 'Metal Energy'),
+((SELECT user_id FROM "user" WHERE username='Mark Lingard'), 'media/fma/covers/Metamorphosis.jpg', 'Metamorphosis'),
+((SELECT user_id FROM "user" WHERE username='Pamela Yuen'), 'media/fma/covers/Moonbow Songs, Vol. 1.jpg', 'Moonbow Songs, Vol. 1'),
+((SELECT user_id FROM "user" WHERE username='Carlos Javed'), 'media/fma/covers/Motivation_ The Anthem.jpg', 'Motivation: The Anthem'),
+((SELECT user_id FROM "user" WHERE username='Joseph R. Lilore'), 'media/fma/covers/Orchestral Miniatures.jpg', 'Orchestral Miniatures'),
+((SELECT user_id FROM "user" WHERE username='CODESCORN'), 'media/fma/covers/PARNI NA RAIONE.jpg', 'PARNI NA RAIONE'),
+((SELECT user_id FROM "user" WHERE username='Bernardo'), 'media/fma/covers/recognition blues.jpg', 'recognition blues'),
+((SELECT user_id FROM "user" WHERE username='CODESCORN'), 'media/fma/covers/SCAMMER.jpg', 'SCAMMER'),
+((SELECT user_id FROM "user" WHERE username='Taylor & Lopker'), 'media/fma/covers/Taylor & Lopker.jpg', 'Taylor & Lopker'),
+((SELECT user_id FROM "user" WHERE username='Ketsa'), 'media/fma/covers/Vintage Beats.jpg', 'Vintage Beats'),
+((SELECT user_id FROM "user" WHERE username='Kuuleminen Asiat'), 'media/fma/covers/Wires on Words.jpg', 'Wires on Words');
+
+-- AUDIO
+INSERT INTO audio (user_id, genre_id, album_id, visibility, audio_record, audio_title, duration)
+VALUES
+((SELECT user_id FROM "user" WHERE username='Chris Wolverine Matthew'), 2, (SELECT album_id FROM "album" WHERE album_name='Ain''t no holding back'), 'public', 'media/fma/audio/Ain''t no holding back'/BACK TO LIFE.mp3', 'BACK TO LIFE', 02:01)

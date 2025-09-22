@@ -1,0 +1,43 @@
+BLUES
+[
+  {
+    "filename": "Bernado - Autumn_is_done.mp3",
+    "album": "recognition blues",
+    "title": "Autumn_is_done",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:25
+  },
+  {
+    "filename": "Bernado - I_dont_mind.mp3",
+    "album": "recognition blues",
+    "title": "I_dont_mind",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:11
+  },
+  {
+    "filename": "Bernado - love_raining.mp3",
+    "album": "recognition blues",
+    "title": "love_raining",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:30
+  },
+  {
+    "filename": "Bernado - mamas_cadillac.mp3",
+    "album": "recognition blues",
+    "title": "mamas_cadillac",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 04:18
+  },
+  {
+    "filename": "Bernado - recognition_blues.mp3",
+    "album": "recognition blues",
+    "title": "recognition_blues",
+    "artist": "Bernardo",
+    "genre": "Blues, Experimental Pop",
+    "duration": 03:53
+  },
+]

@@ -1,0 +1,43 @@
+ROCK
+[
+  {
+    "filename": "Taylor & Lopker - Jimmy Kimmel We Love You.mp3",
+    "album": "Taylor & Lopker",
+    "title": "Jimmy Kimmel We Love You",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 02:38
+  },
+  {
+    "filename": "Love Jimmy Kimmel - Boycott Disney ABC Hulu ESPN.mp3",
+    "album": "Taylor & Lopker",
+    "title": "Love Jimmy Kimmel - Boycott Disney ABC Hulu ESPN",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 03:19
+  },
+  {
+    "filename": "Taylor & Lopker - 60 Plus 9 _ Poetic Therapy _ Electronic Dance & Rock Song.mp3",
+    "album": "Taylor & Lopker",
+    "title": "60 Plus 9 | Poetic Therapy | Electronic Dance & Rock Song",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 05:10
+  },
+  {
+    "filename": "Taylor & Lopker - Letter To Melissa _ Melissa Etheridge Tribute.mp3",
+    "album": "Taylor & Lopker",
+    "title": "Letter To Melissa | Melissa Etheridge Tribute",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 02:18
+  },
+  {
+    "filename": "Taylor & Lopker - THEM _ Survived Abuse by Them.mp3",
+    "album": "Taylor & Lopker",
+    "title": "THEM | Survived Abuse by Them",
+    "artist": "Taylor & Lopker",
+    "genre": "Pop, Rock, Folk",
+    "duration": 03:39
+  },
+]

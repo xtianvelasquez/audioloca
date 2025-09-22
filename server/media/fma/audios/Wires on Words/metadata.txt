@@ -1,0 +1,43 @@
+EXPERIMENTAL
+[
+  {
+    "filename": "Kuuleminen Asiat - Sharpenin Man.mp3",
+    "album": "Wires on Words",
+    "title": "Sharpenin Man",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 01:36
+  },
+  {
+    "filename": "Kuuleminen Asiat - Artist Messages.mp3",
+    "album": "Wires on Words",
+    "title": "Artist Messages",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 05:27
+  },
+  {
+    "filename": "Kuuleminen Asiat - Acetylene.mp3",
+    "album": "Wires on Words",
+    "title": "Acetylene",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 06:35
+  },
+  {
+    "filename": "Kuuleminen Asiat - Barren Lands.mp3",
+    "album": "Wires on Words",
+    "title": "Barren Lands",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 04:59
+  },
+  {
+    "filename": "Kuuleminen Asiat - Dead Concrete.mp3",
+    "album": "Wires on Words",
+    "title": "Dead Concrete",
+    "artist": "Kuuleminen Asiat",
+    "genre": "Experimental, Electroacoustic, Sound Art",
+    "duration": 08:03
+  },
+]
