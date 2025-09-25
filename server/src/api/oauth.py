@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
 from src.database import get_db
-from src.crud import read_spotify_user, read_local_user, read_username, store_specific_user, store_token
+from src.crud import read_spotify_user, read_local_user, read_username, store_specific_user, store_token, logout_token
 from src.security import create_jwt_token, verify_token, verify_password, hash_password
 from src.utils import generate_challenge_from_verifier
 
@@ -130,4 +130,15 @@ async def audioloca_signup(data: User_Create, db: Session = Depends(get_db)):
 async def user_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get("payload", {}).get("sub")
   user = read_local_user(db, user_id)
-  return user
+  print(user)
+  
+  return User_Response(
+    username=user.username,
+    email=user.email,
+    joined_at=user.joined_at
+  )
+
+@router.post('/logout', status_code=200)
+async def logout(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
+  logged = logout_token(db, token_payload)
+  return logged

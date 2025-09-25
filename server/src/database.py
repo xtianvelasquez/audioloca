@@ -24,12 +24,13 @@ def get_db():
 
 def init_db():
   from src import models
-  from src.crud import token_type_initializer, genre_initializer
+  from src.crud import token_type_initializer, genre_initializer, initialize_tracks
 
   Base.metadata.create_all(bind=engine)
   db = SessionLocal()
   try:
     token_type_initializer(db)
     genre_initializer(db)
+    initialize_tracks(db)
   finally:
     db.close()

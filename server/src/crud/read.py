@@ -25,6 +25,16 @@ def read_genres(db: Session):
 
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  
+def read_specific_genre(db: Session, genre_name: str):
+  try:
+    return db.query(Genres).filter(Genres.genre_name == genre_name).first()
+
+  except SQLAlchemyError as e:
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 def read_spotify_user(db: Session, spotify_id: int):
   try:
@@ -69,6 +79,16 @@ def read_all_album(db: Session, user_id: int):
 def read_specific_album(db: Session, user_id: int, album_id: int):
   try:
     return db.query(Album).filter(Album.user_id == user_id, Album.album_id == album_id).first()
+
+  except SQLAlchemyError as e:
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  
+def read_album_by_name(db: Session, user_id: int, album_name: str):
+  try:
+    return db.query(Album).filter(Album.user_id == user_id, Album.album_name == album_name).first()
 
   except SQLAlchemyError as e:
     raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

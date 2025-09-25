@@ -90,15 +90,13 @@ def store_album(
     db: Session,
     user_id: int,
     album_cover_path: str,
-    album_name: str,
-    description: str
+    album_name: str
   ):
   try:
     new_album = Album(
       user_id=user_id,
       album_cover=album_cover_path,
-      album_name=album_name,
-      description=description
+      album_name=album_name
     )
     db.add(new_album)
     db.commit()
@@ -122,7 +120,6 @@ def store_audio(
     visibility: str,
     audio_record_path: str,
     audio_title: str,
-    description: str,
     duration: int
   ):
   try:
@@ -133,7 +130,6 @@ def store_audio(
       visibility=visibility,
       audio_record=audio_record_path,
       audio_title=audio_title,
-      description=description,
       duration=duration
     )
     db.add(new_audio)

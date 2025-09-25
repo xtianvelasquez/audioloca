@@ -24,12 +24,11 @@ async def audio_genre_read(genre_id: int = Body(..., embed=True), db: Session = 
       visibility=audio.visibility,
       audio_record=audio.audio_record,
       audio_title=audio.audio_title,
-      description=audio.description,
       duration=audio.duration,
       audio_id=audio.audio_id,
       username=audio.user.username,
       album_cover=audio.album.album_cover,
-      stream_count=audio.streams.stream_count,
+      stream_count=sum(stream.stream_count for stream in audio.streams),
       created_at=audio.created_at,
       modified_at=audio.modified_at
     )
@@ -43,7 +42,6 @@ async def audio_created(
     album_id: int = Form(...),
     visibility: str = Form(...),
     audio_title: str = Form(...),
-    description: str = Form(...),
     duration: str = File(...),
     audio_record: UploadFile = File(...),
     token_payload = Depends(verify_token),
@@ -53,9 +51,6 @@ async def audio_created(
 
   if len(audio_title) > 50:
     raise HTTPException(status_code=400, detail="Title must be 50 characters or fewer.")
-  
-  if len(description) > 1000:
-    raise HTTPException(status_code=400, detail="Description must be 1000 characters or fewer.")
 
   if not validate_file_extension(audio_record, VALID_AUDIO_EXTENSION):
     raise HTTPException(status_code=400, detail="Invalid audio file type.")
@@ -80,7 +75,6 @@ async def audio_created(
     visibility,
     audio_path,
     audio_title,
-    description,
     duration
   )
 
@@ -100,12 +94,11 @@ async def specific_audio_read(audio_id: int, token_payload = Depends(verify_toke
     visibility=audio.visibility,
     audio_record=audio.audio_record,
     audio_title=audio.audio_title,
-    description=audio.description,
     duration=audio.duration,
     audio_id=audio.audio_id,
     username=audio.user.username,
     album_cover=audio.album.album_cover,
-    stream_count=audio.streams.stream_count,
+    stream_count=sum(stream.stream_count for stream in audio.streams),
     created_at=audio.created_at,
     modified_at=audio.modified_at
   )
@@ -122,12 +115,11 @@ async def audio_read(token_payload = Depends(verify_token), db: Session = Depend
       visibility=audio.visibility,
       audio_record=audio.audio_record,
       audio_title=audio.audio_title,
-      description=audio.description,
       duration=audio.duration,
       audio_id=audio.audio_id,
       username=audio.user.username,
       album_cover=audio.album.album_cover,
-      stream_count=audio.streams.stream_count,
+      stream_count=sum(stream.stream_count for stream in audio.streams),
       created_at=audio.created_at,
       modified_at=audio.modified_at
     )
@@ -150,7 +142,6 @@ async def specific_audio_read(
       visibility=audio.visibility,
       audio_record=audio.audio_record,
       audio_title=audio.audio_title,
-      description=audio.description,
       duration=audio.duration,
       audio_id=audio.audio_id,
       username=audio.user.username,

@@ -58,7 +58,6 @@ class Local_Token_Response(BaseModel):
 class Album_Base(BaseModel):
   album_cover: str
   album_name: str
-  description: str
 
 class Album_Create(Album_Base):
   user_id: int
@@ -85,7 +84,6 @@ class Audio_Base(BaseModel):
   visibility: Visibility
   audio_record: str
   audio_title: str
-  description: str
   duration: time
 
 class Audio_Create(Audio_Base):
@@ -120,7 +118,6 @@ class Local_Streams_Response(BaseModel):
   album_id: int
   audio_record: str
   audio_title: str
-  description: str
   duration: time
   type: Stream_Type
 

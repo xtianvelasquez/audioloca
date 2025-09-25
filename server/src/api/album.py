@@ -16,7 +16,6 @@ router = APIRouter()
 @router.post("/audioloca/album/create", status_code=201)
 async def album_created(
     album_name: str = Form(...),
-    description: str = Form(...),
     album_cover: UploadFile = File(...),
     token_payload = Depends(verify_token),
     db: Session = Depends(get_db)
@@ -25,9 +24,6 @@ async def album_created(
 
   if len(album_name) > 50:
     raise HTTPException(status_code=400, detail="Name must be 50 characters or fewer.")
-  
-  if len(description) > 1000:
-    raise HTTPException(status_code=400, detail="Description must be 1000 characters or fewer.")
 
   if not validate_file_extension(album_cover, VALID_PHOTO_EXTENSION):
     raise HTTPException(status_code=400, detail="Invalid photo file type.")
@@ -48,8 +44,7 @@ async def album_created(
     db,
     user_id,
     cover_path,
-    album_name,
-    description
+    album_name
   )
 
   if not album:
@@ -65,7 +60,6 @@ async def album_read(token_payload = Depends(verify_token), db: Session = Depend
     Album_Response(
       album_cover=album.album_cover,
       album_name=album.album_name,
-      description=album.description,
       album_id=album.album_id,
       username=album.user.username,
       created_at=album.created_at,
@@ -83,7 +77,6 @@ async def specific_album_read(album_id: int = Body(..., embed=True), token_paylo
   return Album_Response(
     album_cover=album.album_cover,
     album_name=album.album_name,
-    description=album.description,
     album_id=album.album_id,
     username=album.user.username,
     created_at=album.created_at,

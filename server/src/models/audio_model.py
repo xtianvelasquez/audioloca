@@ -16,7 +16,7 @@ class Audio(Base):
   album_id = Column(Integer, ForeignKey("album.album_id", ondelete="SET NULL"), nullable=True)
   visibility = Column(SqlEnum(Audio_Visibility, name="audio_visibility"), nullable=False)
   audio_record = Column(String(1000), index=True)
-  audio_title = Column(String(50), nullable=False, index=True)
+  audio_title = Column(String(100), nullable=False, index=True)
   duration = Column(Time(timezone=True), nullable=False, index=True)
   created_at = Column(DateTime(timezone=True), server_default=func.now())
   modified_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

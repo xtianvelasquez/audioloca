@@ -42,7 +42,6 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
             album_id=stream.audio.album_id,
             audio_record=stream.audio.audio_record,
             audio_title=stream.audio.audio_title,
-            description=stream.audio.description,
             duration=stream.audio.duration,
             type=stream.type
           )
@@ -60,7 +59,6 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
       album_id=stream.audio.album_id,
       audio_record=stream.audio.audio_record,
       audio_title=stream.audio.audio_title,
-      description=stream.audio.description,
       duration=stream.audio.duration,
       type=stream.type
     )
