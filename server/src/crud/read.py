@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
 
-from src.models import Token_Type, Genres, User, Album, Audio, Streams, Locations
+from src.models import Token_Type, Genres, User, Album, Audio, Audio_Genres, Streams, Locations
 from src.utils import normalize_coordinates
   
 def read_token_type(db: Session):
@@ -29,6 +29,16 @@ def read_genres(db: Session):
 def read_specific_genre(db: Session, genre_name: str):
   try:
     return db.query(Genres).filter(Genres.genre_name == genre_name).first()
+
+  except SQLAlchemyError as e:
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  
+def read_genre_by_id(db: Session, genre_id: int):
+  try:
+    return db.query(Genres).filter(Genres.genre_id == genre_id).first()
 
   except SQLAlchemyError as e:
     raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -115,6 +125,20 @@ def read_specific_audio(db: Session, user_id: int, audio_id: int):
 
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  
+def read_audio_by_path_and_title(db: Session, user_id: int, audio_path: str, audio_title: str):
+  try:
+    return db.query(Audio).filter(
+      Audio.user_id == user_id,
+      Audio.audio_record == audio_path,
+      Audio.audio_title == audio_title
+    ).first()
+  
+  except SQLAlchemyError as e:
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 def read_audio_album(db: Session, user_id: int, album_id: int):
   try:
@@ -128,7 +152,17 @@ def read_audio_album(db: Session, user_id: int, album_id: int):
 
 def read_audio_genre(db: Session, genre_id: int):
   try:
-    return (db.query(Audio).filter(Audio.visibility == "public", Audio.genre_id == genre_id).order_by(desc(Audio.created_at)).all())
+    return (
+      db.query(Audio)
+        .join(Audio_Genres)
+        .filter(
+          Audio.visibility == "public",
+          Audio_Genres.genre_id == genre_id
+        )
+
+        .order_by(desc(Audio.created_at))
+        .all()
+    )
 
   except SQLAlchemyError as e:
     raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

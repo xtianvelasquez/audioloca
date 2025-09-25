@@ -8,4 +8,16 @@ class Genres(Base):
   genre_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
   genre_name = Column(String(50), unique=True, index=True, nullable=False)
 
-  audio = relationship("Audio", back_populates="genre", uselist=True, cascade="all, delete-orphan")
+  audio_links = relationship(
+    "Audio_Genres",
+    back_populates="genre",
+    cascade="all, delete-orphan",
+    overlaps="genres,genre_links,audios"
+  )
+
+  audios = relationship(
+    "Audio",
+    secondary="audio_genres",
+    back_populates="genres",
+    overlaps="audio_links,genre_links"
+  )

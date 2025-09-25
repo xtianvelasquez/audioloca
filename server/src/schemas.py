@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Literal
+from typing import Literal, List
 from datetime import datetime, time
 from enum import Enum
 
@@ -79,7 +79,6 @@ class Genres_Response(BaseModel):
 
 # audio
 class Audio_Base(BaseModel):
-  genre_id: int
   album_id: int
   visibility: Visibility
   audio_record: str
@@ -88,9 +87,11 @@ class Audio_Base(BaseModel):
 
 class Audio_Create(Audio_Base):
   user_id: int
+  genre_id: int
 
 class Audio_Response(Audio_Base):
-  audio_id: int
+  audio_id: List[int]
+  genre_name: List[str] # from genres table
   username: str # from user table
   album_cover: str # from album table
   stream_count: int # from streams table

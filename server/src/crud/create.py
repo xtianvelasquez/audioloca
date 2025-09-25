@@ -7,7 +7,7 @@ import logging
 
 from datetime import datetime
 
-from src.models import Genres, Token_Type, Token, User, Album, Audio, Locations, Streams
+from src.models import Genres, Token_Type, Token, User, Album, Audio, Audio_Genres, Locations, Streams
 from src.utils import normalize_coordinates
 
 def token_type_initializer(db: Session):
@@ -25,7 +25,18 @@ def token_type_initializer(db: Session):
 
 def genre_initializer(db: Session):
   genres = [
-    "pop", "hip-hop/rap", "rock", "jazz/blues", "classical", "folk/acoustic", "latin/world", "ambient/chill", "metal", "experimental", "country", "electronic"
+    "pop",
+    "hip-hop/rap",
+    "rock",
+    "jazz/blues",
+    "classical",
+    "folk/acoustic",
+    "latin/world",
+    "ambient/chill",
+    "metal",
+    "experimental",
+    "country",
+    "electronic"
   ]
 
   genre_to_add = []
@@ -115,7 +126,6 @@ def store_album(
 def store_audio(
     db: Session,
     user_id: int,
-    genre_id: int,
     album_id: int,
     visibility: str,
     audio_record_path: str,
@@ -125,7 +135,6 @@ def store_audio(
   try:
     new_audio = Audio(
       user_id=user_id,
-      genre_id=genre_id,
       album_id=album_id,
       visibility=visibility,
       audio_record=audio_record_path,
@@ -137,6 +146,29 @@ def store_audio(
     db.refresh(new_audio)
 
     return new_audio
+
+  except SQLAlchemyError as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+  
+  except Exception as e:
+    db.rollback()
+    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+def link_audio_to_genre(db: Session, audio_id: int, genre_id: int):
+  try:
+    existing_link = db.query(Audio_Genres).filter_by(
+      audio_id=audio_id,
+      genre_id=genre_id
+    ).first()
+
+    if existing_link is None:
+      new_link = Audio_Genres(
+        audio_id=audio_id,
+        genre_id=genre_id
+      )
+      db.add(new_link)
+      db.commit()
 
   except SQLAlchemyError as e:
     db.rollback()

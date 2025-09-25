@@ -25,7 +25,6 @@ class UserServices {
   // Login
   // =======================
   Future<bool> localLogin(String username, String password) async {
-    // _post now returns the token string
     final jwtToken = await _post<String>(
       UserEndpoints.login,
       body: {'username': username, 'password': password},
@@ -62,10 +61,29 @@ class UserServices {
   }
 
   // =======================
+  // Logout
+  // =======================
+  Future<bool> logout() async {
+    final jwtToken = await storage.getJwtToken();
+    if (jwtToken == null || jwtToken.isEmpty) {
+      return false;
+    }
+
+    return _post<bool>(
+      UserEndpoints.logout,
+      headers: _headers(jwtToken),
+      body: {},
+      parser: (data) => true,
+    );
+  }
+
+  // =======================
   // Fetch user profile
   // =======================
   Future<User> fetchUserProfile() async {
-    final uri = Uri.parse('${Environment.audiolocaBaseUrl}/user/read');
+    final uri = Uri.parse(
+      '${Environment.audiolocaBaseUrl}${UserEndpoints.readProfile}',
+    );
 
     try {
       final jwtToken = await storage.getJwtToken();
@@ -73,7 +91,7 @@ class UserServices {
         throw Exception('No token returned from server.');
       }
 
-      final response = await http.post(
+      final response = await http.get(
         uri,
         headers: {
           'Authorization': 'Bearer $jwtToken',
@@ -90,29 +108,11 @@ class UserServices {
         throw Exception('Unexpected user profile format.');
       }
 
-      // Parse JSON into User model
       return User.fromJson(data);
     } catch (e, stackTrace) {
-      log.e('[Flutter] Error fetching user profile: $e\n$stackTrace');
-      throw Exception('Login error: $e');
+      log.e('[Flutter] Error fetching user profile: $e $stackTrace');
+      throw Exception(e);
     }
-  }
-
-  // =======================
-  // Logout
-  // =======================
-  Future<bool> logout() async {
-    final jwtToken = await storage.getJwtToken();
-    if (jwtToken == null || jwtToken.isEmpty) {
-      return false;
-    }
-
-    return _post<bool>(
-      UserEndpoints.logout,
-      headers: _headers(jwtToken),
-      body: {},
-      parser: (data) => true,
-    );
   }
 
   // =======================

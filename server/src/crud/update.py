@@ -27,3 +27,4 @@ def logout_token(db: Session, token: str):
   except Exception as e:
     db.rollback()
     raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
+  

@@ -107,7 +107,6 @@ async def audioloca_callback(data: User_Base, db: Session = Depends(get_db)):
     raise HTTPException(status_code=401, detail="Invalid username or password. Please try again.")
   
   jwt_token = create_jwt_token(user)
-  print(f"[FASTAPI] JWT TOKEN: {jwt_token}")
   store_token(db, user.user_id, jwt_token, TOKEN_TYPE["JWT_TOKEN"], TOKEN_EXPIRATION)
 
   return {
@@ -126,7 +125,7 @@ async def audioloca_signup(data: User_Create, db: Session = Depends(get_db)):
 
   return {"message": "User created successfully"}
 
-@router.post("/user/read", response_model=User_Response, status_code=200)
+@router.get("/user/read", response_model=User_Response, status_code=200)
 async def user_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get("payload", {}).get("sub")
   user = read_local_user(db, user_id)
@@ -140,5 +139,5 @@ async def user_read(token_payload = Depends(verify_token), db: Session = Depends
 
 @router.post('/logout', status_code=200)
 async def logout(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
-  logged = logout_token(db, token_payload)
+  logged = logout_token(db, token_payload['raw'])
   return logged

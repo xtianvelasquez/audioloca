@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.security import verify_token
-from src.crud import store_audio, read_all_audio, read_specific_audio, read_audio_album, read_audio_genre
+from src.crud import read_specific_genre, store_audio, read_all_audio, read_specific_audio, read_audio_album, read_audio_genre, link_audio_to_genre
 from src.utils import validate_file_extension
 from src.schemas import Audio_Response
 from src.config import VALID_AUDIO_EXTENSION
@@ -19,7 +19,7 @@ async def audio_genre_read(genre_id: int = Body(..., embed=True), db: Session = 
   
   return [
     Audio_Response(
-      genre_id=audio.genre_id,
+      genre_name=[link.genre.genre_name for link in audio.genre_links],
       album_id=audio.album_id,
       visibility=audio.visibility,
       audio_record=audio.audio_record,
@@ -38,18 +38,18 @@ async def audio_genre_read(genre_id: int = Body(..., embed=True), db: Session = 
 
 @router.post("/audioloca/audio/create", status_code=201)
 async def audio_created(
-    genre_id: int = Form(...),
+    genre_id: List[int] = Form(...),
     album_id: int = Form(...),
     visibility: str = Form(...),
     audio_title: str = Form(...),
-    duration: str = File(...),
+    duration: str = Form(...),
     audio_record: UploadFile = File(...),
     token_payload = Depends(verify_token),
     db: Session = Depends(get_db)
   ):
   user_id = token_payload.get("payload", {}).get("sub")
 
-  if len(audio_title) > 50:
+  if len(audio_title) > 100:
     raise HTTPException(status_code=400, detail="Title must be 50 characters or fewer.")
 
   if not validate_file_extension(audio_record, VALID_AUDIO_EXTENSION):
@@ -70,7 +70,6 @@ async def audio_created(
   audio = store_audio(
     db,
     user_id,
-    genre_id,
     album_id,
     visibility,
     audio_path,
@@ -81,6 +80,11 @@ async def audio_created(
   if not audio:
     raise HTTPException(status_code=500, detail="Audio creation failed.")
 
+  for genre_id_single in genre_id:
+    genre = read_specific_genre(db, genre_id_single)
+    if genre:
+      link_audio_to_genre(db, audio.audio_id, genre.genre_id)
+
   return { "message": "Audio has been successfully stored." }
 
 @router.post("/audioloca/audio/read", response_model=Audio_Response, status_code=200)
@@ -89,7 +93,7 @@ async def specific_audio_read(audio_id: int, token_payload = Depends(verify_toke
   audio = read_specific_audio(db, user_id, audio_id)
   
   return Audio_Response(
-    genre_id=audio.genre_id,
+    genre_id=[link.genre.genre_name for link in audio.genre_links],
     album_id=audio.album_id,
     visibility=audio.visibility,
     audio_record=audio.audio_record,
@@ -110,7 +114,7 @@ async def audio_read(token_payload = Depends(verify_token), db: Session = Depend
   
   return [
     Audio_Response(
-      genre_id=audio.genre_id,
+      genre_id=[link.genre.genre_name for link in audio.genre_links],
       album_id=audio.album_id,
       visibility=audio.visibility,
       audio_record=audio.audio_record,
@@ -131,13 +135,14 @@ async def audio_read(token_payload = Depends(verify_token), db: Session = Depend
 async def specific_audio_read(
   album_id: int = Body(..., embed=True),
   token_payload = Depends(verify_token),
-  db: Session = Depends(get_db)):
+  db: Session = Depends(get_db)
+  ):
   user_id = token_payload.get("payload", {}).get("sub")
   audios = read_audio_album(db, user_id, album_id)
   
   return [
     Audio_Response(
-      genre_id=audio.genre_id,
+      genre_id=[link.genre.genre_name for link in audio.genre_links],
       album_id=audio.album_id,
       visibility=audio.visibility,
       audio_record=audio.audio_record,
@@ -150,5 +155,6 @@ async def specific_audio_read(
       created_at=audio.created_at,
       modified_at=audio.modified_at
     )
+    
     for audio in audios
   ]
