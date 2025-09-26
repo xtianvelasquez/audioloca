@@ -1,5 +1,7 @@
+import 'package:audioloca/local/models/genres.model.dart';
+
 class Audio {
-  final int genreId;
+  final List<Genres> genres;
   final int albumId;
   final String visibility;
   final String? audioRecord;
@@ -13,7 +15,7 @@ class Audio {
   final DateTime modifiedAt;
 
   Audio({
-    required this.genreId,
+    required this.genres,
     required this.albumId,
     required this.visibility,
     required this.audioRecord,
@@ -29,7 +31,9 @@ class Audio {
 
   factory Audio.fromJson(Map<String, dynamic> json) {
     return Audio(
-      genreId: json['genre_id'],
+      genres: (json['genres'] as List<dynamic>)
+          .map((g) => Genres.fromJson(g))
+          .toList(),
       albumId: json['album_id'],
       visibility: json['visibility'],
       audioRecord: json['audio_record'],

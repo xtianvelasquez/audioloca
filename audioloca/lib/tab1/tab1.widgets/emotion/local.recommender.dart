@@ -46,7 +46,7 @@ class AudioListItem extends StatelessWidget {
             width: 50,
             height: 50,
             fit: BoxFit.cover,
-            imageUrl: imageUrl,
+            imageUrl: "${Environment.audiolocaBaseUrl}/$imageUrl",
             placeholder: (_, __) => const Center(
               child: CircularProgressIndicator(
                 color: AppColors.color1,

@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
 
-import 'package:audioloca/environment.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/player/player.manager.dart';
-import 'package:audioloca/player/controllers/local.player.dart';
 import 'package:audioloca/services/stream.service.dart';
 import 'package:audioloca/business/location.services.dart';
 import 'package:audioloca/local/models/audio.model.dart';
+import 'package:audioloca/player/player.manager.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
@@ -22,6 +22,7 @@ class AudioListItem extends StatelessWidget {
   final String title;
   final String subtitle;
   final String duration;
+  final int streamCount;
   final VoidCallback onTap;
 
   const AudioListItem({
@@ -30,14 +31,16 @@ class AudioListItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.duration,
+    required this.streamCount,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      color: AppColors.color3,
+      margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         onTap: onTap,
         leading: ClipRRect(
@@ -46,7 +49,7 @@ class AudioListItem extends StatelessWidget {
             width: 50,
             height: 50,
             fit: BoxFit.cover,
-            imageUrl: imageUrl,
+            imageUrl: "${Environment.audiolocaBaseUrl}/$imageUrl",
             placeholder: (_, __) => const Center(
               child: CircularProgressIndicator(
                 color: AppColors.color1,
@@ -64,7 +67,21 @@ class AudioListItem extends StatelessWidget {
           ),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
+        subtitle: RichText(
+          text: TextSpan(
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+            children: [
+              TextSpan(text: subtitle),
+              const WidgetSpan(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  child: Icon(Icons.play_arrow, size: 14, color: Colors.grey),
+                ),
+              ),
+              TextSpan(text: "$streamCount plays"),
+            ],
+          ),
+        ),
         trailing: Text(duration),
       ),
     );
@@ -188,6 +205,7 @@ class LocationLocalListViewState extends State<LocationLocalListView> {
                 title: audio.audioTitle,
                 subtitle: audio.username,
                 duration: formatDuration(audio.duration),
+                streamCount: audio.streamCount,
                 onTap: () => handleTrackTap(audio),
               );
             },

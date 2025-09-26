@@ -11,11 +11,12 @@ import 'package:audioloca/local/models/album.model.dart';
 import 'package:audioloca/tab4/tab4.forms/album.form.dart';
 import 'package:audioloca/tab4/tab4.forms/audio.form.dart';
 import 'package:audioloca/tab4/album.screen.dart';
-import 'package:audioloca/player/views/mini.player.dart';
 import 'package:audioloca/login/login.page.dart';
+import 'package:audioloca/player/views/mini.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
+final albumServices = AlbumServices();
 
 class Tab4 extends StatefulWidget {
   const Tab4({super.key});
@@ -36,7 +37,7 @@ class Tab4State extends State<Tab4> {
 
   Future<void> loadAlbums() async {
     final token = await storage.getJwtToken();
-    if (token == null) {
+    if (token == null || token.isEmpty) {
       if (!mounted) return;
       CustomAlertDialog.failed(
         context,
@@ -54,7 +55,7 @@ class Tab4State extends State<Tab4> {
     });
 
     try {
-      final data = await AlbumServices().readAlbums(token);
+      final data = await albumServices.readAlbums(token);
       setState(() {
         albums = data;
         isLoading = false;
@@ -65,52 +66,23 @@ class Tab4State extends State<Tab4> {
     }
   }
 
-  Future<void> openFormModal(Widget form) async {
-    await showModalBottomSheet(
+  Future<void> openFormDialog({
+    required String title,
+    required Widget form,
+  }) async {
+    await showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.color3,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      barrierDismissible: true,
       builder: (context) {
-        return SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Form",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(height: 1),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                    left: 16,
-                    right: 16,
-                    top: 8,
-                  ),
-                  child: form,
-                ),
-              ),
-            ],
+        return AlertDialog(
+          backgroundColor: AppColors.light,
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: SizedBox(width: 400, child: form),
           ),
         );
       },
@@ -122,19 +94,19 @@ class Tab4State extends State<Tab4> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text("AudioLoca"),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.textLight,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title
-              const Text(
-                "AudioLoca",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-
               // Buttons
               Row(
                 children: [
@@ -142,7 +114,10 @@ class Tab4State extends State<Tab4> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.library_add),
                       label: const Text("Add Album"),
-                      onPressed: () => openFormModal(const AlbumInputForm()),
+                      onPressed: () => openFormDialog(
+                        title: "Create New Album",
+                        form: const AlbumInputForm(),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.color1,
                         foregroundColor: Colors.white,
@@ -158,7 +133,10 @@ class Tab4State extends State<Tab4> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.music_note),
                       label: const Text("Add Audio"),
-                      onPressed: () => openFormModal(const AudioInputForm()),
+                      onPressed: () => openFormDialog(
+                        title: "Upload New Audio",
+                        form: const AudioInputForm(),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.color1,
                         foregroundColor: Colors.white,
@@ -182,7 +160,10 @@ class Tab4State extends State<Tab4> {
 
               // Album Grid
               if (isLoading)
-                const Center(child: CircularProgressIndicator())
+                const SizedBox(
+                  height: 200,
+                  child: Center(child: CircularProgressIndicator()),
+                )
               else if (albums.isEmpty)
                 const Center(
                   child: Padding(

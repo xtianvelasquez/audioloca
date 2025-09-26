@@ -4,8 +4,8 @@ import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from src.crud.create import store_specific_user, store_album, store_audio, link_audio_to_genre
-from src.crud.read import read_genre_by_id, read_username, read_album_by_name, read_audio_by_path_and_title
+from src.crud import (store_specific_user, store_album, store_audio, link_audio_to_genre,
+                      read_username, read_genre_by_id, read_album_by_name, read_audio_by_path_and_title)
 from src.config import GENRES
 
 def normalize_text(text):
@@ -17,7 +17,7 @@ def get_genre_by_id(genre_name: str):
 with open("media/fma/metadata.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-def initialize_tracks(db):
+def initialize_local_tracks(db):
     for track in data:
         # Parse genres
         genre_list = [g.strip().lower() for g in track["genre"].split(",")]

@@ -30,8 +30,8 @@ class UserHeaderCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
                     'assets/images/audioloca.png',
-                    height: 100,
-                    width: 100,
+                    height: 50,
+                    width: 50,
                     fit: BoxFit.cover,
                   ),
                 ),

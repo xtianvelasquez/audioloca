@@ -1,5 +1,5 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Literal, List
+from pydantic import BaseModel, ConfigDict, Field
+from typing import Literal, List, Union
 from datetime import datetime, time
 from enum import Enum
 
@@ -12,6 +12,13 @@ class Visibility(str, Enum):
 class Stream_Type(str, Enum):
   local = "local"
   spotify = "spotify"
+
+# genres
+class Genres_Response(BaseModel):
+  genre_id: int
+  genre_name: str
+
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 # user
 class User_Base(BaseModel):
@@ -36,6 +43,13 @@ class Token_Type_Response(BaseModel):
   model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 # token
+
+class Local_Token_Response(BaseModel):
+  jwt_token: str
+  token_type: Literal["Bearer"]
+
+  model_config = ConfigDict(from_attributes=True, extra="ignore")
+
 class Spotify_Token_Request(BaseModel):
   code: str
   code_verifier: str
@@ -45,12 +59,6 @@ class Spotify_Token_Response(BaseModel):
   expires_at: datetime
   refresh_token: str
   jwt_token: str
-
-  model_config = ConfigDict(from_attributes=True, extra="ignore")
-
-class Local_Token_Response(BaseModel):
-  jwt_token: str
-  token_type: Literal["Bearer"]
 
   model_config = ConfigDict(from_attributes=True, extra="ignore")
 
@@ -70,13 +78,6 @@ class Album_Response(Album_Base):
 
   model_config = ConfigDict(from_attributes=True)
 
-# genres
-class Genres_Response(BaseModel):
-  genre_id: int
-  genre_name: str
-
-  model_config = ConfigDict(from_attributes=True, extra="ignore")
-
 # audio
 class Audio_Base(BaseModel):
   album_id: int
@@ -90,8 +91,8 @@ class Audio_Create(Audio_Base):
   genre_id: int
 
 class Audio_Response(Audio_Base):
-  audio_id: List[int]
-  genre_name: List[str] # from genres table
+  audio_id: int
+  genres: List[Genres_Response] # from genres table
   username: str # from user table
   album_cover: str # from album table
   stream_count: int # from streams table
@@ -111,18 +112,22 @@ class Streams_Create(Locations_Base):
   spotify_id: str | None = None
   type: Stream_Type
 
-class Local_Streams_Response(BaseModel):
-  audio_id: int
-  username: str # from user table
-  album_cover: str # from album table
+class Stream_Base(BaseModel):
   stream_count: int # from streams table
+  type: Stream_Type
+
+class Local_Stream(Stream_Base):
+  type: Literal["local"] = Field(..., description="Local stream type")
+  audio_id: int
+  username: str
+  album_cover: str
   album_id: int
   audio_record: str
   audio_title: str
   duration: time
-  type: Stream_Type
 
-class Spotify_Streams_Response(BaseModel):
+class Spotify_Stream(Stream_Base):
+  type: Literal["spotify"] = Field(..., description="Spotify stream type")
   spotify_id: str
-  stream_count: int
-  type: Stream_Type
+
+Stream_Response = Union[Local_Stream, Spotify_Stream]

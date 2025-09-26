@@ -13,7 +13,17 @@ from src.config import VALID_PHOTO_EXTENSION
 
 router = APIRouter()
 
-@router.post("/audioloca/album/create", status_code=201)
+def build_album_response(album) -> Album_Response:
+  return Album_Response(
+    album_cover=album.album_cover,
+    album_name=album.album_name,
+    album_id=album.album_id,
+    username=album.user.username,
+    created_at=album.created_at,
+    modified_at=album.modified_at
+  )
+
+@router.post("/audioloca/album/create",  response_model=Album_Response, status_code=201)
 async def album_created(
     album_name: str = Form(...),
     album_cover: UploadFile = File(...),
@@ -23,7 +33,7 @@ async def album_created(
   user_id = token_payload.get('payload', {}).get('sub')
 
   if len(album_name) > 100:
-    raise HTTPException(status_code=400, detail="Name must be 50 characters or fewer.")
+    raise HTTPException(status_code=400, detail="Name must be 100 characters or fewer.")
 
   if not validate_file_extension(album_cover, VALID_PHOTO_EXTENSION):
     raise HTTPException(status_code=400, detail="Invalid photo file type.")
@@ -50,24 +60,13 @@ async def album_created(
   if not album:
     raise HTTPException(status_code=500, detail="Album creation failed.")
 
-  return { 'message': 'Album has been successfully stored.' }
+  return build_album_response(album)
 
 @router.get("/audioloca/albums/read", response_model=List[Album_Response], status_code=200)
 async def album_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get('payload', {}).get('sub')
   albums = read_all_album(db, user_id)
-  return [
-    Album_Response(
-      album_cover=album.album_cover,
-      album_name=album.album_name,
-      album_id=album.album_id,
-      username=album.user.username,
-      created_at=album.created_at,
-      modified_at=album.modified_at
-    )
-    
-    for album in albums
-  ]
+  return [build_album_response(album) for album in albums]
 
 @router.post("/audioloca/album/read", response_model=Album_Response, status_code=200)
 async def specific_album_read(
@@ -78,11 +77,4 @@ async def specific_album_read(
   user_id = token_payload.get('payload', {}).get('sub')
   album = read_specific_album(db, user_id, album_id)
 
-  return Album_Response(
-    album_cover=album.album_cover,
-    album_name=album.album_name,
-    album_id=album.album_id,
-    username=album.user.username,
-    created_at=album.created_at,
-    modified_at=album.modified_at
-  )
+  return build_album_response(album)

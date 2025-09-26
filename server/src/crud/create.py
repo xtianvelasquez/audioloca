@@ -10,6 +10,19 @@ from datetime import datetime
 from src.models import Genres, Token_Type, Token, User, Album, Audio, Audio_Genres, Locations, Streams
 from src.utils import normalize_coordinates
 
+def db_safe(fn):
+  def wrapper(*args, **kwargs):
+    db = args[0]
+    try:
+      return fn(*args, **kwargs)
+    except SQLAlchemyError as e:
+      db.rollback()
+      raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+      db.rollback()
+      raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  return wrapper
+
 def token_type_initializer(db: Session):
   types = ["access_token", "refresh_token", "jwt_token"]
   type_to_add = []
@@ -50,79 +63,56 @@ def genre_initializer(db: Session):
     db.bulk_save_objects(genre_to_add)
     db.commit()
 
+@db_safe
 def store_token(db: Session, user_id: int, token_hash: str, token_type_id: int, expires_at: int):
-  try:
-    new_token = Token(
-    user_id=user_id,
-    token_hash=token_hash,
-    token_type_id=token_type_id,
-    is_active=True,
-    issued_at=datetime.utcnow().replace(second=0, microsecond=0),
-    expires_at=expires_at,
-    )
+  new_token = Token(
+  user_id=user_id,
+  token_hash=token_hash,
+  token_type_id=token_type_id,
+  is_active=True,
+  issued_at=datetime.utcnow().replace(second=0, microsecond=0),
+  expires_at=expires_at,
+  )
 
-    db.add(new_token)
-    db.commit()
-    db.refresh(new_token)
+  db.add(new_token)
+  db.commit()
+  db.refresh(new_token)
 
-    return new_token
-  
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-  
-  except Exception as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  return new_token
 
+@db_safe
 def store_specific_user(db: Session, spotify_id: int, email: str, username: str, password: str):
-  try:
-    new_user = User(
-      spotify_id=spotify_id,
-      email=email,
-      username=username,
-      password=password,
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+  new_user = User(
+    spotify_id=spotify_id,
+    email=email,
+    username=username,
+    password=password,
+  )
+  db.add(new_user)
+  db.commit()
+  db.refresh(new_user)
 
-    return new_user
-  
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-  
-  except Exception as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+  return new_user
 
+@db_safe
 def store_album(
     db: Session,
     user_id: int,
     album_cover_path: str,
     album_name: str
   ):
-  try:
-    new_album = Album(
-      user_id=user_id,
-      album_cover=album_cover_path,
-      album_name=album_name
-    )
-    db.add(new_album)
-    db.commit()
-    db.refresh(new_album)
+  new_album = Album(
+    user_id=user_id,
+    album_cover=album_cover_path,
+    album_name=album_name
+  )
+  db.add(new_album)
+  db.commit()
+  db.refresh(new_album)
 
-    return new_album
+  return new_album
 
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-  
-  except Exception as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
-
+@db_safe
 def store_audio(
     db: Session,
     user_id: int,
@@ -132,103 +122,76 @@ def store_audio(
     audio_title: str,
     duration: int
   ):
-  try:
-    new_audio = Audio(
-      user_id=user_id,
-      album_id=album_id,
-      visibility=visibility,
-      audio_record=audio_record_path,
-      audio_title=audio_title,
-      duration=duration
+  new_audio = Audio(
+    user_id=user_id,
+    album_id=album_id,
+    visibility=visibility,
+    audio_record=audio_record_path,
+    audio_title=audio_title,
+    duration=duration
     )
-    db.add(new_audio)
-    db.commit()
-    db.refresh(new_audio)
+  db.add(new_audio)
+  db.commit()
+  db.refresh(new_audio)
 
-    return new_audio
+  return new_audio
 
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-  
-  except Exception as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
-
+@db_safe
 def link_audio_to_genre(db: Session, audio_id: int, genre_id: int):
-  try:
-    existing_link = db.query(Audio_Genres).filter_by(
+  existing_link = db.query(Audio_Genres).filter_by(
       audio_id=audio_id,
       genre_id=genre_id
-    ).first()
+  ).first()
 
-    if existing_link is None:
-      new_link = Audio_Genres(
-        audio_id=audio_id,
-        genre_id=genre_id
-      )
-      db.add(new_link)
-      db.commit()
-
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-  
-  except Exception as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
-  
-def store_location(db: Session, latitude: float, longitude: float):
-  try:
-    norm_lat, norm_lon = normalize_coordinates(latitude, longitude, 3)
-    new_location = Locations(latitude=norm_lat, longitude=norm_lon)
-    db.add(new_location)
-    db.commit()
-    db.refresh(new_location)
-
-    return new_location
-
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-  
-  except Exception as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
-
-def store_stream(db: Session, user_id: int, location_id: int, audio_id: Optional[int], spotify_id: Optional[str], type: str):
-  try:
-    now = datetime.utcnow().replace(second=0, microsecond=0)
-    if audio_id and spotify_id:
-      raise HTTPException(status_code=400, detail="Provide either audio_id or spotify_id, not both.")
-    if not audio_id and not spotify_id:
-      raise HTTPException(status_code=400, detail="Either audio_id or spotify_id must be provided.")
-
-    conflict_constraint = "uq_user_audio" if audio_id else "uq_user_spotify"
-    stmt = insert(Streams).values(
-      user_id=user_id,
-      location_id=location_id,
+  if existing_link is None:
+    new_link = Audio_Genres(
       audio_id=audio_id,
-      spotify_id=spotify_id,
-      type=type,
-      stream_count=1,
-      last_played=now
-    ).on_conflict_do_update(
-      constraint=conflict_constraint,
-      set_={
-        "stream_count": Streams.stream_count + 1,
-        "last_played": now,
-      }
+      genre_id=genre_id
     )
-    db.execute(stmt)
+    db.add(new_link)
     db.commit()
-    return {"status": "updated" if conflict_constraint else "inserted"}
-
-  except SQLAlchemyError as e:
-    db.rollback()
-    raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    db.refresh(new_link)
+    return new_link
+    
+  return existing_link
   
-  except Exception as e:
-    db.rollback()
-    logging.error(f"Unexpected error in store_stream: {e}", exc_info=True)
-    raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+@db_safe
+def store_location(db: Session, latitude: float, longitude: float):
+  norm_lat, norm_lon = normalize_coordinates(latitude, longitude, 3)
+  new_location = Locations(latitude=norm_lat, longitude=norm_lon)
+  db.add(new_location)
+  db.commit()
+  db.refresh(new_location)
+
+  return new_location
+
+@db_safe
+def store_stream(db: Session, user_id: int, location_id: int, audio_id: Optional[int], spotify_id: Optional[str], type: str):
+  now = datetime.utcnow().replace(second=0, microsecond=0)
+  if audio_id and spotify_id:
+    raise HTTPException(status_code=400, detail="Provide either audio_id or spotify_id, not both.")
+  if not audio_id and not spotify_id:
+    raise HTTPException(status_code=400, detail="Either audio_id or spotify_id must be provided.")
+
+  conflict_constraint = "uq_user_audio" if audio_id else "uq_user_spotify"
+  stmt = insert(Streams).values(
+    user_id=user_id,
+    location_id=location_id,
+    audio_id=audio_id,
+    spotify_id=spotify_id,
+    type=type,
+    stream_count=1,
+    last_played=now
+  ).on_conflict_do_update(
+    constraint=conflict_constraint,
+    set_={
+      "stream_count": Streams.stream_count + 1,
+      "last_played": now,
+    }
+  )
+  db.execute(stmt)
+  db.flush()
+  db.commit()
+  
+  action = "updated" if db.query(Streams).filter_by(user_id=user_id, audio_id=audio_id, spotify_id=spotify_id).first() else "inserted"
+  return {"status": action}

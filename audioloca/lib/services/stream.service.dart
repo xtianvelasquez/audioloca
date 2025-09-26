@@ -8,7 +8,7 @@ import 'package:audioloca/environment.dart';
 final log = Logger();
 
 class ApiEndpoints {
-  static const String streamAudio = '/audioloca/audio/stream';
+  static const String streamAudio = '/audio/stream';
 }
 
 class StreamServices {

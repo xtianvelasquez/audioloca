@@ -32,24 +32,21 @@ class Tab1 extends StatefulWidget {
   State<Tab1> createState() => Tab1State();
 }
 
-class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
+class Tab1State extends State<Tab1> {
   String? detectedMood;
-
-  List<Audio> localTracks = [];
-  List<LocalAudioLocation> localAudioLocationTracks = [];
+  String? accessToken;
 
   List<SpotifyTrack> spotifyTracks = [];
+  List<Audio> localTracks = [];
+  List<LocalAudioLocation> localAudioLocationTracks = [];
   List<SpotifyTrack> spotifyAudioLocationTracks = [];
 
   bool isLoading = true;
-  late TabController tabController;
-
   StreamSubscription<Position>? locationStream;
 
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 4, vsync: this);
     initTracks();
   }
 
@@ -73,7 +70,7 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
       return;
     }
 
-    final accessToken = await spotifyRecommender.getValidAccessToken();
+    accessToken = await spotifyRecommender.getValidAccessToken();
 
     try {
       final local = await localRecommender.fetchMoodRecommendationsFromLocal();
@@ -115,7 +112,6 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
       if (accessToken != null) {
         final rawSpotify = await spotifyRecommender
             .fetchMoodRecommendationsFromSpotify(forceRefresh: forceRefresh);
-
         spotify = rawSpotify
             .map((json) => SpotifyTrack.fromJson(json))
             .toList();
@@ -138,10 +134,34 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
     }
   }
 
+  Future<void> scanMood() async {
+    final result = await emotionRecognition.requestCameraPermission();
+
+    if (result.isSuccess) {
+      log.i('[Flutter] Label: ${result.emotionLabel}');
+      log.i(
+        '[Flutter] Confidence: ${result.confidenceScore?.toStringAsFixed(4)}',
+      );
+
+      if (result.emotionLabel != null) {
+        await storage.saveLastMood(result.emotionLabel!);
+        setState(() {
+          detectedMood = result.emotionLabel!;
+        });
+        await initTracks(forceRefresh: true);
+      }
+    } else {
+      log.i('[Flutter] Error: ${result.errorMessage}');
+      if (context.mounted) {
+        CustomAlertDialog.failed(context, result.errorMessage!);
+      }
+    }
+  }
+
   @override
   void dispose() {
     locationServices.stopRealtimeTracking();
-    tabController.dispose();
+    locationStream?.cancel();
     super.dispose();
   }
 
@@ -154,101 +174,67 @@ class Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.textLight,
         elevation: 0,
-        bottom: TabBar(
-          controller: tabController,
-          tabs: const [
-            Tab(text: "Spotify"),
-            Tab(text: "Local"),
-            Tab(text: "Spotify Location"),
-            Tab(text: "Local Location"),
-          ],
-        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await emotionRecognition
-                    .requestCameraPermission();
-
-                if (result.isSuccess) {
-                  log.i('[Flutter] Label: ${result.emotionLabel}');
-                  log.i(
-                    '[Flutter] Confidence: ${result.confidenceScore?.toStringAsFixed(4)}',
-                  );
-
-                  if (result.emotionLabel != null) {
-                    await storage.saveLastMood(result.emotionLabel!);
-                    setState(() {
-                      detectedMood = result.emotionLabel!;
-                    });
-                    await initTracks(forceRefresh: true);
-                  }
-                } else {
-                  log.i('[Flutter] Error: ${result.errorMessage}');
-                  if (context.mounted) {
-                    CustomAlertDialog.failed(context, result.errorMessage!);
-                  }
-                }
-              },
-              child: const Text('SCAN MY MOOD'),
-            ),
-            const SizedBox(height: 20),
-            if (detectedMood != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  "Detected Mood: ${detectedMood!.toUpperCase()}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                ElevatedButton(
+                  onPressed: scanMood,
+                  child: const Text('SCAN MY MOOD'),
                 ),
-              ),
-            Expanded(
-              child: isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : TabBarView(
-                      controller: tabController,
-                      children: [
-                        // Tab 1: Spotify
-                        spotifyTracks.isEmpty
-                            ? const Center(child: Text("No Spotify tracks"))
-                            : EmotionSpotifyListView(allTracks: spotifyTracks),
+                const SizedBox(height: 20),
 
-                        // Tab 2: Local
-                        localTracks.isEmpty
-                            ? const Center(child: Text("No local tracks"))
-                            : EmotionLocalListView(allTracks: localTracks),
-
-                        // Tab 2: Local
-                        spotifyAudioLocationTracks.isEmpty
-                            ? const Center(
-                                child: Text("No spotify location tracks"),
-                              )
-                            : EmotionSpotifyListView(
-                                allTracks: spotifyAudioLocationTracks,
-                              ),
-
-                        // Tab 4: Local location
-                        localAudioLocationTracks.isEmpty
-                            ? const Center(
-                                child: Text("No local location tracks"),
-                              )
-                            : LocationLocalListView(
-                                allTracks: localAudioLocationTracks,
-                              ),
-                      ],
+                if (detectedMood != null)
+                  Text(
+                    "Detected Mood: ${detectedMood!.toUpperCase()}",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
                     ),
+                  ),
+
+                const SizedBox(height: 20),
+                const Text("Local Recommendations", style: sectionStyle),
+                localTracks.isEmpty
+                    ? const Text("No local tracks")
+                    : EmotionLocalListView(allTracks: localTracks),
+
+                if (accessToken != null) ...[
+                  const SizedBox(height: 20),
+                  const Text("Spotify Recommendations", style: sectionStyle),
+                  spotifyTracks.isEmpty
+                      ? const Text("No Spotify tracks")
+                      : EmotionSpotifyListView(allTracks: spotifyTracks),
+                ],
+
+                const SizedBox(height: 20),
+                const Text("Local Location-Based Tracks", style: sectionStyle),
+                localAudioLocationTracks.isEmpty
+                    ? const Text("No local location tracks")
+                    : LocationLocalListView(
+                        allTracks: localAudioLocationTracks,
+                      ),
+
+                if (accessToken != null) ...[
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Spotify Location-Based Tracks",
+                    style: sectionStyle,
+                  ),
+                  spotifyAudioLocationTracks.isEmpty
+                      ? const Text("No Spotify location tracks")
+                      : EmotionSpotifyListView(
+                          allTracks: spotifyAudioLocationTracks,
+                        ),
+                ],
+              ],
             ),
-          ],
-        ),
-      ),
       bottomNavigationBar: const MiniPlayer(),
     );
   }
 }
+
+const sectionStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);

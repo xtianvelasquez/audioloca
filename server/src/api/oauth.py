@@ -123,7 +123,7 @@ async def audioloca_signup(data: User_Create, db: Session = Depends(get_db)):
     
   store_specific_user(db, None, data.email, data.username, hash_password(data.password))
 
-  return {"message": "User created successfully"}
+  return {"message": "User created successfully!"}
 
 @router.get("/user/read", response_model=User_Response, status_code=200)
 async def user_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
@@ -140,4 +140,5 @@ async def user_read(token_payload = Depends(verify_token), db: Session = Depends
 @router.post('/logout', status_code=200)
 async def logout(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
   logged = logout_token(db, token_payload['raw'])
-  return logged
+  
+  return {"message": "User logged out successfully!"}

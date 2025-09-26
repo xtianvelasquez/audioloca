@@ -1,84 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/core/alert.dialog.dart';
 import 'package:audioloca/local/controllers/user.service.dart';
 import 'package:audioloca/local/models/user.model.dart';
-import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/tabs/tabs.routing.dart';
-import 'package:audioloca/player/views/mini.player.dart';
 import 'package:audioloca/tab5/tab5.widgets/user.card.dart';
+import 'package:audioloca/player/views/mini.player.dart';
 
 final storage = SecureStorageService();
+final userServices = UserServices();
 
-class Tab5 extends StatefulWidget {
+class Tab5 extends StatelessWidget {
   const Tab5({super.key});
-  @override
-  State<Tab5> createState() => Tab5tate();
-}
 
-class Tab5tate extends State<Tab5> {
-  User? user;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchUser();
-  }
-
-  Future<void> fetchUser() async {
-    final fetcedhUser = await UserServices().fetchUserProfile();
-
-    setState(() {
-      user = fetcedhUser;
-    });
+  Future<User?> fetchUser() async {
+    return await userServices.fetchUserProfile();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Album", style: AppTextStyles.subtitle),
+        automaticallyImplyLeading: false,
+        title: const Text("AudioLoca"),
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.textLight,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: UserHeaderCard(
-              username: user!.username,
-              joinedAt: user!.joinedAt,
-              onLogout: () async {
-                final success = await UserServices().logout();
+      body: FutureBuilder<User?>(
+        future: fetchUser(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('No user data found.'));
+          }
 
-                if (success) {
-                  setState(() {
-                    user = null;
-                  });
+          final user = snapshot.data!;
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: UserHeaderCard(
+                  username: user.username,
+                  joinedAt: user.joinedAt,
+                  onLogout: () async {
+                    final success = await userServices.logout();
 
-                  storage.clearAll();
-                  if (context.mounted) {
-                    CustomAlertDialog.success(context, 'Login successful!');
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const TabsRouting()),
-                    );
-                  }
-                } else {
-                  log.e('[Flutter] Logout failed');
-                  if (context.mounted) {
-                    CustomAlertDialog.success(
-                      context,
-                      'Logout failed. Please try again later.',
-                    );
-                  }
-                }
-              },
-            ),
-          ),
-        ],
+                    if (success) {
+                      storage.clearAll();
+                      if (context.mounted) {
+                        CustomAlertDialog.success(
+                          context,
+                          'Logout successful!',
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const TabsRouting(),
+                          ),
+                        );
+                      }
+                    } else {
+                      log.e('[Flutter] Logout failed');
+                      if (context.mounted) {
+                        CustomAlertDialog.success(
+                          context,
+                          'Logout failed. Please try again later.',
+                        );
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: const MiniPlayer(),
     );

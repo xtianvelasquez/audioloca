@@ -55,10 +55,6 @@ def verify_token(db: Session = Depends(get_db), raw_token: str = Depends(Oauth2_
   except Exception as e:
     raise HTTPException(status_code=500, detail="Unexpected error.")
 
-def validate_password(password: str):
-  pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$"
-  return bool(re.match(pattern, password))
-
 def hash_password(password: str):
   return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
