@@ -62,7 +62,7 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
   streams = read_local_streams(db)
   return [build_local_stream(stream) for stream in streams if stream.audio.visibility == "public"]
 
-@router.get("/spotify/audio/location", response_model=List[Spotify_Stream], status_code=200)
+@router.post("/spotify/audio/location", response_model=List[Spotify_Stream], status_code=200)
 async def audio_location_spotify(data: Locations_Base, db: Session = Depends(get_db)):
   for precision in [3, 2, 1]:
     location = read_location(db, data.latitude, data.longitude, precision)

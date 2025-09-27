@@ -36,7 +36,7 @@ class SpotifyRecommender {
     );
 
     final spotifyIds = locationResults
-        .map((location) => location.spotifyId)
+        .map((location) => location.id)
         .whereType<String>()
         .toList();
 

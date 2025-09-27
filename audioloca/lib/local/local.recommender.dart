@@ -13,11 +13,11 @@ class LocalRecommender {
   List<dynamic> cachedTracks = [];
 
   /// ---- LOCAL FALLBACK ----
-  Future<List<LocalAudioLocation>> fetchLocationRecommendationFromLocal({
+  Future<List<Audio>> fetchLocationRecommendationFromLocal({
     required double latitude,
     required double longitude,
   }) async {
-    final allTracks = <LocalAudioLocation>[];
+    final allTracks = <Audio>[];
 
     try {
       final audios = await AudioServices().readAudioLocation(

@@ -107,7 +107,6 @@ def read_audio_album(db: Session, user_id: int, album_id: int):
 
 @db_safe
 def read_audio_by_genre(db: Session, genre_id: int):
-  
   return (
     db.query(Audio)
     .options(
@@ -151,3 +150,21 @@ def read_local_streams(db: Session):
 @db_safe
 def read_spotify_streams(db: Session):
   return (db.query(Streams).filter(Streams.type == "spotify").order_by(desc(Streams.stream_count)).limit(50).all())
+
+@db_safe
+def read_audio_search(db: Session, query: str):
+  search_term = f"%{query}%"
+  return (
+    db.query(Audio)
+    .join(Audio.genre_links)
+    .filter(Audio.audio_title.ilike(search_term))
+    .options(
+      selectinload(Audio.genre_links).selectinload(Audio_Genres.genre),
+      selectinload(Audio.user),
+      selectinload(Audio.album),
+      selectinload(Audio.streams),
+    )
+    .order_by(Audio.created_at.desc())
+    .limit(10)
+    .all()
+  )

@@ -1,9 +1,9 @@
 import 'package:audioloca/local/models/genres.model.dart';
 
 class Audio {
-  final List<Genres> genres;
+  final List<Genres>? genres; // Optional for local
   final int albumId;
-  final String visibility;
+  final String? visibility; // Optional for local
   final String? audioRecord;
   final String audioTitle;
   final String duration;
@@ -11,13 +11,14 @@ class Audio {
   final String username;
   final String albumCover;
   final int streamCount;
-  final DateTime createdAt;
-  final DateTime modifiedAt;
+  final DateTime? createdAt; // Optional for local
+  final DateTime? modifiedAt; // Optional for local
+  final String? type; // "local", "remote", etc.
 
   Audio({
-    required this.genres,
+    this.genres,
     required this.albumId,
-    required this.visibility,
+    this.visibility,
     required this.audioRecord,
     required this.audioTitle,
     required this.duration,
@@ -25,15 +26,18 @@ class Audio {
     required this.username,
     required this.albumCover,
     required this.streamCount,
-    required this.createdAt,
-    required this.modifiedAt,
+    this.createdAt,
+    this.modifiedAt,
+    this.type,
   });
 
   factory Audio.fromJson(Map<String, dynamic> json) {
     return Audio(
-      genres: (json['genres'] as List<dynamic>)
-          .map((g) => Genres.fromJson(g))
-          .toList(),
+      genres: json['genres'] != null
+          ? (json['genres'] as List<dynamic>)
+                .map((g) => Genres.fromJson(g))
+                .toList()
+          : null,
       albumId: json['album_id'],
       visibility: json['visibility'],
       audioRecord: json['audio_record'],
@@ -42,46 +46,13 @@ class Audio {
       audioId: json['audio_id'],
       username: json['username'],
       albumCover: json['album_cover'],
-      streamCount: json['stream_count'],
-      createdAt: DateTime.parse(json['created_at']),
-      modifiedAt: DateTime.parse(json['modified_at']),
-    );
-  }
-}
-
-class LocalAudioLocation {
-  final int audioId;
-  final String username;
-  final String albumCover;
-  final int streamCount;
-  final int albumId;
-  final String? audioRecord;
-  final String audioTitle;
-  final String duration;
-  final String type;
-
-  LocalAudioLocation({
-    required this.audioId,
-    required this.username,
-    required this.albumCover,
-    required this.streamCount,
-    required this.albumId,
-    required this.audioRecord,
-    required this.audioTitle,
-    required this.duration,
-    required this.type,
-  });
-
-  factory LocalAudioLocation.fromJson(Map<String, dynamic> json) {
-    return LocalAudioLocation(
-      audioId: json['audio_id'],
-      username: json['username'],
-      albumCover: json['album_cover'],
-      streamCount: json['stream_count'],
-      albumId: json['album_id'],
-      audioRecord: json['audio_record'],
-      audioTitle: json['audio_title'],
-      duration: json['duration'],
+      streamCount: json['stream_count'] ?? 0,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      modifiedAt: json['modified_at'] != null
+          ? DateTime.parse(json['modified_at'])
+          : null,
       type: json['type'],
     );
   }

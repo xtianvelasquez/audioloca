@@ -93,7 +93,6 @@ class Tab4State extends State<Tab4> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("AudioLoca"),

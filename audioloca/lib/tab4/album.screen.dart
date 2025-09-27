@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/alert.dialog.dart';
+import 'package:audioloca/core/utils.dart';
 import 'package:audioloca/player/controllers/local.player.dart';
 import 'package:audioloca/local/controllers/album.service.dart';
 import 'package:audioloca/local/controllers/audio.service.dart';
 import 'package:audioloca/local/models/album.model.dart';
 import 'package:audioloca/local/models/audio.model.dart';
-import 'package:audioloca/tab4/tab4.widgets/album.audio.dart';
+import 'package:audioloca/widgets/audio.card.dart';
 import 'package:audioloca/tab4/tab4.widgets/album.card.dart';
 import 'package:audioloca/player/views/full.player.dart';
 
@@ -86,7 +87,7 @@ class AlbumScreenState extends State<AlbumScreen> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: AlbumHeaderCard(
-              albumCoverUrl: albumCoverUrl,
+              albumCoverUrl: resolveImageUrl(albumCoverUrl),
               albumName: album!.albumName,
               createdAt: album!.createdAt,
               onEdit: () {},
@@ -107,9 +108,10 @@ class AlbumScreenState extends State<AlbumScreen> {
                     itemBuilder: (context, index) {
                       final audio = audios[index];
                       return AudioListItem(
-                        audioPhoto: audio.albumCover,
+                        imageUrl: resolveImageUrl(audio.albumCover),
                         title: audio.audioTitle,
-                        plays: audio.streamCount,
+                        subtitle: audio.username,
+                        streamCount: audio.streamCount,
                         duration: formatDuration(audio.duration),
                         onTap: () async {
                           final audioUrl =

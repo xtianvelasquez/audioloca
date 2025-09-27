@@ -53,19 +53,55 @@ class TrackServices {
     }
   }
 
-  Future<List<SpotifyAudioLocation>> fetchSpotifyAudioLocation(
+  Future<List<SpotifyTrack>> searchSpotifyTracks(
+    String accessToken,
+    String query,
+  ) async {
+    final url = Uri.https('api.spotify.com', '/v1/search', {
+      'q': query,
+      'type': 'track',
+      'limit': '10',
+    });
+
+    try {
+      final response = await client.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final items = data['tracks']?['items'];
+        if (items is List) {
+          return items.map((json) => SpotifyTrack.fromJson(json)).toList();
+        } else {
+          throw const FormatException('Unexpected Spotify API format');
+        }
+      } else {
+        throw Exception(
+          'Spotify API failed: ${response.statusCode}, body: ${response.body}',
+        );
+      }
+    } catch (e, stackTrace) {
+      log.e('[Flutter] Spotify search error: $e $stackTrace');
+      rethrow;
+    }
+  }
+
+  Future<List<SpotifyTrack>> fetchSpotifyAudioLocation(
     double latitude,
     double longitude,
   ) async {
-    return _post<List<SpotifyAudioLocation>>(
+    return _post<List<SpotifyTrack>>(
       ApiEndpoints.locationAudio,
       headers: {'Content-Type': 'application/json'},
       body: {'latitude': latitude, 'longitude': longitude},
       parser: (data) {
         if (data is List) {
-          return data
-              .map((json) => SpotifyAudioLocation.fromJson(json))
-              .toList();
+          return data.map((json) => SpotifyTrack.fromJson(json)).toList();
         }
         throw FormatException('Unexpected audio location format.');
       },

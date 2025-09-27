@@ -1,23 +1,3 @@
-class SpotifyAudioLocation {
-  final String spotifyId;
-  final int streamCount;
-  final String type;
-
-  SpotifyAudioLocation({
-    required this.spotifyId,
-    required this.streamCount,
-    required this.type,
-  });
-
-  factory SpotifyAudioLocation.fromJson(Map<String, dynamic> json) {
-    return SpotifyAudioLocation(
-      spotifyId: json['spotify_id'],
-      streamCount: json['stream_count'],
-      type: json['type'],
-    );
-  }
-}
-
 class SpotifyTrack {
   final String id;
   final String name;
@@ -27,6 +7,10 @@ class SpotifyTrack {
   final String? albumImageUrl;
   final int durationMs;
 
+  // Local enrichment
+  final int? streamCount;
+  final String? type;
+
   SpotifyTrack({
     required this.id,
     required this.name,
@@ -35,23 +19,27 @@ class SpotifyTrack {
     required this.externalUrl,
     required this.albumImageUrl,
     required this.durationMs,
+    this.streamCount,
+    this.type,
   });
 
   factory SpotifyTrack.fromJson(Map<String, dynamic> json) {
     return SpotifyTrack(
-      id: json['id'],
-      name: json['name'],
-      artist: (json['artists'] as List)
-          .map((artist) => artist['name'])
-          .join(', '),
+      id: json['id'] ?? json['spotify_id'], // support both formats
+      name: json['name'] ?? '',
+      artist: (json['artists'] != null)
+          ? (json['artists'] as List).map((a) => a['name']).join(', ')
+          : '',
       previewUrl: json['preview_url'],
-      externalUrl: json['external_urls']['spotify'],
+      externalUrl: json['external_urls']?['spotify'] ?? '',
       albumImageUrl:
-          (json['album']['images'] != null &&
+          (json['album']?['images'] != null &&
               (json['album']['images'] as List).isNotEmpty)
           ? json['album']['images'][0]['url']
           : null,
-      durationMs: json['duration_ms'],
+      durationMs: json['duration_ms'] ?? 0,
+      streamCount: json['stream_count'], // from local DB
+      type: json['type'], // from local DB
     );
   }
 }

@@ -1,32 +1,36 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:audioloca/environment.dart';
 import 'package:audioloca/theme.dart';
 
 class AudioListItem extends StatelessWidget {
-  final String audioPhoto;
+  final String imageUrl;
   final String title;
-  final int plays;
+  final String subtitle;
   final String duration;
+  final int streamCount;
   final VoidCallback onTap;
 
   const AudioListItem({
     super.key,
-    required this.audioPhoto,
+    required this.imageUrl,
     required this.title,
-    required this.plays,
+    required this.subtitle,
     required this.duration,
+    required this.streamCount,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final audioPhotoUrl = "${Environment.audiolocaBaseUrl}/$audioPhoto";
+    final formattedCount = streamCount != 0
+        ? NumberFormat.decimalPattern().format(streamCount)
+        : null;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       color: AppColors.color3,
+      margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         onTap: onTap,
         leading: ClipRRect(
@@ -35,7 +39,7 @@ class AudioListItem extends StatelessWidget {
             width: 50,
             height: 50,
             fit: BoxFit.cover,
-            imageUrl: audioPhotoUrl,
+            imageUrl: imageUrl,
             placeholder: (_, __) => const Center(
               child: CircularProgressIndicator(
                 color: AppColors.color1,
@@ -52,8 +56,33 @@ class AudioListItem extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text("$plays plays"),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        subtitle: RichText(
+          text: TextSpan(
+            style: const TextStyle(fontSize: 12, color: AppColors.dark),
+            children: [
+              TextSpan(text: subtitle),
+              if (formattedCount != null) ...[
+                const WidgetSpan(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6),
+                    child: Icon(
+                      Icons.play_arrow,
+                      size: 14,
+                      color: AppColors.dark,
+                    ),
+                  ),
+                ),
+                TextSpan(text: "$formattedCount plays"),
+              ],
+            ],
+          ),
+        ),
         trailing: Text(duration),
       ),
     );

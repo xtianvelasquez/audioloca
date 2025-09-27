@@ -1,12 +1,13 @@
 import os, shutil, uuid
-from fastapi import HTTPException, APIRouter, UploadFile, Body, Form, File, Depends
+from fastapi import HTTPException, APIRouter, UploadFile, Body, Form, File, Depends, Query
 from typing import List
 
 from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.security import verify_token
-from src.crud import read_genre_by_id, store_audio, read_all_audio, read_specific_audio, read_audio_album, read_audio_by_genre, link_audio_to_genre
+from src.crud import (read_genre_by_id, store_audio, read_all_audio, read_specific_audio, 
+                      read_audio_search, read_audio_album, read_audio_by_genre, link_audio_to_genre)
 from src.utils import validate_file_extension
 from src.schemas import Genres_Response, Audio_Response
 from src.config import VALID_AUDIO_EXTENSION
@@ -109,4 +110,12 @@ async def audio_album_read(
   user_id = token_payload.get("payload", {}).get("sub")
   audios = read_audio_album(db, user_id, album_id)
   
+  return [build_audio_response(audio) for audio in audios]
+
+@router.get("/audioloca/audio/search", response_model=List[Audio_Response], status_code=200)
+async def audio_search(
+  query: str = Query(..., min_length=1),
+  db: Session = Depends(get_db)
+):
+  audios = read_audio_search(db, query)
   return [build_audio_response(audio) for audio in audios]

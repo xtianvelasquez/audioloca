@@ -9,7 +9,7 @@ import 'package:audioloca/environment.dart';
 final log = Logger();
 
 class LocationServices {
-  StreamSubscription<Position>? _positionStream;
+  StreamSubscription<Position>? positionStream;
 
   Future<bool> ensureLocationReady(BuildContext context) async {
     try {
@@ -81,7 +81,7 @@ class LocationServices {
       distanceFilter: distanceFilter,
     );
 
-    _positionStream =
+    positionStream =
         Geolocator.getPositionStream(
           locationSettings: locationSettings,
         ).listen((Position position) {
@@ -92,9 +92,12 @@ class LocationServices {
         });
   }
 
-  Future<String?> getLocationIQAddress(double lat, double lon) async {
+  Future<String?> getLocationIQAddress(
+    double latitude,
+    double longitude,
+  ) async {
     final url = Uri.parse(
-      '${Environment.locationIQBaseUrl}/reverse?key=${Environment.locationIQAccessToken}&lat=$lat&lon=$lon&format=json&',
+      '${Environment.locationIQBaseUrl}/reverse?key=${Environment.locationIQAccessToken}&lat=$latitude&lon=$longitude&format=json&',
     );
 
     final response = await http.get(url);
@@ -109,7 +112,7 @@ class LocationServices {
   }
 
   void stopRealtimeTracking() {
-    _positionStream?.cancel();
-    _positionStream = null;
+    positionStream?.cancel();
+    positionStream = null;
   }
 }

@@ -15,6 +15,7 @@ class ApiEndpoints {
   static const String audioAlbum = '/audioloca/audio/album';
   static const String readAudios = '/audioloca/audios/read';
   static const String readAudio = '/audioloca/audio/read';
+  static const String searchAudio = '/audioloca/audio/search';
   static const String createAudio = '/audioloca/audio/create';
 }
 
@@ -26,17 +27,17 @@ class AudioServices {
   // =======================
   // POST audio by location
   // =======================
-  Future<List<LocalAudioLocation>> readAudioLocation(
+  Future<List<Audio>> readAudioLocation(
     double latitude,
     double longitude,
   ) async {
-    return _post<List<LocalAudioLocation>>(
+    return _post<List<Audio>>(
       ApiEndpoints.locationAudio,
       headers: {'Content-Type': 'application/json'},
       body: {'latitude': latitude, 'longitude': longitude},
       parser: (data) {
         if (data is List) {
-          return data.map((json) => LocalAudioLocation.fromJson(json)).toList();
+          return data.map((json) => Audio.fromJson(json)).toList();
         }
         throw FormatException('Unexpected audio location format.');
       },
@@ -106,6 +107,25 @@ class AudioServices {
           return Audio.fromJson(data);
         }
         throw FormatException('Unexpected audio format.');
+      },
+    );
+  }
+
+  // =======================
+  // POST searched audio
+  // =======================
+  Future<List<Audio>> searchForAudio(String query) async {
+    final endpoint =
+        '${ApiEndpoints.searchAudio}?query=${Uri.encodeComponent(query)}';
+
+    return _get<List<Audio>>(
+      endpoint,
+      headers: {},
+      parser: (data) {
+        if (data is List) {
+          return data.map((item) => Audio.fromJson(item)).toList();
+        }
+        throw FormatException('Unexpected audio list format.');
       },
     );
   }
