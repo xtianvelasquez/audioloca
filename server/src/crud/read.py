@@ -144,6 +144,12 @@ def read_location(db: Session, latitude: float, longitude: float, precision: int
   return db.query(Locations).filter(Locations.latitude == norm_lat, Locations.longitude == norm_lon).first()
 
 @db_safe
+def read_bounding_location(db: Session, min_lat: float, max_lat: float, min_lon: float, max_lon: float):
+  return (db.query(Locations).filter(
+    Locations.latitude.between(min_lat, max_lat),
+    Locations.longitude.between(min_lon, max_lon)).all())
+
+@db_safe
 def read_local_streams(db: Session):
   return (db.query(Streams).filter(Streams.type == "local").order_by(desc(Streams.stream_count)).limit(50).all())
 

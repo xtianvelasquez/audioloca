@@ -1,22 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
 
-class AlbumHeaderCard extends StatelessWidget {
-  final String albumCoverUrl;
-  final String albumName;
-  final DateTime createdAt;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+class AlbumHeader extends StatelessWidget {
+  final String imageUrl;
+  final String title;
+  final DateTime subtitle;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final bool showActions;
 
-  const AlbumHeaderCard({
+  const AlbumHeader({
     super.key,
-    required this.albumCoverUrl,
-    required this.albumName,
-    required this.createdAt,
-    required this.onEdit,
-    required this.onDelete,
+    required this.imageUrl,
+    required this.title,
+    required this.subtitle,
+    this.onEdit,
+    this.onDelete,
+    this.showActions = false,
   });
 
   @override
@@ -32,7 +34,7 @@ class AlbumHeaderCard extends StatelessWidget {
             Row(
               children: [
                 CachedNetworkImage(
-                  imageUrl: albumCoverUrl,
+                  imageUrl: imageUrl,
                   imageBuilder: (_, imageProvider) => Container(
                     height: 100,
                     width: 100,
@@ -63,26 +65,28 @@ class AlbumHeaderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(albumName, style: AppTextStyles.subtitle),
+                      Text(title, style: AppTextStyles.subtitle),
                       const SizedBox(height: 4),
                       Text(
-                        DateFormat("MM/dd/yyyy").format(createdAt),
-                        style: AppTextStyles.bodySmall,
+                        DateFormat("MM/dd/yyyy").format(subtitle),
+                        style: AppTextStyles.keyword,
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: onEdit, child: const Text("EDIT")),
-                const SizedBox(width: 8),
-                TextButton(onPressed: onDelete, child: const Text("DELETE")),
-              ],
-            ),
+            if (showActions) ...[
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(onPressed: onEdit, child: const Text("EDIT")),
+                  const SizedBox(width: 8),
+                  TextButton(onPressed: onDelete, child: const Text("DELETE")),
+                ],
+              ),
+            ],
           ],
         ),
       ),

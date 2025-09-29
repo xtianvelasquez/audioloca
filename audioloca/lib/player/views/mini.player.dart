@@ -70,7 +70,7 @@ class MiniPlayerState extends State<MiniPlayer> {
         return Container(
           height: 72,
           decoration: BoxDecoration(
-            color: AppColors.secondaryLight,
+            color: AppColors.color3,
             border: Border(top: BorderSide(color: Colors.grey.shade200)),
           ),
           child: Row(
@@ -116,7 +116,7 @@ class MiniPlayerState extends State<MiniPlayer> {
                         children: [
                           Text(
                             title,
-                            style: AppTextStyles.bodySmall.copyWith(
+                            style: AppTextStyles.keyword.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                             maxLines: 1,
@@ -125,7 +125,7 @@ class MiniPlayerState extends State<MiniPlayer> {
                           const SizedBox(height: 2),
                           Text(
                             subtitle,
-                            style: AppTextStyles.bodySmall.copyWith(
+                            style: AppTextStyles.keyword.copyWith(
                               color: Colors.grey[700],
                             ),
                             maxLines: 1,
@@ -171,7 +171,7 @@ class MiniPlayerState extends State<MiniPlayer> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
                           formatDuration(position),
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.keyword,
                         ),
                       ),
                     ],

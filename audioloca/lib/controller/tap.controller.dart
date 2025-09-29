@@ -18,7 +18,7 @@ final storage = SecureStorageService();
 final streamServices = StreamServices();
 final locationServices = LocationServices();
 
-class TapServices {
+class TapController {
   Future<void> handleLocalTrackTap(
     Audio audio,
     BuildContext context,

@@ -96,8 +96,8 @@ class Tab4State extends State<Tab4> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("AudioLoca"),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.textLight,
+        backgroundColor: AppColors.color1,
+        foregroundColor: AppColors.light,
         elevation: 0,
       ),
       body: SafeArea(

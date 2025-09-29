@@ -7,14 +7,14 @@ import 'package:audioloca/local/controllers/audio.service.dart';
 import 'package:audioloca/spotify/controllers/track.service.dart';
 import 'package:audioloca/local/models/audio.model.dart';
 import 'package:audioloca/spotify/models/track.model.dart';
-import 'package:audioloca/services/tap.service.dart';
-import 'package:audioloca/widgets/audio.card.dart';
+import 'package:audioloca/controller/tap.controller.dart';
+import 'package:audioloca/view/audio.card.dart';
 import 'package:audioloca/player/views/mini.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
 final audioServices = AudioServices();
-final tapServices = TapServices();
+final tapController = TapController();
 
 class Tab2 extends StatefulWidget {
   const Tab2({super.key});
@@ -115,7 +115,7 @@ class Tab2State extends State<Tab2> {
                       subtitle: audio.username,
                       streamCount: audio.streamCount,
                       duration: formatLocalTrackDuration(audio.duration),
-                      onTap: () => tapServices.handleLocalTrackTap(
+                      onTap: () => tapController.handleLocalTrackTap(
                         audio,
                         context,
                         context.mounted,
@@ -134,7 +134,7 @@ class Tab2State extends State<Tab2> {
                       subtitle: track.artist,
                       streamCount: track.streamCount ?? 0,
                       duration: formatSpotifyTrackDuration(track.durationMs),
-                      onTap: () => tapServices.handleSpotifyTrackTap(
+                      onTap: () => tapController.handleSpotifyTrackTap(
                         track,
                         context,
                         context.mounted,

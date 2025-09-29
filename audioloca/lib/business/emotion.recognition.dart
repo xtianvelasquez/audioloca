@@ -31,16 +31,16 @@ class EmotionRecognition {
 
   final List<String> emotionLabels = const [
     'surprise',
-    'fear',
+    'anger', // fear
     'disgust',
-    'happiness',
+    'sadly angry', // happiness
     'sadness',
     'anger',
     'neutral',
     'happily surprised',
     'happily disgusted',
     'sadly fearful',
-    'sadly angry',
+    'happiness', // sadly angry
     'sadly surprised',
     'sadly disgusted',
     'fearfully angry',

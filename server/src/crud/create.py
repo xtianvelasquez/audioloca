@@ -157,7 +157,7 @@ def link_audio_to_genre(db: Session, audio_id: int, genre_id: int):
   
 @db_safe
 def store_location(db: Session, latitude: float, longitude: float):
-  norm_lat, norm_lon = normalize_coordinates(latitude, longitude, 3)
+  norm_lat, norm_lon = normalize_coordinates(latitude, longitude, 6)
   new_location = Locations(latitude=norm_lat, longitude=norm_lon)
   db.add(new_location)
   db.commit()
@@ -195,3 +195,34 @@ def store_stream(db: Session, user_id: int, location_id: int, audio_id: Optional
   
   action = "updated" if db.query(Streams).filter_by(user_id=user_id, audio_id=audio_id, spotify_id=spotify_id).first() else "inserted"
   return {"status": action}
+
+def store_mock_stream(
+  db: Session,
+  user_id: int,
+  location_id: int,
+  audio_id: Optional[int],
+  spotify_id: Optional[str],
+  type: str,
+  stream_count: int
+):
+  now = datetime.utcnow().replace(second=0, microsecond=0)
+  conflict_constraint = "uq_user_audio" if audio_id else "uq_user_spotify"
+
+  stmt = insert(Streams.__table__).values(
+    user_id=user_id,
+    location_id=location_id,
+    audio_id=audio_id,
+    spotify_id=spotify_id,
+    type=type,
+    stream_count=stream_count,
+    last_played=now
+  ).on_conflict_do_update(
+    constraint=conflict_constraint,
+    set_={
+      "stream_count": stream_count,
+      "last_played": now
+    }
+  )
+
+  db.execute(stmt)
+  db.commit()

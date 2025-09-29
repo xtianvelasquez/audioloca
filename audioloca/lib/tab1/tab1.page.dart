@@ -11,18 +11,18 @@ import 'package:audioloca/business/location.services.dart';
 import 'package:audioloca/local/local.recommender.dart';
 import 'package:audioloca/local/models/audio.model.dart';
 import 'package:audioloca/spotify/spotify.recommender.dart';
+import 'package:audioloca/spotify/models/track.model.dart';
 import 'package:audioloca/tab1/tab1.widgets/local.recommender.dart';
 import 'package:audioloca/tab1/tab1.widgets/spotify.recommender.dart';
 import 'package:audioloca/spotify/controllers/track.service.dart';
-import 'package:audioloca/spotify/models/track.model.dart';
 import 'package:audioloca/player/views/mini.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
 final emotionRecognition = EmotionRecognition();
+final locationServices = LocationServices();
 final localRecommender = LocalRecommender();
 final spotifyRecommender = SpotifyRecommender();
-final locationServices = LocationServices();
 final trackServices = TrackServices();
 
 class Tab1 extends StatefulWidget {
@@ -57,8 +57,8 @@ class Tab1State extends State<Tab1> {
     try {
       final lastMood = await storage.getLastMood();
       if (mounted) setState(() => detectedMood = lastMood);
-    } catch (e) {
-      log.e("[Flutter] Failed to load last mood: $e");
+    } catch (e, stackTrace) {
+      log.e("[Flutter] Failed to load last mood: $e $stackTrace");
     }
   }
 
@@ -102,8 +102,8 @@ class Tab1State extends State<Tab1> {
           spotifyTracks = spotify;
         });
       }
-    } catch (e, st) {
-      log.e("Failed to fetch mood recos: $e $st");
+    } catch (e, stackTrace) {
+      log.e("Failed to fetch mood recos: $e $stackTrace");
     } finally {
       if (mounted) setState(() => isLoadingMood = false);
     }
@@ -113,13 +113,13 @@ class Tab1State extends State<Tab1> {
     locationServices.startRealtimeTracking(
       distanceFilter: 100,
       onLocationUpdate: (position) async {
-        final roundedLat = double.parse(position.latitude.toStringAsFixed(3));
-        final roundedLng = double.parse(position.longitude.toStringAsFixed(3));
+        final roundedLat = double.parse(position.latitude.toStringAsFixed(6));
+        final roundedLng = double.parse(position.longitude.toStringAsFixed(6));
 
         final localRecommendations = await localRecommender
             .fetchLocationRecommendationFromLocal(
-              latitude: roundedLat,
-              longitude: roundedLng,
+              latitude: position.latitude,
+              longitude: position.longitude,
             );
 
         final locationAddress = await locationServices.getLocationIQAddress(
@@ -131,8 +131,8 @@ class Tab1State extends State<Tab1> {
         if (accessToken != null) {
           spotifyLocationRecommendations = await spotifyRecommender
               .fetchLocationRecommendationsFromSpotify(
-                latitude: roundedLat,
-                longitude: roundedLng,
+                latitude: position.longitude,
+                longitude: position.longitude,
               );
         }
 
@@ -159,9 +159,7 @@ class Tab1State extends State<Tab1> {
       if (result.emotionLabel != null) {
         await storage.saveLastMood(result.emotionLabel!);
         setState(() => detectedMood = result.emotionLabel!);
-        await loadMoodRecommendations(
-          forceRefresh: true,
-        ); // ✅ refresh only mood recos
+        await loadMoodRecommendations(forceRefresh: true);
       }
     } else {
       log.i('[Flutter] Error: ${result.errorMessage}');
@@ -183,8 +181,8 @@ class Tab1State extends State<Tab1> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("AudioLoca"),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.textLight,
+        backgroundColor: AppColors.color1,
+        foregroundColor: AppColors.light,
         elevation: 0,
       ),
       body: isLoading
@@ -204,62 +202,85 @@ class Tab1State extends State<Tab1> {
                   ),
                   child: const Text("SCAN MY MOOD"),
                 ),
-                const SizedBox(height: 10),
 
-                const Text("Local Recommendations", style: sectionStyle),
-
-                Text(
-                  "Detected Mood: ${detectedMood ?? 'No mood detected yet'}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Icon(Icons.mood, color: Colors.deepPurple),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "Detected Mood: ${detectedMood ?? 'No mood detected yet'}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        softWrap: false,
+                      ),
+                    ),
+                  ],
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
+                const Text("Mood-Based Recommendations", style: sectionStyle),
+                const SizedBox(height: 12),
 
                 if (isLoadingMood)
                   const Center(child: CircularProgressIndicator())
                 else ...[
                   localTracks.isEmpty
-                      ? const Text("No local tracks")
+                      ? const Text("No local tracks available.")
                       : LocalListView(allTracks: localTracks),
 
                   if (accessToken != null) ...[
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     const Text("Spotify Recommendations", style: sectionStyle),
                     spotifyTracks.isEmpty
-                        ? const Text("No Spotify tracks")
+                        ? const Text("No Spotify tracks available.")
                         : SpotifyListView(allTracks: spotifyTracks),
                   ],
                 ],
 
-                const SizedBox(height: 20),
-                const Text("Local Location-Based Tracks", style: sectionStyle),
-
-                if (detectedLocation != null)
-                  Text(
-                    "Detected Location: $detectedLocation",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Icon(Icons.location_on, color: Colors.deepPurple),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "Detected Location: ${detectedLocation ?? 'Unknown'}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+                const Text(
+                  "Location-Based Recommendations",
+                  style: sectionStyle,
+                ),
+                const SizedBox(height: 12),
 
                 localAudioLocationTracks.isEmpty
-                    ? const Text("No local location tracks")
+                    ? const Text("No local location tracks available.")
                     : LocalListView(allTracks: localAudioLocationTracks),
 
                 if (accessToken != null) ...[
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   const Text(
                     "Spotify Location-Based Tracks",
                     style: sectionStyle,
                   ),
                   spotifyAudioLocationTracks.isEmpty
-                      ? const Text("No Spotify location tracks")
+                      ? const Text("No Spotify location tracks available.")
                       : SpotifyListView(allTracks: spotifyAudioLocationTracks),
                 ],
               ],

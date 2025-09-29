@@ -2,16 +2,18 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
 
-class UserHeaderCard extends StatelessWidget {
-  final String username;
-  final DateTime joinedAt;
-  final VoidCallback onLogout;
+class UserHeader extends StatelessWidget {
+  final String title;
+  final DateTime subtitle;
+  final VoidCallback? onLogout;
+  final bool showActions;
 
-  const UserHeaderCard({
+  const UserHeader({
     super.key,
-    required this.username,
-    required this.joinedAt,
-    required this.onLogout,
+    required this.title,
+    required this.subtitle,
+    this.onLogout,
+    this.showActions = false,
   });
 
   @override
@@ -40,24 +42,26 @@ class UserHeaderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(username, style: AppTextStyles.subtitle),
+                      Text(title, style: AppTextStyles.subtitle),
                       const SizedBox(height: 4),
                       Text(
-                        DateFormat("MM/dd/yyyy").format(joinedAt),
-                        style: AppTextStyles.bodySmall,
+                        DateFormat("MM/dd/yyyy").format(subtitle),
+                        style: AppTextStyles.keyword,
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: onLogout, child: const Text("LOGOUT")),
-              ],
-            ),
+            if (showActions) ...[
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(onPressed: onLogout, child: const Text("LOGOUT")),
+                ],
+              ),
+            ],
           ],
         ),
       ),

@@ -48,8 +48,8 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title, style: AppTextStyles.subtitle),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.textLight,
+        backgroundColor: AppColors.color1,
+        foregroundColor: AppColors.light,
       ),
       body: Column(
         children: [
@@ -73,7 +73,7 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
           const SizedBox(height: 16),
           Text(title, style: AppTextStyles.title.copyWith(fontSize: 20)),
           const SizedBox(height: 6),
-          Text(subtitle, style: AppTextStyles.bodySmall),
+          Text(subtitle, style: AppTextStyles.keyword),
 
           const Spacer(),
 
@@ -135,11 +135,11 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
                       children: [
                         Text(
                           formatTime(position),
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.keyword,
                         ),
                         Text(
                           formatTime(duration),
-                          style: AppTextStyles.bodySmall,
+                          style: AppTextStyles.keyword,
                         ),
                       ],
                     ),

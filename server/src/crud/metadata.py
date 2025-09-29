@@ -5,7 +5,8 @@ import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 from src.crud import (store_specific_user, store_album, store_audio, link_audio_to_genre,
-                      read_username, read_genre_by_id, read_album_by_name, read_audio_by_path_and_title)
+                      read_username, read_genre_by_id, read_album_by_name, read_audio_by_path_and_title,
+                      read_location, store_location, store_mock_stream)
 from src.config import GENRES
 
 def normalize_text(text):
@@ -14,7 +15,7 @@ def normalize_text(text):
 def get_genre_by_id(genre_name: str):
     return GENRES.get(genre_name.lower())
 
-with open("media/fma/metadata.json", "r", encoding="utf-8") as f:
+with open("metadata/updated_metadata.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 def initialize_local_tracks(db):
@@ -54,6 +55,11 @@ def initialize_local_tracks(db):
         audio_title = track["title"]
         duration = "00:" + track["duration"]
 
+        # Normalize location info
+        latitude = track["latitude"]
+        longitude = track["longitude"]
+        stream_count = track["stream_count"]
+
         # Ensure audio does not already exist
         audio = read_audio_by_path_and_title(db, user.user_id, audio_record_path, audio_title)
         if audio is None:
@@ -66,8 +72,25 @@ def initialize_local_tracks(db):
                 audio_title,
                 duration
             )
-        else:
-            audio_id = audio.audio_id
+
+        # Ensure location does not already exist
+        location = read_location(db, latitude, longitude, 6)
+        if location is None:
+            location = store_location(
+                db,
+                latitude,
+                longitude
+            )
+
+        store_mock_stream(
+            db,
+            user.user_id,
+            location.location_id,
+            audio.audio_id,
+            None,
+            "local",
+            stream_count
+        )
 
         for description in genre_descriptions:
             genre = read_genre_by_id(db, description)

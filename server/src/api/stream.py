@@ -4,9 +4,10 @@ from src.database import get_db
 from src.security import verify_token
 from src.crud import (store_stream, store_location,
                       read_location, read_local_audio_location, read_spotify_audio_location,
-                      read_local_streams, read_spotify_streams)
+                      read_local_streams, read_spotify_streams, read_bounding_location)
 from src.schemas import Locations_Base, Streams_Create, Local_Stream, Spotify_Stream
 from typing import List
+from math import radians, cos
 
 router = APIRouter()
 
@@ -38,7 +39,7 @@ async def send_stream(
   ):
   user_id = token_payload.get("payload", {}).get("sub")
 
-  location = read_location(db, data.latitude, data.longitude, 3)
+  location = read_location(db, data.latitude, data.longitude, 6)
   if location is None:
     location = store_location(db, data.latitude, data.longitude)
 
@@ -51,20 +52,35 @@ async def send_stream(
 
 @router.post("/audioloca/audio/location", response_model=List[Local_Stream], status_code=200)
 async def audio_location_local(data: Locations_Base, db: Session = Depends(get_db)):
-  for precision in [3, 2, 1]:
-    location = read_location(db, data.latitude, data.longitude, precision)
+  lat = data.latitude
+  lon = data.longitude
 
-    if location:
-      streams = read_local_audio_location(db, location.location_id)
-      if streams:
-        return [build_local_stream(stream) for stream in streams if stream.audio.visibility == "public"]
+  radius_m = 200
+  radius_deg_lat = radius_m / 111_320
+  radius_deg_lon = radius_m / (111_320 * cos(radians(lat)))
+
+  min_lat = lat - radius_deg_lat
+  max_lat = lat + radius_deg_lat
+  min_lon = lon - radius_deg_lon
+  max_lon = lon + radius_deg_lon
+
+  locations = read_bounding_location(db, min_lat, max_lat, min_lon, max_lon)
+
+  results = []
+  for location in locations:
+    streams = read_local_audio_location(db, location.location_id)
+    results.extend([build_local_stream(stream) for stream in streams if stream.audio.visibility == "public"])
+
+  if results:
+    print(len(results))
+    return results
 
   streams = read_local_streams(db)
   return [build_local_stream(stream) for stream in streams if stream.audio.visibility == "public"]
 
 @router.post("/spotify/audio/location", response_model=List[Spotify_Stream], status_code=200)
 async def audio_location_spotify(data: Locations_Base, db: Session = Depends(get_db)):
-  for precision in [3, 2, 1]:
+  for precision in [6, 5, 4, 3, 2, 1]:
     location = read_location(db, data.latitude, data.longitude, precision)
 
     if location:

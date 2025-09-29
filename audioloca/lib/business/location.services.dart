@@ -10,6 +10,7 @@ final log = Logger();
 
 class LocationServices {
   StreamSubscription<Position>? positionStream;
+  DateTime? lastUpdate;
 
   Future<bool> ensureLocationReady(BuildContext context) async {
     try {
@@ -85,6 +86,13 @@ class LocationServices {
         Geolocator.getPositionStream(
           locationSettings: locationSettings,
         ).listen((Position position) {
+          final now = DateTime.now();
+          if (lastUpdate != null &&
+              now.difference(lastUpdate!) < const Duration(minutes: 1)) {
+            return; // skip if too soon
+          }
+          lastUpdate = now;
+
           log.i(
             '[Flutter] Real-time location: ${position.latitude}, ${position.longitude}',
           );
@@ -104,7 +112,11 @@ class LocationServices {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['display_name'];
+      final address = data["display_name"];
+      log.i(
+        "Latitude: $latitude, Longitude: $longitude, Location Address: $address",
+      );
+      return address;
     } else {
       log.i('Error: ${response.body}');
       return null;

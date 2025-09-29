@@ -83,16 +83,16 @@ class LocalRecommender {
     'disgust': [10, 9, 3], // experimental, metal, rock
     'surprise': [1, 12, 7], // pop, electronic, latin/world
     'neutral': [8, 6, 11], // ambient/chill, folk/acoustic, country
-    'happily surprised': [1, 7, 12],
-    'happily disgusted': [10, 3, 2],
-    'sadly fearful': [8, 5, 4],
-    'sadly angry': [9, 3, 2],
-    'sadly surprised': [6, 4, 5],
-    'sadly disgusted': [3, 10, 9],
-    'fearfully angry': [9, 2, 10],
-    'fearfully surprised': [8, 12, 5],
-    'angrily surprised': [3, 9, 2],
-    'angrily disgusted': [9, 3, 10],
-    'disgustedly surprised': [10, 12, 1],
+    'happily surprised': [1, 7, 12], // pop, latin/world, electronic
+    'happily disgusted': [10, 3, 2], // experimental, rock, hip-hop/rap
+    'sadly fearful': [8, 5, 4], // ambient/chill, classical, jazz/blues
+    'sadly angry': [9, 3, 2], // metal, rock, hip-hop/rap
+    'sadly surprised': [6, 4, 5], // folk/acoustic, jazz/blues, classical
+    'sadly disgusted': [3, 10, 9], // rock, experimental, metal
+    'fearfully angry': [9, 2, 10], // metal, hip-hop/rap, experimental
+    'fearfully surprised': [8, 12, 5], // ambient/chill, electronic, classical
+    'angrily surprised': [3, 9, 2], // rock, metal, hip-hop/rap
+    'angrily disgusted': [9, 3, 10], // metal, rock, experimental
+    'disgustedly surprised': [10, 12, 1], // experimental, electronic, pop
   };
 }

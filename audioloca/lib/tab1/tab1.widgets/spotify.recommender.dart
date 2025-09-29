@@ -6,15 +6,15 @@ import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/core/utils.dart';
 import 'package:audioloca/business/location.services.dart';
 import 'package:audioloca/services/stream.service.dart';
-import 'package:audioloca/services/tap.service.dart';
+import 'package:audioloca/controller/tap.controller.dart';
 import 'package:audioloca/spotify/models/track.model.dart';
-import 'package:audioloca/widgets/audio.card.dart';
+import 'package:audioloca/view/audio.card.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
 final streamServices = StreamServices();
 final locationServices = LocationServices();
-final tapServices = TapServices();
+final tapController = TapController();
 
 class SpotifyListView extends StatefulWidget {
   final List<SpotifyTrack> allTracks;
@@ -69,7 +69,7 @@ class SpotifyListViewState extends State<SpotifyListView> {
               subtitle: track.artist,
               streamCount: track.streamCount ?? 0,
               duration: formatSpotifyTrackDuration(track.durationMs),
-              onTap: () => tapServices.handleSpotifyTrackTap(
+              onTap: () => tapController.handleSpotifyTrackTap(
                 track,
                 context,
                 context.mounted,
