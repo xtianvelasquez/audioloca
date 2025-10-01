@@ -9,6 +9,16 @@ import 'package:audioloca/environment.dart';
 final log = Logger();
 
 class LocationServices {
+  final bool useMockLocation;
+  final double? mockLatitude;
+  final double? mockLongitude;
+
+  LocationServices({
+    this.useMockLocation = false,
+    this.mockLatitude,
+    this.mockLongitude,
+  });
+
   StreamSubscription<Position>? positionStream;
   DateTime? lastUpdate;
 
@@ -19,8 +29,8 @@ class LocationServices {
         '[Flutter] Position acquired: ${position.latitude}, ${position.longitude}',
       );
       return true;
-    } catch (e) {
-      log.w('[Flutter] Location error: $e');
+    } catch (e, stackTrace) {
+      log.w('[Flutter] Location error: $e $stackTrace');
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
@@ -52,6 +62,22 @@ class LocationServices {
       );
     }
 
+    if (useMockLocation) {
+      log.i('[Flutter] Using mock location: $mockLatitude, $mockLongitude');
+      return Position(
+        latitude: mockLatitude!,
+        longitude: mockLongitude!,
+        timestamp: DateTime.now(),
+        accuracy: 1.0,
+        altitude: 0.0,
+        heading: 0.0,
+        headingAccuracy: 1.0,
+        speed: 0.0,
+        speedAccuracy: 1.0,
+        altitudeAccuracy: 1.0,
+      );
+    }
+
     final locationSettings = const LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 0,
@@ -62,21 +88,30 @@ class LocationServices {
     );
   }
 
-  Future<Position?> getLastKnownPosition() async {
-    final lastKnown = await Geolocator.getLastKnownPosition();
-    if (lastKnown != null) {
-      log.i(
-        '[Flutter] Last known position: ${lastKnown.latitude}, ${lastKnown.longitude}',
-      );
-    }
-    return lastKnown;
-  }
-
   void startRealtimeTracking({
     required void Function(Position position) onLocationUpdate,
     LocationAccuracy accuracy = LocationAccuracy.high,
-    int distanceFilter = 100,
+    int distanceFilter = 200,
   }) {
+    if (useMockLocation) {
+      final mockPosition = Position(
+        latitude: mockLatitude!,
+        longitude: mockLongitude!,
+        timestamp: DateTime.now(),
+        accuracy: 1.0,
+        altitude: 0.0,
+        heading: 0.0,
+        headingAccuracy: 1.0,
+        speed: 0.0,
+        speedAccuracy: 1.0,
+        altitudeAccuracy: 1.0,
+      );
+
+      log.i('[Flutter] Using mock location: $mockLatitude, $mockLongitude');
+      onLocationUpdate(mockPosition);
+      return;
+    }
+
     final locationSettings = LocationSettings(
       accuracy: accuracy,
       distanceFilter: distanceFilter,
@@ -87,15 +122,18 @@ class LocationServices {
           locationSettings: locationSettings,
         ).listen((Position position) {
           final now = DateTime.now();
+
           if (lastUpdate != null &&
               now.difference(lastUpdate!) < const Duration(minutes: 1)) {
-            return; // skip if too soon
+            return;
           }
+
           lastUpdate = now;
 
           log.i(
             '[Flutter] Real-time location: ${position.latitude}, ${position.longitude}',
           );
+
           onLocationUpdate(position);
         });
   }
@@ -108,17 +146,24 @@ class LocationServices {
       '${Environment.locationIQBaseUrl}/reverse?key=${Environment.locationIQAccessToken}&lat=$latitude&lon=$longitude&format=json&',
     );
 
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final address = data["display_name"];
-      log.i(
-        "Latitude: $latitude, Longitude: $longitude, Location Address: $address",
-      );
-      return address;
-    } else {
-      log.i('Error: ${response.body}');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final address = data["name"] ?? data["display_name"];
+
+        log.i(
+          "[Flutter] Latitude: $latitude, Longitude: $longitude, Location Address: $address",
+        );
+
+        return address;
+      } else {
+        log.i('Error: ${response.body}');
+        return null;
+      }
+    } catch (e, stackTrace) {
+      log.e('[Flutter] LocationIQ error: $e $stackTrace');
       return null;
     }
   }

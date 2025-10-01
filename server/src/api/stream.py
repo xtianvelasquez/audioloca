@@ -55,7 +55,7 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
   lat = data.latitude
   lon = data.longitude
 
-  radius_m = 200
+  radius_m = 100
   radius_deg_lat = radius_m / 111_320
   radius_deg_lon = radius_m / (111_320 * cos(radians(lat)))
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioloca/environment.dart';
@@ -12,8 +11,8 @@ final storage = SecureStorageService();
 class UserEndpoints {
   static const String login = '/audioloca/callback';
   static const String signup = '/audioloca/signup';
-  static const String readProfile = '/user/read';
   static const String logout = '/logout';
+  static const String readProfile = '/user/read';
 }
 
 class UserServices {
@@ -136,11 +135,22 @@ class UserServices {
         return parser(jsonDecode(response.body));
       }
 
-      throw HttpException(
-        'POST $endpoint failed: ${response.statusCode} ${response.body}',
-      );
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
-      log.e('[Flutter] POST $endpoint error $e $stackTrace');
+      log.e('[Flutter] POST $endpoint error: $e\n$stackTrace');
       rethrow;
     }
   }

@@ -38,9 +38,22 @@ class AlbumServices {
         } else {
           throw FormatException('Unexpected albums response format.');
         }
-      } else {
-        throw HttpException('Failed to fetch albums: ${response.body}');
       }
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching albums: $e $stackTrace');
       rethrow;
@@ -69,9 +82,22 @@ class AlbumServices {
         } else {
           throw FormatException('Unexpected album response format.');
         }
-      } else {
-        throw HttpException('Failed to fetch album: ${response.body}');
       }
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching specific album: $e $stackTrace');
       rethrow;

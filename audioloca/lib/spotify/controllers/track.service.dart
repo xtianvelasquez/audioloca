@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
@@ -42,11 +41,22 @@ class TrackServices {
         } else {
           throw const FormatException('Unexpected Spotify API format');
         }
-      } else {
-        throw Exception(
-          'Spotify API failed: ${response.statusCode}, body: ${response.body}',
-        );
       }
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Flutter] Spotify API error: $e $stackTrace');
       rethrow;
@@ -80,11 +90,22 @@ class TrackServices {
         } else {
           throw const FormatException('Unexpected Spotify API format');
         }
-      } else {
-        throw Exception(
-          'Spotify API failed: ${response.statusCode}, body: ${response.body}',
-        );
       }
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Flutter] Spotify search error: $e $stackTrace');
       rethrow;
@@ -124,7 +145,21 @@ class TrackServices {
       if (response.statusCode == 200) {
         return parser(jsonDecode(response.body));
       }
-      throw HttpException('POST $endpoint failed: ${response.statusCode}');
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error $e $stackTrace');
       rethrow;

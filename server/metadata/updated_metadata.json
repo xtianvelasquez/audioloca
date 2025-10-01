@@ -6,10 +6,10 @@
     "artist": "Chris Wolverine Matthew",
     "genre": "hip-hop/rap",
     "duration": "02:14",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.5884114904185,
-    "longitude": 120.97700606197535
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.592605619508928,
+    "longitude": 120.97280389571698
   },
   {
     "filename": "Chris Wolverine Matthew - CRASHOUT.mp3",
@@ -18,10 +18,10 @@
     "artist": "Chris Wolverine Matthew",
     "genre": "hip-hop/rap",
     "duration": "02:08",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.585334657176457,
-    "longitude": 120.97614212697474
+    "zone": "center",
+    "stream_count": 7400,
+    "latitude": 14.591807525485038,
+    "longitude": 120.97334724840859
   },
   {
     "filename": "Chris Wolverine Matthew - For the love of money.mp3",
@@ -30,10 +30,10 @@
     "artist": "Chris Wolverine Matthew",
     "genre": "hip-hop/rap",
     "duration": "01:58",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.594300095600936,
-    "longitude": 120.96904574010547
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.592370696194607,
+    "longitude": 120.97403053429751
   },
   {
     "filename": "Chris Wolverine Matthew - LOOSE LIPS.mp3",
@@ -42,10 +42,10 @@
     "artist": "Chris Wolverine Matthew",
     "genre": "hip-hop/rap",
     "duration": "02:12",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.586306496658308,
-    "longitude": 120.97510414754505
+    "zone": "center",
+    "stream_count": 600,
+    "latitude": 14.592548736081094,
+    "longitude": 120.97357984599016
   },
   {
     "filename": "Chris Wolverine Matthew - BACK TO LIFE.mp3",
@@ -54,10 +54,10 @@
     "artist": "Chris Wolverine Matthew",
     "genre": "hip-hop/rap",
     "duration": "02:01",
-    "zone": "North",
-    "stream_count": 50,
-    "latitude": 14.59359660202605,
-    "longitude": 120.97067445351868
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594423627352349,
+    "longitude": 120.97031088211067
   },
   {
     "filename": "Chad Crouch - Amaranthus.mp3",
@@ -66,10 +66,10 @@
     "artist": "Chad Crouch",
     "genre": "ambient/chill, electronic",
     "duration": "01:30",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.586265857114132,
-    "longitude": 120.97494223375361
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.588113860469512,
+    "longitude": 120.97482367444145
   },
   {
     "filename": "Chad Crouch - Coral.mp3",
@@ -78,10 +78,10 @@
     "artist": "Chad Crouch",
     "genre": "ambient/chill, electronic",
     "duration": "02:15",
-    "zone": "South",
-    "stream_count": 20,
-    "latitude": 14.59075679792312,
-    "longitude": 120.97705569607544
+    "zone": "center",
+    "stream_count": 600,
+    "latitude": 14.592051864598096,
+    "longitude": 120.9727963058893
   },
   {
     "filename": "Chad Crouch - Ruby.mp3",
@@ -90,10 +90,10 @@
     "artist": "Chad Crouch",
     "genre": "ambient/chill, electronic",
     "duration": "02:25",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.594712449857274,
-    "longitude": 120.9713258570269
+    "zone": "north",
+    "stream_count": 600,
+    "latitude": 14.594645413802064,
+    "longitude": 120.96953162401921
   },
   {
     "filename": "Chad Crouch - Taut.mp3",
@@ -102,10 +102,10 @@
     "artist": "Chad Crouch",
     "genre": "ambient/chill, electronic",
     "duration": "03:15",
-    "zone": "South",
-    "stream_count": 30,
-    "latitude": 14.589640462171136,
-    "longitude": 120.97568141279538
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.591901106275792,
+    "longitude": 120.97291099708603
   },
   {
     "filename": "Chad Crouch - Tuscan Sun.mp3",
@@ -114,10 +114,10 @@
     "artist": "Chad Crouch",
     "genre": "ambient/chill, electronic",
     "duration": "03:20",
-    "zone": "Center",
-    "stream_count": 20,
-    "latitude": 14.585864934529722,
-    "longitude": 120.97771865235683
+    "zone": "west",
+    "stream_count": 800,
+    "latitude": 14.58875464712788,
+    "longitude": 120.97461359026421
   },
   {
     "filename": "Mark Lingard - The Fae.mp3",
@@ -126,10 +126,10 @@
     "artist": "Mark Lingard",
     "genre": "folk/acoustic",
     "duration": "04:29",
-    "zone": "East",
-    "stream_count": 50,
-    "latitude": 14.593495513362992,
-    "longitude": 120.97861852776069
+    "zone": "south",
+    "stream_count": 400,
+    "latitude": 14.588313957652268,
+    "longitude": 120.97389882015136
   },
   {
     "filename": "Mark Lingard - The Singing Stones.mp3",
@@ -138,10 +138,10 @@
     "artist": "Mark Lingard",
     "genre": "folk/acoustic",
     "duration": "03:47",
-    "zone": "East",
-    "stream_count": 250,
-    "latitude": 14.591647693295444,
-    "longitude": 120.97558094834076
+    "zone": "north",
+    "stream_count": 1800,
+    "latitude": 14.595110551464979,
+    "longitude": 120.97090848154514
   },
   {
     "filename": "Mark Lingard - snowdrop woods.mp3",
@@ -150,10 +150,10 @@
     "artist": "Mark Lingard",
     "genre": "folk/acoustic",
     "duration": "01:35",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.594056926470154,
-    "longitude": 120.97093277123575
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.586211438841334,
+    "longitude": 120.97564344182105
   },
   {
     "filename": "Mark Lingard - mist oe'r fells.mp3",
@@ -162,22 +162,22 @@
     "artist": "Mark Lingard",
     "genre": "folk/acoustic",
     "duration": "02:17",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.588256295256665,
-    "longitude": 120.97620611246208
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.591474305530024,
+    "longitude": 120.97284441260477
   },
   {
-    "filename": "Mark Lingard - Wyrd bi\u00f0 ful \u0101r\u00e6d.mp3",
+    "filename": "Mark Lingard - Wyrd bið ful āræd.mp3",
     "album": "Ancient lands",
-    "title": "Wyrd bi\u00f0 ful \u0101r\u00e6d.",
+    "title": "Wyrd bið ful āræd.",
     "artist": "Mark Lingard",
     "genre": "folk/acoustic",
     "duration": "02:39",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.592299470411499,
-    "longitude": 120.97773023952847
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.588224462431452,
+    "longitude": 120.97479489595776
   },
   {
     "filename": "alsander - Haze of History.mp3",
@@ -186,10 +186,10 @@
     "artist": "alsander",
     "genre": "folk/acoustic",
     "duration": "02:23",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.590468324816573,
-    "longitude": 120.97389210883189
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587368452630066,
+    "longitude": 120.97668489953396
   },
   {
     "filename": "alsander - gentle.mp3",
@@ -198,10 +198,10 @@
     "artist": "alsander",
     "genre": "folk/acoustic",
     "duration": "02:05",
-    "zone": "North",
-    "stream_count": 30,
-    "latitude": 14.593299796193651,
-    "longitude": 120.97034079892619
+    "zone": "north",
+    "stream_count": 2200,
+    "latitude": 14.595015002573739,
+    "longitude": 120.9706299956132
   },
   {
     "filename": "alsander - Sunset Teardops.mp3",
@@ -210,10 +210,10 @@
     "artist": "alsander",
     "genre": "folk/acoustic",
     "duration": "03:40",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.587571855081586,
-    "longitude": 120.9768120776154
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.586317452727402,
+    "longitude": 120.97627345401995
   },
   {
     "filename": "alsander - So long, so long, so long.mp3",
@@ -222,10 +222,10 @@
     "artist": "alsander",
     "genre": "folk/acoustic",
     "duration": "01:29",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.589193812756555,
-    "longitude": 120.97358831016649
+    "zone": "south",
+    "stream_count": 400,
+    "latitude": 14.587338974449388,
+    "longitude": 120.97501155864113
   },
   {
     "filename": "alsander - Countess Come Home.mp3",
@@ -234,10 +234,10 @@
     "artist": "alsander",
     "genre": "folk/acoustic",
     "duration": "03:46",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.59642909009012,
-    "longitude": 120.97033721441059
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.592315236219036,
+    "longitude": 120.97314462667177
   },
   {
     "filename": "LOPKERJO - Mystic Choir - Texas.mp3",
@@ -246,10 +246,10 @@
     "artist": "LOPKERJO",
     "genre": "country, folk/acoustic, experimental",
     "duration": "01:25",
-    "zone": "North",
-    "stream_count": 20,
-    "latitude": 14.59416843020616,
-    "longitude": 120.97048717782565
+    "zone": "west",
+    "stream_count": 400,
+    "latitude": 14.589318053348391,
+    "longitude": 120.97598927895966
   },
   {
     "filename": "LOPKERJO - Sierra Nevada Summer.mp3",
@@ -258,10 +258,10 @@
     "artist": "LOPKERJO",
     "genre": "country, folk/acoustic, experimental",
     "duration": "04:01",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.594724904227592,
-    "longitude": 120.97166687175394
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.592257779596867,
+    "longitude": 120.97370147584515
   },
   {
     "filename": "LOPKERJO - Citizens Unite _ Folk Protest Song.mp3",
@@ -270,10 +270,10 @@
     "artist": "LOPKERJO",
     "genre": "jazz/blues/blues, pop, rock, folk/acoustic, country",
     "duration": "02:57",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.585843719535754,
-    "longitude": 120.97564118974553
+    "zone": "center",
+    "stream_count": 800,
+    "latitude": 14.592255147560298,
+    "longitude": 120.97393398732167
   },
   {
     "filename": "LOPKERJO - Citizens Unite _ Jazz Ballad.mp3",
@@ -282,10 +282,10 @@
     "artist": "LOPKERJO",
     "genre": "jazz/blues, pop",
     "duration": "03:46",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.593410929739349,
-    "longitude": 120.97773082505853
+    "zone": "center",
+    "stream_count": 400,
+    "latitude": 14.591333328515253,
+    "longitude": 120.97351105187774
   },
   {
     "filename": "LOPKERJO - Red States Blue _ Power to the People.mp3",
@@ -294,10 +294,10 @@
     "artist": "LOPKERJO",
     "genre": "country, pop, folk/acoustic",
     "duration": "01:59",
-    "zone": "South",
-    "stream_count": 20,
-    "latitude": 14.588123154343965,
-    "longitude": 120.97580227066165
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.590953885493667,
+    "longitude": 120.97360466500413
   },
   {
     "filename": "Podington Bear - Undersea Garden.mp3",
@@ -306,10 +306,10 @@
     "artist": "Podington Bear",
     "genre": "electronic, ambient/chill",
     "duration": "02:22",
-    "zone": "North",
-    "stream_count": 30,
-    "latitude": 14.594326674458417,
-    "longitude": 120.97058091118117
+    "zone": "west",
+    "stream_count": 95000,
+    "latitude": 14.588864675231566,
+    "longitude": 120.97487689225161
   },
   {
     "filename": "Podington Bear - Pink Gradient.mp3",
@@ -318,10 +318,10 @@
     "artist": "Podington Bear",
     "genre": "electronic, ambient/chill",
     "duration": "02:30",
-    "zone": "East",
-    "stream_count": 2230,
-    "latitude": 14.590868336811146,
-    "longitude": 120.9780304170076
+    "zone": "east",
+    "stream_count": 800,
+    "latitude": 14.587610440459722,
+    "longitude": 120.97587767443527
   },
   {
     "filename": "Podington Bear - Submerging Blue-Black.mp3",
@@ -330,10 +330,10 @@
     "artist": "Podington Bear",
     "genre": "electronic, ambient/chill",
     "duration": "02:38",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.584029894523896,
-    "longitude": 120.97507452955556
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.588745832619473,
+    "longitude": 120.97601394644526
   },
   {
     "filename": "Podington Bear - Loll.mp3",
@@ -342,10 +342,10 @@
     "artist": "Podington Bear",
     "genre": "electronic, ambient/chill",
     "duration": "01:45",
-    "zone": "East",
-    "stream_count": 40,
-    "latitude": 14.592320831553925,
-    "longitude": 120.97825295579055
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.586308940313259,
+    "longitude": 120.97582362497471
   },
   {
     "filename": "Podington Bear - Trinity Alps.mp3",
@@ -354,10 +354,10 @@
     "artist": "Podington Bear",
     "genre": "electronic, ambient/chill",
     "duration": "02:18",
-    "zone": "West",
-    "stream_count": 30,
-    "latitude": 14.585482077953815,
-    "longitude": 120.97404072216275
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.593642820737964,
+    "longitude": 120.9698257730093
   },
   {
     "filename": "Iron Metal - Intro - Rock the Cops to Town.mp3",
@@ -366,10 +366,10 @@
     "artist": "Iron Metal",
     "genre": "rock, metal",
     "duration": "01:57",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.590918867432643,
-    "longitude": 120.97862126665477
+    "zone": "north",
+    "stream_count": 400,
+    "latitude": 14.594300847808354,
+    "longitude": 120.97111638435942
   },
   {
     "filename": "Iron Metal - Whiskey Wine Woman.mp3",
@@ -378,10 +378,10 @@
     "artist": "Iron Metal",
     "genre": "rock, metal",
     "duration": "01:33",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.585998902795378,
-    "longitude": 120.97419854775957
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.588728900754152,
+    "longitude": 120.97468990817467
   },
   {
     "filename": "Iron Metal - Band Introductions - Love of My Woman.mp3",
@@ -390,10 +390,10 @@
     "artist": "Iron Metal",
     "genre": "rock, metal",
     "duration": "01:07",
-    "zone": "East",
-    "stream_count": 20,
-    "latitude": 14.593351920987216,
-    "longitude": 120.97847666941473
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589798295011835,
+    "longitude": 120.97588439951242
   },
   {
     "filename": "Iron Metal - Get Rockin'.mp3",
@@ -402,10 +402,10 @@
     "artist": "Iron Metal",
     "genre": "rock, metal",
     "duration": "02:10",
-    "zone": "West",
-    "stream_count": 20,
-    "latitude": 14.586651976183225,
-    "longitude": 120.97572608870912
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.58982125319829,
+    "longitude": 120.97509591758791
   },
   {
     "filename": "Iron Metal - Cocaine Nose.mp3",
@@ -414,10 +414,10 @@
     "artist": "Iron Metal",
     "genre": "rock, metal",
     "duration": "00:58",
-    "zone": "Center",
-    "stream_count": 450,
-    "latitude": 14.588015659315325,
-    "longitude": 120.97769390891871
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589303718610623,
+    "longitude": 120.97537066556237
   },
   {
     "filename": "Mr Smith - Webster.mp3",
@@ -426,10 +426,10 @@
     "artist": "Mr Smith",
     "genre": "country, rock",
     "duration": "00:44",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.585784528560298,
-    "longitude": 120.97527447799678
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.586860524101988,
+    "longitude": 120.9756005907318
   },
   {
     "filename": "Mr Smith - Flea Bop.mp3",
@@ -438,10 +438,10 @@
     "artist": "Mr Smith",
     "genre": "country, jazz/blues/blues",
     "duration": "01:09",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.58560641831727,
-    "longitude": 120.9753224813637
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587517606385479,
+    "longitude": 120.97560416480412
   },
   {
     "filename": "Mr Smith - Carter.mp3",
@@ -450,10 +450,10 @@
     "artist": "Mr Smith",
     "genre": "country, jazz/blues",
     "duration": "01:45",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.587351066908953,
-    "longitude": 120.97490563352213
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.58712806201132,
+    "longitude": 120.97579768084836
   },
   {
     "filename": "Mr Smith - Castaway.mp3",
@@ -462,10 +462,10 @@
     "artist": "Mr Smith",
     "genre": "country, jazz/blues",
     "duration": "01:32",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.58629607753093,
-    "longitude": 120.97704602727408
+    "zone": "east",
+    "stream_count": 2200,
+    "latitude": 14.587737712161163,
+    "longitude": 120.97698453503281
   },
   {
     "filename": "Mr Smith - Ffwd.mp3",
@@ -474,10 +474,10 @@
     "artist": "Mr Smith",
     "genre": "country, jazz/blues",
     "duration": "01:23",
-    "zone": "West",
-    "stream_count": 30,
-    "latitude": 14.585607227483411,
-    "longitude": 120.97694897343962
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594919206659272,
+    "longitude": 120.97124092564803
   },
   {
     "filename": "Silicon Transmitter - Echelon.mp3",
@@ -486,10 +486,10 @@
     "artist": "Silicon Transmitter",
     "genre": "electronic",
     "duration": "03:02",
-    "zone": "Center",
-    "stream_count": 30,
-    "latitude": 14.588389366683739,
-    "longitude": 120.9767208392044
+    "zone": "north",
+    "stream_count": 1400,
+    "latitude": 14.593405361842546,
+    "longitude": 120.96969248389173
   },
   {
     "filename": "Silicon Transmitter - Fall to Earth.mp3",
@@ -498,10 +498,10 @@
     "artist": "Silicon Transmitter",
     "genre": "electronic, experimental",
     "duration": "02:55",
-    "zone": "Center",
-    "stream_count": 20,
-    "latitude": 14.585539410742822,
-    "longitude": 120.97447457260284
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594157014018144,
+    "longitude": 120.96982345997934
   },
   {
     "filename": "Silicon Transmitter - Fluctuate.mp3",
@@ -510,10 +510,10 @@
     "artist": "Silicon Transmitter",
     "genre": "electronic, ambient/chill",
     "duration": "02:46",
-    "zone": "East",
-    "stream_count": 40,
-    "latitude": 14.592659846069646,
-    "longitude": 120.9783236360661
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594039756888149,
+    "longitude": 120.96981688879926
   },
   {
     "filename": "Silicon Transmitter - Switch.mp3",
@@ -522,10 +522,10 @@
     "artist": "Silicon Transmitter",
     "genre": "electronic, experimental",
     "duration": "01:09",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.589628966859735,
-    "longitude": 120.97566777387986
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587722579810222,
+    "longitude": 120.97636209716269
   },
   {
     "filename": "Silicon Transmitter - Beam.mp3",
@@ -534,10 +534,10 @@
     "artist": "Silicon Transmitter",
     "genre": "electronic, experimental",
     "duration": "02:57",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.59425170685467,
-    "longitude": 120.97807030377146
+    "zone": "south",
+    "stream_count": 400,
+    "latitude": 14.586736977852743,
+    "longitude": 120.97484444967223
   },
   {
     "filename": "Lite Saturation - Metal Energy - Medium2.mp3",
@@ -546,10 +546,10 @@
     "artist": "Lite Saturation",
     "genre": "rock, metal",
     "duration": "01:22",
-    "zone": "North",
-    "stream_count": 130,
-    "latitude": 14.593254215015588,
-    "longitude": 120.96983284757664
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587781553844817,
+    "longitude": 120.97661198694867
   },
   {
     "filename": "Lite Saturation - Metal Energy - Short.mp3",
@@ -558,10 +558,10 @@
     "artist": "Lite Saturation",
     "genre": "rock, metal",
     "duration": "00:29",
-    "zone": "West",
-    "stream_count": 20,
-    "latitude": 14.5843136212485,
-    "longitude": 120.97379409105112
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.591526869145017,
+    "longitude": 120.9732293031219
   },
   {
     "filename": "Lite Saturation - Metal Energy - Medium1.mp3",
@@ -570,10 +570,10 @@
     "artist": "Lite Saturation",
     "genre": "rock, metal",
     "duration": "01:54",
-    "zone": "Center",
-    "stream_count": 20,
-    "latitude": 14.587343139847153,
-    "longitude": 120.97647448897186
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.592069471364931,
+    "longitude": 120.97261413947332
   },
   {
     "filename": "Lite Saturation - Metal Energy.mp3",
@@ -582,10 +582,10 @@
     "artist": "Lite Saturation",
     "genre": "rock, metal",
     "duration": "02:05",
-    "zone": "South",
-    "stream_count": 20,
-    "latitude": 14.588382606675655,
-    "longitude": 120.97425930043268
+    "zone": "north",
+    "stream_count": 600,
+    "latitude": 14.593790102713633,
+    "longitude": 120.96975098741088
   },
   {
     "filename": "Lite Saturation - Metal Energy - Loop.mp3",
@@ -594,10 +594,10 @@
     "artist": "Lite Saturation",
     "genre": "rock, metal",
     "duration": "02:50",
-    "zone": "West",
-    "stream_count": 20,
-    "latitude": 14.587177312271262,
-    "longitude": 120.9771421600777
+    "zone": "west",
+    "stream_count": 400,
+    "latitude": 14.589492282949795,
+    "longitude": 120.975459121158
   },
   {
     "filename": "Mark Lingard - Metamorphosis.mp3",
@@ -606,10 +606,10 @@
     "artist": "Mark Lingard",
     "genre": "experimentalDrone",
     "duration": "04:35",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.590894777731764,
-    "longitude": 120.97595607927579
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.588197049863373,
+    "longitude": 120.9742344988494
   },
   {
     "filename": "Mark Lingard - Awakening.mp3",
@@ -618,10 +618,10 @@
     "artist": "Mark Lingard",
     "genre": "experimental",
     "duration": "04:42",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.587495179500879,
-    "longitude": 120.97443780702851
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.591001638618236,
+    "longitude": 120.972474818518
   },
   {
     "filename": "Mark Lingard - The door.mp3",
@@ -630,10 +630,10 @@
     "artist": "Mark Lingard",
     "genre": "experimental",
     "duration": "10:22",
-    "zone": "Center",
-    "stream_count": 20,
-    "latitude": 14.588699251722442,
-    "longitude": 120.97604995362232
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589992679016536,
+    "longitude": 120.97509367887938
   },
   {
     "filename": "Mark Lingard - Under the couch.mp3",
@@ -642,10 +642,10 @@
     "artist": "Mark Lingard",
     "genre": "experimental",
     "duration": "09:13",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.58855581528535,
-    "longitude": 120.97762696012627
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.586763735587466,
+    "longitude": 120.97580109978264
   },
   {
     "filename": "Mark Lingard - Acceptance.mp3",
@@ -654,10 +654,10 @@
     "artist": "Mark Lingard",
     "genre": "experimental",
     "duration": "07:02",
-    "zone": "Center",
-    "stream_count": 40,
-    "latitude": 14.588671843083931,
-    "longitude": 120.97732051721069
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594250836262722,
+    "longitude": 120.97058158073564
   },
   {
     "filename": "Pamela Yuen - Joy.mp3",
@@ -666,10 +666,10 @@
     "artist": "Pamela Yuen",
     "genre": "jazz/blues, pop",
     "duration": "01:08",
-    "zone": "South",
-    "stream_count": 20,
-    "latitude": 14.5883490964054,
-    "longitude": 120.97527072333189
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.58797133961924,
+    "longitude": 120.97469045475165
   },
   {
     "filename": "Pamela Yuen - Fun Day Out.mp3",
@@ -678,10 +678,10 @@
     "artist": "Pamela Yuen",
     "genre": "pop, rock",
     "duration": "01:10",
-    "zone": "Center",
-    "stream_count": 30,
-    "latitude": 14.585936129099405,
-    "longitude": 120.97499122448713
+    "zone": "east",
+    "stream_count": 1000,
+    "latitude": 14.586202958414717,
+    "longitude": 120.9766511947523
   },
   {
     "filename": "Pamela Yuen - Conversation.mp3",
@@ -690,10 +690,10 @@
     "artist": "Pamela Yuen",
     "genre": "pop, folk/acoustic",
     "duration": "01:31",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.593682566773587,
-    "longitude": 120.9756146704958
+    "zone": "west",
+    "stream_count": 600,
+    "latitude": 14.589826780050076,
+    "longitude": 120.97599293796593
   },
   {
     "filename": "Pamela Yuen - This Is The Way U Do It.mp3",
@@ -702,10 +702,10 @@
     "artist": "Pamela Yuen",
     "genre": "pop, hip-hop/rap",
     "duration": "01:57",
-    "zone": "West",
-    "stream_count": 20,
-    "latitude": 14.584255468491934,
-    "longitude": 120.97363650009106
+    "zone": "west",
+    "stream_count": 1000,
+    "latitude": 14.588711946562062,
+    "longitude": 120.97583125997183
   },
   {
     "filename": "Pamela Yuen - Tiptoe From East To West.mp3",
@@ -714,10 +714,10 @@
     "artist": "Pamela Yuen",
     "genre": "pop, folk/acoustic",
     "duration": "01:22",
-    "zone": "East",
-    "stream_count": 30,
-    "latitude": 14.592678634666964,
-    "longitude": 120.97848441076968
+    "zone": "north",
+    "stream_count": 1200,
+    "latitude": 14.594948273909502,
+    "longitude": 120.96981907031382
   },
   {
     "filename": "Carlos Javed - No Excuses.mp3",
@@ -726,10 +726,10 @@
     "artist": "Carlos Javed",
     "genre": "pop, rock",
     "duration": "03:07",
-    "zone": "South",
-    "stream_count": 40,
-    "latitude": 14.588668109462242,
-    "longitude": 120.9744005411868
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587427903477026,
+    "longitude": 120.97599295300206
   },
   {
     "filename": "Carlos Javed - Born to Win.mp3",
@@ -738,10 +738,10 @@
     "artist": "Carlos Javed",
     "genre": "pop, rock",
     "duration": "03:56",
-    "zone": "South",
-    "stream_count": 30,
-    "latitude": 14.589609956279075,
-    "longitude": 120.97621923200238
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589450701799676,
+    "longitude": 120.97554405265227
   },
   {
     "filename": "Carlos Javed - Pain Into Power.mp3",
@@ -750,10 +750,10 @@
     "artist": "Carlos Javed",
     "genre": "pop, rock",
     "duration": "02:49",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.593545794502656,
-    "longitude": 120.9782092020585
+    "zone": "south",
+    "stream_count": 400,
+    "latitude": 14.587263767043003,
+    "longitude": 120.97472016444195
   },
   {
     "filename": "Carlos Javed - The Champion Within.mp3",
@@ -762,10 +762,10 @@
     "artist": "Carlos Javed",
     "genre": "pop, rock",
     "duration": "03:24",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.585545206718727,
-    "longitude": 120.97630467439565
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.586715596783895,
+    "longitude": 120.97638824198636
   },
   {
     "filename": "Carlos Javed - Motivation_ The Anthem.mp3",
@@ -774,10 +774,10 @@
     "artist": "Carlos Javed",
     "genre": "rop, rock",
     "duration": "02:52",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.584797069668825,
-    "longitude": 120.97545347097467
+    "zone": "center",
+    "stream_count": 200,
+    "latitude": 14.592108436032637,
+    "longitude": 120.97324697598802
   },
   {
     "filename": "Joseph R. Lilore - July 2025.mp3",
@@ -786,10 +786,10 @@
     "artist": "Joseph R. Lilore",
     "genre": "classical",
     "duration": "02:57",
-    "zone": "South",
-    "stream_count": 30,
-    "latitude": 14.588409150925969,
-    "longitude": 120.97368569729107
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.5897480372119,
+    "longitude": 120.97460485622543
   },
   {
     "filename": "Joseph R. Lilore - A Journey Continued _Aleatoric Composition_.mp3",
@@ -798,10 +798,10 @@
     "artist": "Joseph R. Lilore",
     "genre": "classical",
     "duration": "02:42",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.590848006224874,
-    "longitude": 120.97392792743503
+    "zone": "center",
+    "stream_count": 800,
+    "latitude": 14.591628517799142,
+    "longitude": 120.97421385782232
   },
   {
     "filename": "Joseph R. Lilore - Dreamscape.mp3",
@@ -810,10 +810,10 @@
     "artist": "Joseph R. Lilore",
     "genre": "classical",
     "duration": "02:57",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.590079657176826,
-    "longitude": 120.97646972952444
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.59408455711566,
+    "longitude": 120.97084693974008
   },
   {
     "filename": "Joseph R. Lilore - NOVEMBER.mp3",
@@ -822,10 +822,10 @@
     "artist": "Joseph R. Lilore",
     "genre": "cassical",
     "duration": "02:59",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.58599666424998,
-    "longitude": 120.97672645706831
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589830271294167,
+    "longitude": 120.97545585874275
   },
   {
     "filename": "Joseph R. Lilore - DRONE.mp3",
@@ -834,10 +834,10 @@
     "artist": "Joseph R. Lilore",
     "genre": "classical",
     "duration": "02:40",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.594059833658223,
-    "longitude": 120.97647241642288
+    "zone": "north",
+    "stream_count": 2400,
+    "latitude": 14.594789578519746,
+    "longitude": 120.96999514358392
   },
   {
     "filename": "CODESCORN - xchaikapro.mp3",
@@ -846,10 +846,10 @@
     "artist": "CODESCORN",
     "genre": "pop, experimental",
     "duration": "02:44",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.586559740987749,
-    "longitude": 120.97640135939966
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.58685648118777,
+    "longitude": 120.97521652762816
   },
   {
     "filename": "CODESCORN - easysotrudnik.mp3",
@@ -858,10 +858,10 @@
     "artist": "CODESCORN",
     "genre": "pop, experimental",
     "duration": "02:39",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.589187592064714,
-    "longitude": 120.97628482985607
+    "zone": "north",
+    "stream_count": 400,
+    "latitude": 14.594353238842299,
+    "longitude": 120.96963550703971
   },
   {
     "filename": "CODESCORN - goryachiy matras.mp3",
@@ -870,10 +870,10 @@
     "artist": "CODESCORN",
     "genre": "pop, experimental",
     "duration": "03:25",
-    "zone": "North",
-    "stream_count": 20,
-    "latitude": 14.5956061821119,
-    "longitude": 120.96999105210551
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.590104204150963,
+    "longitude": 120.97561722959578
   },
   {
     "filename": "CODESCORN - kurinuepalochki.mp3",
@@ -882,10 +882,10 @@
     "artist": "CODESCORN",
     "genre": "pop, experimental",
     "duration": "03:59",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.591082272782112,
-    "longitude": 120.97531007233255
+    "zone": "south",
+    "stream_count": 400,
+    "latitude": 14.587644015658569,
+    "longitude": 120.9745629024136
   },
   {
     "filename": "CODESCORN - moychaika.mp3",
@@ -894,10 +894,10 @@
     "artist": "CODESCORN",
     "genre": "pop, experimental",
     "duration": "03:05",
-    "zone": "Center",
-    "stream_count": 380,
-    "latitude": 14.586790822398005,
-    "longitude": 120.97647174908921
+    "zone": "east",
+    "stream_count": 1000,
+    "latitude": 14.58728820503228,
+    "longitude": 120.9760430845384
   },
   {
     "filename": "Bernado - Autumn_is_done.mp3",
@@ -906,10 +906,10 @@
     "artist": "Bernardo",
     "genre": "jazz/blues, experimental",
     "duration": "03:25",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.593887113475319,
-    "longitude": 120.97565936240503
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.586648092260804,
+    "longitude": 120.97494249815657
   },
   {
     "filename": "Bernado - I_dont_mind.mp3",
@@ -918,10 +918,10 @@
     "artist": "Bernardo",
     "genre": "jazz/blues, experimental",
     "duration": "03:11",
-    "zone": "South",
-    "stream_count": 50,
-    "latitude": 14.588202422229365,
-    "longitude": 120.97455523126528
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594357128572652,
+    "longitude": 120.96961500192626
   },
   {
     "filename": "Bernado - love_raining.mp3",
@@ -930,10 +930,10 @@
     "artist": "Bernardo",
     "genre": "jazz/blues, experimental",
     "duration": "03:30",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.585511340565404,
-    "longitude": 120.97706184501367
+    "zone": "east",
+    "stream_count": 400,
+    "latitude": 14.586434744577828,
+    "longitude": 120.97698347817928
   },
   {
     "filename": "Bernado - mamas_cadillac.mp3",
@@ -942,10 +942,10 @@
     "artist": "Bernardo",
     "genre": "jazz/blues, experimental",
     "duration": "04:18",
-    "zone": "North",
-    "stream_count": 20,
-    "latitude": 14.593564206112417,
-    "longitude": 120.9706022930273
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.587627269989373,
+    "longitude": 120.97498071217468
   },
   {
     "filename": "Bernado - recognition_blues.mp3",
@@ -954,10 +954,10 @@
     "artist": "Bernardo",
     "genre": "jazz/blues, experimental",
     "duration": "03:53",
-    "zone": "Center",
-    "stream_count": 10,
-    "latitude": 14.585820715370202,
-    "longitude": 120.97697521512988
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.593972798409014,
+    "longitude": 120.97011444720954
   },
   {
     "filename": "CODESCORN - 220w[oldscoolstyle].mp3",
@@ -966,10 +966,10 @@
     "artist": "CODESCORN",
     "genre": "hip-hop/rap",
     "duration": "01:40",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.589406315810976,
-    "longitude": 120.97652878556255
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.5874826347801,
+    "longitude": 120.97413822517333
   },
   {
     "filename": "CODESCORN - 220wscammer[raggafemalefreestyle].mp3",
@@ -978,10 +978,10 @@
     "artist": "CODESCORN",
     "genre": "hip-hop/rap",
     "duration": "02:05",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.58687451592278,
-    "longitude": 120.9762557318519
+    "zone": "north",
+    "stream_count": 200,
+    "latitude": 14.594653030988292,
+    "longitude": 120.97074929004906
   },
   {
     "filename": "CODESCORN - 50let[classichiphop].mp3",
@@ -990,10 +990,10 @@
     "artist": "CODESCORN",
     "genre": "hip-hop/rap",
     "duration": "03:16",
-    "zone": "North",
-    "stream_count": 20,
-    "latitude": 14.595814842963337,
-    "longitude": 120.96875622470837
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.586937015568363,
+    "longitude": 120.97461173797512
   },
   {
     "filename": "CODESCORN - 50let.exe.mp3",
@@ -1002,10 +1002,10 @@
     "artist": "CODESCORN",
     "genre": "hip-hop/rap",
     "duration": "02:12",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.594210810076376,
-    "longitude": 120.97170402333033
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587388031659806,
+    "longitude": 120.9768877740728
   },
   {
     "filename": "CODESCORN - 220wscammer.mp3",
@@ -1014,10 +1014,10 @@
     "artist": "CODESCORN",
     "genre": "hip-hop/rap",
     "duration": "02:06",
-    "zone": "West",
-    "stream_count": 20,
-    "latitude": 14.58676698850743,
-    "longitude": 120.97450619152531
+    "zone": "south",
+    "stream_count": 4000,
+    "latitude": 14.587967510882855,
+    "longitude": 120.97506465661068
   },
   {
     "filename": "Taylor & Lopker - Jimmy Kimmel We Love You.mp3",
@@ -1026,10 +1026,10 @@
     "artist": "Taylor & Lopker",
     "genre": "pop, rock, folk/acoustic",
     "duration": "02:38",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.593182099885947,
-    "longitude": 120.9789946212261
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.58703379350258,
+    "longitude": 120.97523700314855
   },
   {
     "filename": "Love Jimmy Kimmel - Boycott Disney ABC Hulu ESPN.mp3",
@@ -1038,10 +1038,10 @@
     "artist": "Taylor & Lopker",
     "genre": "pop, rock, folk/acoustic",
     "duration": "03:19",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.595360517667897,
-    "longitude": 120.97076679628839
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.58619011666072,
+    "longitude": 120.975857351033
   },
   {
     "filename": "Taylor & Lopker - 60 Plus 9 _ Poetic Therapy _ Electronic Dance & Rock Song.mp3",
@@ -1050,10 +1050,10 @@
     "artist": "Taylor & Lopker",
     "genre": "pop, rock, folk/acoustic",
     "duration": "05:10",
-    "zone": "West",
-    "stream_count": 10,
-    "latitude": 14.586659225059655,
-    "longitude": 120.97392577482141
+    "zone": "east",
+    "stream_count": 200,
+    "latitude": 14.587420147200142,
+    "longitude": 120.97606812535169
   },
   {
     "filename": "Taylor & Lopker - Letter To Melissa _ Melissa Etheridge Tribute.mp3",
@@ -1062,10 +1062,10 @@
     "artist": "Taylor & Lopker",
     "genre": "pop, rock, folk/acoustic",
     "duration": "02:18",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.593949810544961,
-    "longitude": 120.97743291246653
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.586710427620652,
+    "longitude": 120.9750190267636
   },
   {
     "filename": "Taylor & Lopker - THEM _ Survived Abuse by Them.mp3",
@@ -1074,10 +1074,10 @@
     "artist": "Taylor & Lopker",
     "genre": "pop, rock, folk/acoustic",
     "duration": "03:39",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.593363803359109,
-    "longitude": 120.97094121578206
+    "zone": "east",
+    "stream_count": 800,
+    "latitude": 14.587605443011284,
+    "longitude": 120.97686662462726
   },
   {
     "filename": "Ketsa - My Biz.mp3",
@@ -1086,10 +1086,10 @@
     "artist": "Ketsa",
     "genre": "jazz/blues, hip-hop/rap",
     "duration": "02:57",
-    "zone": "Center",
-    "stream_count": 60,
-    "latitude": 14.586065533075146,
-    "longitude": 120.97611258511257
+    "zone": "center",
+    "stream_count": 8200,
+    "latitude": 14.59269673623423,
+    "longitude": 120.97368781656778
   },
   {
     "filename": "Ketsa - Sun Slides.mp3",
@@ -1098,10 +1098,10 @@
     "artist": "Ketsa",
     "genre": "jazz/blues, hip-hop/rap",
     "duration": "03:12",
-    "zone": "South",
-    "stream_count": 50,
-    "latitude": 14.590556609031772,
-    "longitude": 120.97405677778356
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.590153148241491,
+    "longitude": 120.97572898464193
   },
   {
     "filename": "Ketsa - To do.mp3",
@@ -1110,10 +1110,10 @@
     "artist": "Ketsa",
     "genre": "jazz/blues, hip-hop/rap",
     "duration": "02:53",
-    "zone": "East",
-    "stream_count": 30,
-    "latitude": 14.593696827280711,
-    "longitude": 120.975560162503
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589733219988437,
+    "longitude": 120.97439914422206
   },
   {
     "filename": "Ketsa - Make Me Sad.mp3",
@@ -1122,10 +1122,10 @@
     "artist": "Ketsa",
     "genre": "jazz/blues, hip-hop/rap",
     "duration": "03:13",
-    "zone": "East",
-    "stream_count": 70,
-    "latitude": 14.594187143345518,
-    "longitude": 120.97843205401179
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.589197022280256,
+    "longitude": 120.97549258478416
   },
   {
     "filename": "Ketsa - Grand Rising.mp3",
@@ -1134,10 +1134,10 @@
     "artist": "Ketsa",
     "genre": "jazz/blues, hip-hop/rap",
     "duration": "03:30",
-    "zone": "South",
-    "stream_count": 10,
-    "latitude": 14.590886862705268,
-    "longitude": 120.97447760473223
+    "zone": "south",
+    "stream_count": 200,
+    "latitude": 14.58801725547647,
+    "longitude": 120.97433042580845
   },
   {
     "filename": "Kuuleminen Asiat - Sharpenin Man.mp3",
@@ -1146,10 +1146,10 @@
     "artist": "Kuuleminen Asiat",
     "genre": "experimental, electronic",
     "duration": "01:36",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.59522659142494,
-    "longitude": 120.96956814321827
+    "zone": "north",
+    "stream_count": 800,
+    "latitude": 14.593905547322583,
+    "longitude": 120.97040548247516
   },
   {
     "filename": "Kuuleminen Asiat - Artist Messages.mp3",
@@ -1158,10 +1158,10 @@
     "artist": "Kuuleminen Asiat",
     "genre": "experimental, electronic",
     "duration": "05:27",
-    "zone": "East",
-    "stream_count": 10,
-    "latitude": 14.59174015339849,
-    "longitude": 120.97813902452567
+    "zone": "center",
+    "stream_count": 3400,
+    "latitude": 14.592299218872993,
+    "longitude": 120.9735282316327
   },
   {
     "filename": "Kuuleminen Asiat - Acetylene.mp3",
@@ -1170,10 +1170,10 @@
     "artist": "Kuuleminen Asiat",
     "genre": "experimental, electronic",
     "duration": "06:35",
-    "zone": "North",
+    "zone": "center",
     "stream_count": 200,
-    "latitude": 14.594557617098596,
-    "longitude": 120.97148780757875
+    "latitude": 14.59114817137501,
+    "longitude": 120.97258143522147
   },
   {
     "filename": "Kuuleminen Asiat - Barren Lands.mp3",
@@ -1182,10 +1182,10 @@
     "artist": "Kuuleminen Asiat",
     "genre": "experimental, electronic",
     "duration": "04:59",
-    "zone": "North",
-    "stream_count": 20,
-    "latitude": 14.59342454382467,
-    "longitude": 120.96968734675949
+    "zone": "west",
+    "stream_count": 200,
+    "latitude": 14.588982913837306,
+    "longitude": 120.97555710251525
   },
   {
     "filename": "Kuuleminen Asiat - Dead Concrete.mp3",
@@ -1194,9 +1194,9 @@
     "artist": "Kuuleminen Asiat",
     "genre": "experimental, electronic",
     "duration": "08:03",
-    "zone": "North",
-    "stream_count": 10,
-    "latitude": 14.593085691131828,
-    "longitude": 120.9719825099907
+    "zone": "south",
+    "stream_count": 400,
+    "latitude": 14.587155430622735,
+    "longitude": 120.97416812093154
   }
 ]

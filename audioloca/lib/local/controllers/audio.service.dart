@@ -202,7 +202,21 @@ class AudioServices {
       if (response.statusCode == 200) {
         return parser(jsonDecode(response.body));
       }
-      throw HttpException('GET $endpoint failed: ${response.statusCode}');
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Fluttter] GET $endpoint error $e $stackTrace');
       rethrow;
@@ -225,7 +239,21 @@ class AudioServices {
       if (response.statusCode == 200) {
         return parser(jsonDecode(response.body));
       }
-      throw HttpException('POST $endpoint failed: ${response.statusCode}');
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw Exception(message);
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error $e $stackTrace');
       rethrow;
