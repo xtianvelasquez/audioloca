@@ -177,6 +177,14 @@ class SpotifyRecommender {
     }
   }
 
+  Future<List<SpotifyTrack>> fetchGlobalRecommendationsFromSpotify() async {
+    final accessToken = await getValidAccessToken();
+    if (accessToken == null) {
+      throw Exception('Access token is null. Cannot fetch recommendations.');
+    }
+    return await trackServices.fetchGlobalRecommendation(accessToken);
+  }
+
   /// ---- STATIC MAPPINGS ----
   static const Map<String, List<String>> moodToQueries = {
     'happiness': ['energetic', 'upbeat', 'party', 'dance'],

@@ -24,6 +24,7 @@ class LocationServices {
 
   Future<bool> ensureLocationReady(BuildContext context) async {
     try {
+      await Future.delayed(const Duration(milliseconds: 500)); // small wait
       final position = await getUserPosition();
       log.i(
         '[Flutter] Position acquired: ${position.latitude}, ${position.longitude}',
@@ -91,7 +92,7 @@ class LocationServices {
   void startRealtimeTracking({
     required void Function(Position position) onLocationUpdate,
     LocationAccuracy accuracy = LocationAccuracy.high,
-    int distanceFilter = 200,
+    int distanceFilter = 100,
   }) {
     if (useMockLocation) {
       final mockPosition = Position(

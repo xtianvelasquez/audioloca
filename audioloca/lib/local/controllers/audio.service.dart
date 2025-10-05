@@ -17,6 +17,7 @@ class ApiEndpoints {
   static const String readAudio = '/audioloca/audio/read';
   static const String searchAudio = '/audioloca/audio/search';
   static const String createAudio = '/audioloca/audio/create';
+  static const String globalAudio = '/audioloca/audio/global';
 }
 
 class AudioServices {
@@ -186,6 +187,22 @@ class AudioServices {
       log.e('[Flutter] Error creating audio: $e $stackTrace');
       return false;
     }
+  }
+
+  // =======================
+  // GET global audios
+  // =======================
+  Future<List<Audio>> readGlobalAudios() async {
+    return _get<List<Audio>>(
+      ApiEndpoints.globalAudio,
+      headers: {},
+      parser: (data) {
+        if (data is List) {
+          return data.map((json) => Audio.fromJson(json)).toList();
+        }
+        throw FormatException('Unexpected audio list format.');
+      },
+    );
   }
 
   // =======================

@@ -22,11 +22,7 @@ import 'package:audioloca/player/views/mini.player.dart';
 final log = Logger();
 final storage = SecureStorageService();
 final emotionRecognition = EmotionRecognition();
-final locationServices = LocationServices(
-  useMockLocation: true,
-  mockLatitude: 14.591835,
-  mockLongitude: 120.9733458,
-);
+final locationServices = LocationServices();
 final localRecommender = LocalRecommender();
 final spotifyRecommender = SpotifyRecommender();
 final trackServices = TrackServices();
@@ -43,6 +39,9 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
   String? accessToken;
   LatLng? currentLatLng;
 
+  List<Audio> globalLocalTracks = [];
+  List<SpotifyTrack> globalSpotifyTracks = [];
+
   List<Audio> localTracks = [];
   List<Audio> localAudioLocationTracks = [];
 
@@ -56,8 +55,10 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    loadLastMood();
-    initTracks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadLastMood();
+      initTracks();
+    });
   }
 
   Future<void> loadLastMood() async {
@@ -83,10 +84,33 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
 
     accessToken = await spotifyRecommender.getValidAccessToken();
 
+    await loadGlobalRecommendations();
     await loadMoodRecommendations();
     await loadLocationRecommendations();
 
     if (mounted) setState(() => isLoading = false);
+  }
+
+  Future<void> loadGlobalRecommendations() async {
+    try {
+      final globalLocal = await localRecommender
+          .fetchGlobalRecommendationsFromLocal();
+
+      List<SpotifyTrack> globalSpotify = [];
+      if (accessToken != null) {
+        globalSpotify = await spotifyRecommender
+            .fetchGlobalRecommendationsFromSpotify();
+      }
+
+      if (mounted) {
+        setState(() {
+          globalLocalTracks = globalLocal;
+          globalSpotifyTracks = globalSpotify;
+        });
+      }
+    } catch (e, stackTrace) {
+      log.e("Failed to global recos: $e $stackTrace");
+    }
   }
 
   Future<void> loadMoodRecommendations({bool forceRefresh = false}) async {
@@ -148,7 +172,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
             detectedLocation = locationAddress;
             localAudioLocationTracks = localRecommendations;
             spotifyAudioLocationTracks = spotifyLocationRecommendations;
-            currentLatLng = LatLng(roundedLat, roundedLng); // ✅ Store here
+            currentLatLng = LatLng(roundedLat, roundedLng);
           });
         }
       },
@@ -195,11 +219,11 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
           foregroundColor: AppColors.light,
           elevation: 0,
           bottom: const TabBar(
-            indicatorColor: Colors.white,
-            labelColor: Colors.white,
+            indicatorColor: AppColors.light,
+            labelColor: AppColors.light,
             unselectedLabelColor: Colors.white70,
             tabs: [
-              Tab(text: "Empty"),
+              Tab(text: "All"),
               Tab(text: "Emotion"),
               Tab(text: "Location"),
             ],
@@ -209,8 +233,46 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
             ? const Center(child: CircularProgressIndicator())
             : TabBarView(
                 children: [
-                  // 1 Empty Tab
-                  const Center(child: Text("This tab is empty for now.")),
+                  // 1 Global Tabs
+                  ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.audiotrack,
+                            color: Colors.deepPurple,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "Discover picks for you",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.color1,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Text("Local Tracks", style: sectionStyle),
+                      const SizedBox(height: 12),
+                      globalLocalTracks.isEmpty
+                          ? const Text("No local tracks available.")
+                          : LocalListView(allTracks: globalLocalTracks),
+
+                      if (accessToken != null) ...[
+                        const SizedBox(height: 16),
+                        const Text("Spotify Tracks", style: sectionStyle),
+                        globalSpotifyTracks.isEmpty
+                            ? const Text("No Spotify tracks available.")
+                            : SpotifyListView(allTracks: globalSpotifyTracks),
+                      ],
+                    ],
+                  ),
 
                   // 2️ Emotion Recognition + Mood Recos
                   ListView(
@@ -220,7 +282,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                         onPressed: scanMood,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.color1,
-                          foregroundColor: Colors.white,
+                          foregroundColor: AppColors.light,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -237,9 +299,8 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                             child: Text(
                               "Detected Mood: ${detectedMood ?? 'No mood detected yet'}",
                               style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
+                                fontSize: 12,
+                                color: AppColors.color1,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
@@ -279,9 +340,9 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                   ListView(
                     padding: const EdgeInsets.all(16),
                     children: [
-                      // 🔹 Placeholder for Map
+                      // Placeholder for Map
                       Container(
-                        height: 300,
+                        height: 200,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -291,7 +352,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                             options: MapOptions(
                               initialCenter:
                                   currentLatLng ??
-                                  const LatLng(14.5995, 120.9842),
+                                  const LatLng(14.587068, 120.976201),
                               initialZoom: 15,
                               interactionOptions: const InteractionOptions(
                                 flags: InteractiveFlag.all,
@@ -301,8 +362,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                               TileLayer(
                                 urlTemplate:
                                     'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                userAgentPackageName:
-                                    'com.example.audioloca', // replace with your real package name
+                                userAgentPackageName: 'com.example.audioloca',
                               ),
                               if (currentLatLng != null)
                                 MarkerLayer(
@@ -313,7 +373,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                                       height: 50,
                                       child: const Icon(
                                         Icons.location_pin,
-                                        color: Colors.red,
+                                        color: AppColors.color1,
                                         size: 40,
                                       ),
                                     ),
@@ -330,7 +390,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                         children: [
                           const Icon(
                             Icons.location_on,
-                            color: Colors.deepPurple,
+                            color: AppColors.color1,
                           ),
                           const SizedBox(width: 8),
                           Expanded(

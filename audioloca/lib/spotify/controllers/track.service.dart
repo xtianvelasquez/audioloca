@@ -70,7 +70,7 @@ class TrackServices {
     final url = Uri.https('api.spotify.com', '/v1/search', {
       'q': query,
       'type': 'track',
-      'limit': '10',
+      'limit': '50',
     });
 
     try {
@@ -127,6 +127,15 @@ class TrackServices {
         throw FormatException('Unexpected audio location format.');
       },
     );
+  }
+
+  Future<List<SpotifyTrack>> fetchGlobalRecommendation(
+    String accessToken,
+  ) async {
+    final queries = ['new', 'top', 'trending', 'popular', 'fresh', 'discover'];
+    final randomQuery = (queries..shuffle()).first;
+
+    return await searchSpotifyTracks(accessToken, randomQuery);
   }
 
   Future<T> _post<T>(

@@ -75,6 +75,20 @@ def read_all_audio(db: Session, user_id: int):
   )
 
 @db_safe
+def read_global_audio(db: Session, user_id: int):
+  return (
+    db.query(Audio)
+    .options(
+      selectinload(Audio.genre_links).selectinload(Audio_Genres.genre),
+      selectinload(Audio.user),
+      selectinload(Audio.album),
+      selectinload(Audio.streams)
+    )
+    .order_by(desc(Audio.created_at))
+    .all()
+  )
+
+@db_safe
 def read_specific_audio(db: Session, user_id: int, audio_id: int):
   return db.query(Audio).options(
     selectinload(Audio.genre_links).selectinload(Audio_Genres.genre),

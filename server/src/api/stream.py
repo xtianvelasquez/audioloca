@@ -55,6 +55,8 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
   lat = data.latitude
   lon = data.longitude
 
+  print(f"Frontend request received with latitude: {lat}, longitude: {lon}")
+
   radius_m = 100
   radius_deg_lat = radius_m / 111_320
   radius_deg_lon = radius_m / (111_320 * cos(radians(lat)))
@@ -69,10 +71,14 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
   results = []
   for location in locations:
     streams = read_local_audio_location(db, location.location_id)
-    results.extend([build_local_stream(stream) for stream in streams if stream.audio.visibility == "public"])
+    for stream in streams:
+      if stream.audio.visibility == "public":
+        print(f"Fetched audio: {stream.audio.audio_title} at lat: {location.latitude}, lon: {location.longitude}")
+        results.append(build_local_stream(stream))
+
+  print(f"Total public audio streams fetched: {len(results)}")
 
   if results:
-    print(len(results))
     return results
 
   streams = read_local_streams(db)

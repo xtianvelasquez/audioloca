@@ -7,6 +7,7 @@ import 'package:audioloca/local/models/audio.model.dart';
 final log = Logger();
 final storage = SecureStorageService();
 final random = Random();
+final audioServices = AudioServices();
 
 class LocalRecommender {
   String? cachedMood;
@@ -20,10 +21,7 @@ class LocalRecommender {
     final allTracks = <Audio>[];
 
     try {
-      final audios = await AudioServices().readAudioLocation(
-        latitude,
-        longitude,
-      );
+      final audios = await audioServices.readAudioLocation(latitude, longitude);
       allTracks.addAll(audios);
     } catch (e, st) {
       log.e('[Flutter] Error fetching location-based audio: $e $st');
@@ -51,7 +49,7 @@ class LocalRecommender {
 
     for (final genreId in genreIds) {
       try {
-        final tracks = await AudioServices().readAudioGenre(genreId);
+        final tracks = await audioServices.readAudioGenre(genreId);
         allTracks.addAll(tracks);
       } catch (e, st) {
         log.e('[Flutter] Error fetching genre $genreId: $e $st');
@@ -71,6 +69,19 @@ class LocalRecommender {
     log.i(
       '[Flutter] Returning ${allTracks.length} local tracks for mood "$lastMood".',
     );
+
+    return allTracks;
+  }
+
+  Future<List<Audio>> fetchGlobalRecommendationsFromLocal() async {
+    final allTracks = <Audio>[];
+
+    try {
+      final audios = await audioServices.readGlobalAudios();
+      allTracks.addAll(audios);
+    } catch (e, st) {
+      log.e('[Flutter] Error fetching location-based audio: $e $st');
+    }
 
     return allTracks;
   }
