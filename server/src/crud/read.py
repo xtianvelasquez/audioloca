@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
+from typing import List
 
 from src.models import Token_Type, Genres, User, Album, Audio, Audio_Genres, Streams, Locations
 from src.utils import normalize_coordinates
@@ -75,7 +76,7 @@ def read_all_audio(db: Session, user_id: int):
   )
 
 @db_safe
-def read_global_audio(db: Session, user_id: int):
+def read_global_audio(db: Session):
   return (
     db.query(Audio)
     .options(
@@ -120,17 +121,22 @@ def read_audio_album(db: Session, user_id: int, album_id: int):
   )
 
 @db_safe
-def read_audio_by_genre(db: Session, genre_id: int):
+def read_audio_by_genre(db: Session, genre_ids: List[int]):
   return (
     db.query(Audio)
+    .join(Audio.genre_links)
+    .filter(
+      Audio.visibility == "public",
+      Audio_Genres.genre_id.in_(genre_ids)
+    )
     .options(
       selectinload(Audio.genre_links).selectinload(Audio_Genres.genre),
       selectinload(Audio.user),
       selectinload(Audio.album),
       selectinload(Audio.streams)
     )
-    .filter(Audio.visibility == "public", Audio_Genres.genre_id == genre_id)
     .order_by(desc(Audio.created_at))
+    .distinct()
     .all()
   )
 

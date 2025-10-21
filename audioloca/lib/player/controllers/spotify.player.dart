@@ -33,7 +33,7 @@ class SpotifyPlayerService {
     final token = await storage.getAccessToken();
     if (token == null || token.isEmpty) {
       log.e('[Spotify Player] Missing access token.');
-      throw Exception('Spotify access token is missing.');
+      throw 'Spotify access token is missing.';
     }
 
     try {
@@ -105,7 +105,7 @@ class SpotifyPlayerService {
     } catch (e, st) {
       log.e('[Spotify] play error: $e');
       log.e(st.toString());
-      throw Exception('Failed to play track');
+      throw 'Failed to play track';
     }
   }
 

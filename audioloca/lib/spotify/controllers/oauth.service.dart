@@ -44,7 +44,7 @@ class OAuthServices {
     final code = uri.queryParameters['code'];
     if (code == null) {
       await storage.deleteCodeVerifier();
-      throw Exception('Authorization code not found in the response.');
+      throw 'Authorization code not found in the response.';
     }
 
     final savedVerifier = await storage.getCodeVerifier();
@@ -57,7 +57,7 @@ class OAuthServices {
 
     if (response.statusCode != 200) {
       await storage.deleteCodeVerifier();
-      throw Exception('Backend token exchange failed: ${response.body}');
+      throw 'Backend token exchange failed: ${response.body}';
     }
 
     final tokenData = jsonDecode(response.body);

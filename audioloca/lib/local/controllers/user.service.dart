@@ -34,7 +34,7 @@ class UserServices {
             return token; // Return the JWT token as String
           }
         }
-        throw Exception('Invalid login response format.');
+        throw 'Invalid login response format.';
       },
     );
 
@@ -87,7 +87,7 @@ class UserServices {
     try {
       final jwtToken = await storage.getJwtToken();
       if (jwtToken == null || jwtToken.isEmpty) {
-        throw Exception('No token returned from server.');
+        throw 'No token returned from server.';
       }
 
       final response = await http.get(
@@ -99,18 +99,18 @@ class UserServices {
       );
 
       if (response.statusCode >= 400) {
-        throw Exception('Error fetching user profile: ${response.body}');
+        throw 'Error fetching user profile: ${response.body}';
       }
 
       final data = jsonDecode(response.body);
       if (data is! Map<String, dynamic>) {
-        throw Exception('Unexpected user profile format.');
+        throw 'Unexpected user profile format.';
       }
 
       return User.fromJson(data);
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching user profile: $e $stackTrace');
-      throw Exception(e);
+      rethrow;
     }
   }
 
@@ -131,7 +131,7 @@ class UserServices {
         body: jsonEncode(body),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return parser(jsonDecode(response.body));
       }
 
@@ -148,7 +148,7 @@ class UserServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error: $e\n$stackTrace');
       rethrow;

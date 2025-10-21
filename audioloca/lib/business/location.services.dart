@@ -24,7 +24,7 @@ class LocationServices {
 
   Future<bool> ensureLocationReady(BuildContext context) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 500)); // small wait
+      await Future.delayed(const Duration(milliseconds: 500));
       final position = await getUserPosition();
       log.i(
         '[Flutter] Position acquired: ${position.latitude}, ${position.longitude}',
@@ -45,22 +45,20 @@ class LocationServices {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       await Geolocator.openLocationSettings();
-      throw Exception('Please enable location services in settings.');
+      throw 'Please enable location services in settings.';
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        throw Exception('Location permission denied.');
+        throw 'Location permission denied.';
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       await Geolocator.openAppSettings();
-      throw Exception(
-        'Location permission permanently denied. Enable it in app settings.',
-      );
+      throw 'Location permission permanently denied. Enable it in app settings.';
     }
 
     if (useMockLocation) {

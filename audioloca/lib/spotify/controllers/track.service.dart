@@ -56,7 +56,7 @@ class TrackServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] Spotify API error: $e $stackTrace');
       rethrow;
@@ -105,7 +105,7 @@ class TrackServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] Spotify search error: $e $stackTrace');
       rethrow;
@@ -168,7 +168,7 @@ class TrackServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error $e $stackTrace');
       rethrow;

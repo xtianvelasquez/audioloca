@@ -18,8 +18,14 @@ class EmotionResult {
   final String? emotionLabel;
   final double? confidenceScore;
   final String? errorMessage;
+  final List<MapEntry<String, double>>? topEmotions;
 
-  EmotionResult({this.emotionLabel, this.confidenceScore, this.errorMessage});
+  EmotionResult({
+    this.emotionLabel,
+    this.confidenceScore,
+    this.errorMessage,
+    this.topEmotions,
+  });
 
   bool get isSuccess => emotionLabel != null;
 }
@@ -29,30 +35,41 @@ class EmotionRecognition {
   factory EmotionRecognition() => instance;
   EmotionRecognition._internal();
 
-  final List<String> emotionLabels = const [
-    'surprise',
-    'anger',
-    'disgust',
-    'happiness',
-    'sadness',
-    'fear',
-    'neutral',
-    'happiness',
-    'disgust',
-    'sadness',
-    'happiness',
-    'sadness',
-    'disgust',
-    'anger',
-    'fear',
-    'anger',
-    'disgust',
-    'disgust',
+  // --- Labels for both models ---
+  final List<String> basicLabels = const [
+    "Anger",
+    "Disgust",
+    "Fear",
+    "Happiness",
+    "Neutral",
+    "Sadness",
+    "Surprise",
   ];
 
-  Interpreter? interpreter;
-  bool get isModelReady => interpreter != null;
+  final List<String> compoundLabels = const [
+    "Angrily Disgusted",
+    "Angrily Surprised",
+    "Disgustedly Surprised",
+    "Fearfully Angry",
+    "Fearfully Surprised",
+    "Happily Disgusted",
+    "Happily Surprised",
+    "Sadly Angry",
+    "Sadly Disgusted",
+    "Sadly Fearful",
+    "Sadly Surprised",
+  ];
 
+  Interpreter? basicInterpreter;
+  Interpreter? compoundInterpreter;
+
+  bool get isBasicReady => basicInterpreter != null;
+  bool get isCompoundReady => compoundInterpreter != null;
+  bool get isModelReady => isBasicReady && isCompoundReady;
+
+  // -------------------------------------------------------------
+  // CAMERA PREDICTION FLOW (kept the same)
+  // -------------------------------------------------------------
   Future<EmotionResult> requestCameraPermission() async {
     var status = await Permission.camera.status;
     if (status.isGranted || status.isLimited) {
@@ -80,7 +97,7 @@ class EmotionRecognition {
       );
 
       if (!isModelReady) {
-        return EmotionResult(errorMessage: 'Model not loaded.');
+        return EmotionResult(errorMessage: 'Models not loaded.');
       }
 
       if (pickedFile == null) {
@@ -105,13 +122,11 @@ class EmotionRecognition {
 
       final face = faces.first;
       final boundingBox = face.boundingBox;
-
       final imageFile = File(pickedFile.path);
       final img.Image? fullImage = await decodeAndPreprocess(imageFile);
+
       if (fullImage == null) {
-        return EmotionResult(
-          errorMessage: 'Could not decode image. Please try again.',
-        );
+        return EmotionResult(errorMessage: 'Could not decode image.');
       }
 
       final cropX = boundingBox.left.clamp(0, fullImage.width - 1).toInt();
@@ -133,68 +148,131 @@ class EmotionRecognition {
         height: cropHeight,
       );
 
-      final prediction = await predict(croppedFace);
+      // --- Predict using both models ---
+      final basicPred = await predictBasic(croppedFace);
+      final compoundPred = await predictCompound(croppedFace);
 
-      for (int i = 0; i < emotionLabels.length; i++) {
-        log.i(
-          '[Emotion] ${emotionLabels[i]}: ${prediction[i].toStringAsFixed(4)}',
-        );
+      final basicSorted = _sortPredictions(basicLabels, basicPred);
+      final compoundSorted = _sortPredictions(compoundLabels, compoundPred);
+
+      // --- Select top predictions ---
+      final basicTop = basicSorted.first;
+      final compoundTop = compoundSorted.first;
+
+      // --- Threshold for confidence ---
+      const double confidenceThreshold = 0.60;
+
+      // --- Decide final emotion (compound prioritized, basic fallback) ---
+      String chosenEmotion;
+      double confidenceScore;
+
+      if (compoundTop.value >= confidenceThreshold) {
+        chosenEmotion = compoundTop.key;
+        confidenceScore = compoundTop.value;
+      } else {
+        // Fallback to basic model if compound confidence is weak
+        chosenEmotion = basicTop.key;
+        confidenceScore = basicTop.value;
+        log.i('[Fallback] Using Basic Model Prediction.');
       }
 
-      final maxScore = prediction.reduce((a, b) => a > b ? a : b);
-      final maxIndex = prediction.indexOf(maxScore);
+      // --- Save the chosen emotion ---
+      await storage.saveLastMood(chosenEmotion);
 
-      for (int i = 0; i < emotionLabels.length; i++) {
-        log.i(
-          '[Emotion] ${emotionLabels[i]}: ${prediction[i].toStringAsFixed(4)}',
-        );
-      }
+      // --- Return both top-3 predictions for analysis ---
+      final topBasicEmotions = basicSorted.take(3).toList();
+      final topCompoundEmotions = compoundSorted.take(3).toList();
 
-      final fallbackEmotion = 'Neutral';
-      final topEmotion = maxScore < 0.5
-          ? fallbackEmotion
-          : emotionLabels[maxIndex];
+      log.i(
+        '[Final Emotion] $chosenEmotion (${confidenceScore.toStringAsFixed(4)})',
+      );
 
-      await storage.saveLastMood(topEmotion);
-
-      return EmotionResult(emotionLabel: topEmotion, confidenceScore: maxScore);
+      return EmotionResult(
+        emotionLabel: chosenEmotion,
+        confidenceScore: confidenceScore,
+        topEmotions: [...topBasicEmotions, ...topCompoundEmotions],
+      );
     } catch (e, stackTrace) {
       log.e('[Flutter] Error during prediction: $e $stackTrace');
       return EmotionResult(errorMessage: 'Error during prediction: $e');
     }
   }
 
+  // -------------------------------------------------------------
+  // Helpers
+  // -------------------------------------------------------------
+  List<MapEntry<String, double>> _sortPredictions(
+    List<String> labels,
+    List<double> predictions,
+  ) {
+    final sorted = List.generate(
+      labels.length,
+      (i) => MapEntry(labels[i], predictions[i]),
+    )..sort((a, b) => b.value.compareTo(a.value));
+    return sorted;
+  }
+
   Future<img.Image?> decodeAndPreprocess(File imageFile) async {
     return await compute(decodeImageInIsolate, imageFile.path);
   }
 
-  Future<List<double>> predict(img.Image image) async {
-    if (!isModelReady) throw Exception('Model not loaded');
+  // -------------------------------------------------------------
+  // Dual Model Predictions
+  // -------------------------------------------------------------
+  Future<List<double>> predictBasic(img.Image image) async {
+    if (!isBasicReady) throw 'Basic model not loaded';
     return await compute(runInferenceInIsolate, {
       'image': image,
-      'interpreterAddress': interpreter!.address,
+      'interpreterAddress': basicInterpreter!.address,
     });
   }
 
-  Future<void> loadModel() async {
-    try {
-      final modelData = await rootBundle.load(
-        'assets/mobilenetv2_stage4_final.tflite',
-      );
-      final tempDir = await getTemporaryDirectory();
-      final modelFile = File('${tempDir.path}/mobilenetv2_stage4_final.tflite');
-      await modelFile.writeAsBytes(modelData.buffer.asUint8List());
+  Future<List<double>> predictCompound(img.Image image) async {
+    if (!isCompoundReady) throw 'Compound model not loaded';
+    return await compute(runInferenceInIsolate, {
+      'image': image,
+      'interpreterAddress': compoundInterpreter!.address,
+    });
+  }
 
-      interpreter = Interpreter.fromFile(modelFile);
-      log.i('[Flutter] Model loaded successfully.');
+  // -------------------------------------------------------------
+  // Load Both Models
+  // -------------------------------------------------------------
+  Future<void> loadModels() async {
+    try {
+      final tempDir = await getTemporaryDirectory();
+
+      // Basic model
+      final basicData = await rootBundle.load(
+        'assets/mobilenetv2_rafdb_finetuned.tflite',
+      );
+      final basicFile = File(
+        '${tempDir.path}/mobilenetv2_rafdb_finetuned.tflite',
+      );
+      await basicFile.writeAsBytes(basicData.buffer.asUint8List());
+      basicInterpreter = Interpreter.fromFile(basicFile);
+      log.i('[Flutter] Basic model loaded.');
+
+      // Compound model
+      final compoundData = await rootBundle.load(
+        'assets/compound_mobilenetv2_rafdb_finetuned.tflite',
+      );
+      final compoundFile = File(
+        '${tempDir.path}/compound_mobilenetv2_rafdb_finetuned.tflite',
+      );
+      await compoundFile.writeAsBytes(compoundData.buffer.asUint8List());
+      compoundInterpreter = Interpreter.fromFile(compoundFile);
+      log.i('[Flutter] Compound model loaded.');
     } catch (e, stackTrace) {
-      log.e('[Flutter] Error loading model: $e $stackTrace');
+      log.e('[Flutter] Error loading models: $e $stackTrace');
     }
   }
 
-  void disposeInterpreter() {
-    interpreter?.close();
-    interpreter = null;
+  void disposeInterpreters() {
+    basicInterpreter?.close();
+    compoundInterpreter?.close();
+    basicInterpreter = null;
+    compoundInterpreter = null;
   }
 }
 
@@ -227,7 +305,12 @@ List<double> runInferenceInIsolate(Map<String, dynamic> args) {
     ),
   );
 
-  final output = List.filled(18, 0.0).reshape([1, 18]);
+  final outputShape = interpreter.getOutputTensor(0).shape;
+  final output = List.filled(
+    outputShape.reduce((a, b) => a * b),
+    0.0,
+  ).reshape(outputShape);
+
   interpreter.run(input, output);
 
   return List<double>.from(output[0]);

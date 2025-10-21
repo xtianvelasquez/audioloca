@@ -44,7 +44,7 @@ class GenreServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('Error fetching albums: $e $stackTrace');
       rethrow;

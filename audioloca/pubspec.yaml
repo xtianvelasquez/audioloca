@@ -89,6 +89,8 @@ flutter:
     - assets/mobilenetv2_stage4_final.tflite
     - assets/emotion_model.tflite
     - assets/images/audioloca.png
+    - assets/mobilenetv2_rafdb_finetuned.tflite
+    - assets/compound_mobilenetv2_rafdb_finetuned.tflite
 
   # To add assets to your application, add an assets section, like this:
   # assets:

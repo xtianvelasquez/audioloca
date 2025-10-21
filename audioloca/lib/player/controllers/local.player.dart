@@ -100,12 +100,12 @@ class LocalPlayerService {
       } on PlayerException catch (e, st) {
         if (i == retries) {
           _handleError(e, st, 'setUrl (PlayerException)');
-          throw Exception('Failed to load audio: ${e.message}');
+          throw 'Failed to load audio: ${e.message}';
         }
       } catch (e, st) {
         if (i == retries) {
           _handleError(e, st, 'setUrl (generic)');
-          throw Exception('Unexpected error while loading audio.');
+          throw 'Unexpected error while loading audio.';
         }
       }
     }

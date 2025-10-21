@@ -35,6 +35,7 @@ class Tab1 extends StatefulWidget {
 
 class Tab1State extends State<Tab1> with TickerProviderStateMixin {
   String? detectedMood;
+  String? detectedEmotionConfidence;
   String? detectedLocation;
   String? accessToken;
   LatLng? currentLatLng;
@@ -153,6 +154,10 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
               longitude: position.longitude,
             );
 
+        localRecommendations.sort(
+          (a, b) => b.streamCount.compareTo(a.streamCount),
+        );
+
         final locationAddress = await locationServices.getLocationIQAddress(
           roundedLat,
           roundedLng,
@@ -190,7 +195,12 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
 
       if (result.emotionLabel != null) {
         await storage.saveLastMood(result.emotionLabel!);
-        setState(() => detectedMood = result.emotionLabel!);
+        setState(() {
+          detectedMood = result.emotionLabel!;
+          detectedEmotionConfidence = result.confidenceScore?.toStringAsFixed(
+            4,
+          );
+        });
         await loadMoodRecommendations(forceRefresh: true);
       }
     } else {
@@ -297,7 +307,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              "Detected Mood: ${detectedMood ?? 'No mood detected yet'}",
+                              "Detected Mood: ${detectedMood != null && detectedEmotionConfidence != null ? '$detectedMood ($detectedEmotionConfidence)' : 'No mood detected yet'}",
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.color1,
@@ -395,7 +405,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              "$detectedLocation ?? Unknown",
+                              detectedLocation ?? "Unknown",
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.color1,

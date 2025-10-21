@@ -9,10 +9,11 @@ import 'package:audioloca/signup/signup.page.dart';
 
 final log = Logger();
 final userServices = UserServices();
-final ouathServices = OAuthServices();
+final oauthServices = OAuthServices();
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => LoginPageState();
 }
@@ -89,7 +90,7 @@ class LoginPageState extends State<LoginPage>
     setState(() => isAuthenticating = true);
 
     try {
-      final oauth = await ouathServices.spotifyLogin();
+      final oauth = await oauthServices.spotifyLogin();
 
       if (oauth) {
         log.i('[Flutter] Spotify login successful!');
@@ -120,83 +121,185 @@ class LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.color3,
-      body: SafeArea(
+      body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
           child: FadeTransition(
             opacity: fadeAnimation,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 60),
-                SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Image.asset('assets/images/audioloca.png'),
+                // LOGO
+                Image.asset(
+                  'assets/images/audioloca.png',
+                  width: 180,
+                  height: 180,
                 ),
-                const SizedBox(height: 16),
-                Text('AUDIOLOCA', style: AppTextStyles.title),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
 
-                // Username field
+                // APP NAME
+                const Text('AUDIOLOCA', style: AppTextStyles.title),
+                const SizedBox(height: 40),
+
+                // USERNAME FIELD
                 TextField(
                   controller: usernameController,
-                  decoration: const InputDecoration(labelText: 'Username'),
+                  decoration: InputDecoration(
+                    hintText: 'USERNAME',
+                    hintStyle: const TextStyle(color: AppColors.color1),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: AppColors.color1,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: AppColors.color1,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
 
-                // Password field
+                // PASSWORD FIELD
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(
+                    hintText: 'PASSWORD',
+                    hintStyle: const TextStyle(color: AppColors.color1),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: AppColors.color1,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: AppColors.color1,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
 
-                // Login button
-                ElevatedButton(
-                  onPressed: isAuthenticating ? null : handleLogin,
-                  child: isAuthenticating
-                      ? const CircularProgressIndicator(
-                          color: AppColors.color1,
-                          strokeWidth: 2.5,
-                        )
-                      : const Text('LOGIN'),
+                // LOGIN BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: isAuthenticating ? null : handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.color1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    child: isAuthenticating
+                        ? const CircularProgressIndicator(
+                            color: AppColors.light,
+                            strokeWidth: 2.5,
+                          )
+                        : const Text(
+                            'LOGIN',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.light,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
+                // DIVIDER
                 Row(
                   children: const [
-                    Expanded(child: Divider()),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text('OR'),
+                    Expanded(
+                      child: Divider(thickness: 1, color: AppColors.color1),
                     ),
-                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'OR',
+                        style: TextStyle(color: AppColors.color1),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(thickness: 1, color: AppColors.color1),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
-                // Spotify login button
-                ElevatedButton(
-                  onPressed: isAuthenticating ? null : handleSpotifyLogin,
-                  child: isAuthenticating
-                      ? const CircularProgressIndicator(
-                          color: AppColors.color1,
-                          strokeWidth: 2.5,
-                        )
-                      : const Text('CONTINUE WITH SPOTIFY'),
+                // CONTINUE WITH SPOTIFY BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: isAuthenticating ? null : handleSpotifyLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.color1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    child: isAuthenticating
+                        ? const CircularProgressIndicator(
+                            color: AppColors.light,
+                            strokeWidth: 2.5,
+                          )
+                        : const Text(
+                            'CONTINUE WITH SPOTIFY',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: AppColors.light,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 24),
 
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SignupPage()),
-                    );
-                  },
-                  child: const Text('Don’t have an account? Sign up'),
+                // SIGN UP LINK
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Don't have an account? ",
+                      style: TextStyle(color: AppColors.color1),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SignupPage()),
+                        );
+                      },
+                      child: const Text(
+                        'Sign up',
+                        style: TextStyle(
+                          color: AppColors.color1,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

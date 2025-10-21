@@ -8,7 +8,7 @@ final storage = SecureStorageService();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await emotionService.loadModel();
+  await emotionService.loadModels();
   runApp(const AudioLoca());
 }
 

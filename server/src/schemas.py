@@ -130,4 +130,7 @@ class Spotify_Stream(Stream_Base):
   type: Literal["spotify"] = Field(..., description="Spotify stream type")
   spotify_id: str
 
+class GenreRequest(BaseModel):
+  genre_ids: List[int]
+
 Stream_Response = Union[Local_Stream, Spotify_Stream]

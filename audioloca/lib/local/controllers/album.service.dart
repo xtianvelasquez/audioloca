@@ -13,6 +13,7 @@ class ApiEndpoints {
   static const String readAlbums = '/audioloca/albums/read';
   static const String readAlbum = '/audioloca/album/read';
   static const String createAlbum = '/audioloca/album/create';
+  static const String deleteAlbum = '/audioloca/album/delete';
 }
 
 class AlbumServices {
@@ -53,7 +54,7 @@ class AlbumServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching albums: $e $stackTrace');
       rethrow;
@@ -97,9 +98,53 @@ class AlbumServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching specific album: $e $stackTrace');
+      rethrow;
+    }
+  }
+
+  // =======================
+  // POST delete specific album
+  // =======================
+  Future<Album> deleteSpecificAlbum(String jwtToken, int albumId) async {
+    final url = Uri.parse(
+      '${Environment.audiolocaBaseUrl}${ApiEndpoints.deleteAlbum}',
+    );
+
+    try {
+      final response = await client.post(
+        url,
+        headers: _headers(jwtToken),
+        body: jsonEncode({'album_id': albumId}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data is Map<String, dynamic>) {
+          return Album.fromJson(data);
+        } else {
+          throw FormatException('Unexpected album response format.');
+        }
+      }
+
+      String message = 'Request failed with status: ${response.statusCode}.';
+
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded.containsKey('detail')) {
+          message = decoded['detail'];
+        } else if (decoded is Map && decoded.containsKey('message')) {
+          message = decoded['message'];
+        }
+      } catch (_) {
+        message = response.body.toString();
+      }
+
+      throw message;
+    } catch (e, stackTrace) {
+      log.e('[Flutter] Error deleting specific album: $e $stackTrace');
       rethrow;
     }
   }

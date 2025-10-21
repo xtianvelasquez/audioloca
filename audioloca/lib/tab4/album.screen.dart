@@ -63,6 +63,32 @@ class AlbumScreenState extends State<AlbumScreen> {
     }
   }
 
+  Future<void> handleDeleteAlbumTap(Album album) async {
+    final confirmed = await CustomAlertDialog.confirmAction(
+      context: context,
+      title: 'Delete Album',
+      message:
+          'Are you sure you want to delete the album "${album.albumName}"? This action cannot be undone.',
+    );
+
+    if (confirmed) {
+      try {
+        final deletedAlbum = await albumServices.deleteSpecificAlbum(
+          widget.jwtToken,
+          album.albumId,
+        );
+        if (!mounted) return;
+        CustomAlertDialog.success(
+          context,
+          'Album "${deletedAlbum.albumName}" deleted successfully.',
+        );
+      } catch (e) {
+        if (!mounted) return;
+        CustomAlertDialog.failed(context, e.toString());
+      }
+    }
+  }
+
   Future<void> handleTrackTap(Audio audio) async {
     final audioUrl = "${Environment.audiolocaBaseUrl}/${audio.audioRecord}";
     final photoUrl = "${Environment.audiolocaBaseUrl}/${audio.albumCover}";
@@ -117,8 +143,7 @@ class AlbumScreenState extends State<AlbumScreen> {
               title: album!.albumName,
               subtitle: album!.createdAt,
               showActions: true,
-              onEdit: () {},
-              onDelete: () {},
+              onDelete: () => handleDeleteAlbumTap(album!),
             ),
           ),
           Expanded(

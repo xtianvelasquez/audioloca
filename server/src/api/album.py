@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.security import verify_token
-from src.crud import store_album, read_all_album, read_specific_album
+from src.crud import store_album, read_all_album, read_specific_album, delete_specific_album
 from src.utils import validate_file_extension
 from src.schemas import Album_Response
 from src.config import VALID_PHOTO_EXTENSION
@@ -78,3 +78,15 @@ async def specific_album_read(
   album = read_specific_album(db, user_id, album_id)
 
   return build_album_response(album)
+
+@router.post("/audioloca/album/delete", status_code=200)
+async def album_delete(
+  album_id: int = Body(..., embed=True),
+  token_payload = Depends(verify_token),
+  db: Session = Depends(get_db)
+  ):
+  user_id = token_payload.get('payload', {}).get('sub')
+  deleted_album = delete_specific_album(db, user_id, album_id)
+
+  if deleted_album:
+    return {"detail": "Album deleted successfully."}

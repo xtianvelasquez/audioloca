@@ -17,7 +17,7 @@ class ApiEndpoints {
   static const String readAudio = '/audioloca/audio/read';
   static const String searchAudio = '/audioloca/audio/search';
   static const String createAudio = '/audioloca/audio/create';
-  static const String globalAudio = '/audioloca/audio/global';
+  static const String globalAudio = '/audioloca/audios/global';
 }
 
 class AudioServices {
@@ -48,11 +48,11 @@ class AudioServices {
   // =======================
   // POST audio by genre
   // =======================
-  Future<List<Audio>> readAudioGenre(int genreId) async {
+  Future<List<Audio>> readAudioByGenres(List<int> genreIds) async {
     return _post<List<Audio>>(
       ApiEndpoints.audioGenre,
       headers: {'Content-Type': 'application/json'},
-      body: {'genre_id': genreId},
+      body: genreIds,
       parser: (data) {
         if (data is List) {
           return data.map((json) => Audio.fromJson(json)).toList();
@@ -233,7 +233,7 @@ class AudioServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Fluttter] GET $endpoint error $e $stackTrace');
       rethrow;
@@ -243,7 +243,7 @@ class AudioServices {
   Future<T> _post<T>(
     String endpoint, {
     required Map<String, String> headers,
-    required Map<String, dynamic> body,
+    required dynamic body, // ✅ allow List<int>
     required T Function(dynamic) parser,
   }) async {
     final url = Uri.parse('${Environment.audiolocaBaseUrl}$endpoint');
@@ -270,7 +270,7 @@ class AudioServices {
         message = response.body.toString();
       }
 
-      throw Exception(message);
+      throw message;
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error $e $stackTrace');
       rethrow;

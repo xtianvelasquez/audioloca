@@ -10,7 +10,7 @@ from src.crud import (read_genre_by_id, store_audio, read_all_audio, read_specif
                       read_audio_search, read_audio_album, read_audio_by_genre, link_audio_to_genre,
                       read_global_audio)
 from src.utils import validate_file_extension
-from src.schemas import Genres_Response, Audio_Response
+from src.schemas import Genres_Response, Audio_Response, GenreRequest
 from src.config import VALID_AUDIO_EXTENSION
 
 router = APIRouter()
@@ -32,9 +32,19 @@ def build_audio_response(audio) -> Audio_Response:
   )
 
 @router.post("/audioloca/audio/genre", response_model=List[Audio_Response], status_code=200)
-async def audio_genre_read(genre_id: int = Body(..., embed=True), db: Session = Depends(get_db)):
-  audios = read_audio_by_genre(db, genre_id)
+async def audio_by_genres(genre_ids: List[int] = Body(..., embed=False), db: Session = Depends(get_db)):
+  audios = read_audio_by_genre(db, genre_ids)
+  print(f"Frontend request received with genre id: {genre_ids}")
 
+  if not audios:
+    return []
+
+  for audio in audios:
+    genre_names = [link.genre.genre_name for link in audio.genre_links if link.genre]
+    genre_display = ", ".join(genre_names) if genre_names else "Unknown"
+    print(f"Audio: {audio.audio_title} | Genres: {genre_display}")
+  
+  print(f"Total public audio fetched: {len(audios)}")
   return [build_audio_response(audio) for audio in audios]
 
 @router.post("/audioloca/audio/create", response_model=Audio_Response, status_code=201)

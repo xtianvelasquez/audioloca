@@ -39,38 +39,50 @@ class LocalRecommender {
       return [];
     }
 
-    final genreIds = moodToGenreIds[lastMood.toLowerCase()];
+    final normalizedMood = lastMood.trim().toLowerCase();
+    List<int>? genreIds = moodToGenreIds[normalizedMood];
+
     if (genreIds == null || genreIds.isEmpty) {
-      log.w('[Flutter] No mapped genres for mood "$lastMood"');
-      return [];
-    }
-
-    final allTracks = <Audio>[];
-
-    for (final genreId in genreIds) {
-      try {
-        final tracks = await audioServices.readAudioGenre(genreId);
-        allTracks.addAll(tracks);
-      } catch (e, st) {
-        log.e('[Flutter] Error fetching genre $genreId: $e $st');
+      final fallbackMood = normalizedMood.split(' ').last;
+      genreIds = moodToGenreIds[fallbackMood];
+      if (genreIds == null || genreIds.isEmpty) {
+        log.w('[Flutter] No mapped genres for mood "$lastMood".');
+        return [];
+      } else {
+        log.w('[Flutter] Using fallback mood "$fallbackMood" for "$lastMood"');
       }
     }
 
-    if (allTracks.isEmpty) {
-      log.w('[Flutter] No local tracks found for mood "$lastMood".');
+    try {
+      final tracks = await audioServices.readAudioByGenres(
+        genreIds.toSet().toList(),
+      );
+      if (tracks.isEmpty) {
+        log.w('[Flutter] No local tracks found for mood "$lastMood".');
+        return [];
+      }
+
+      final seenAudioIds = <int>{};
+      final uniqueTracks = <Audio>[];
+      for (final track in tracks) {
+        if (!seenAudioIds.contains(track.audioId)) {
+          seenAudioIds.add(track.audioId);
+          uniqueTracks.add(track);
+        }
+      }
+
+      uniqueTracks.shuffle(random);
+      cachedMood = lastMood;
+      cachedTracks = uniqueTracks;
+
+      log.i(
+        '[Flutter] Returning ${uniqueTracks.length} local tracks for mood "$lastMood".',
+      );
+      return uniqueTracks;
+    } catch (e, st) {
+      log.e('[Flutter] Error fetching tracks for genres $genreIds: $e\n$st');
       return [];
     }
-
-    allTracks.shuffle(random);
-
-    cachedMood = lastMood;
-    cachedTracks = allTracks;
-
-    log.i(
-      '[Flutter] Returning ${allTracks.length} local tracks for mood "$lastMood".',
-    );
-
-    return allTracks;
   }
 
   Future<List<Audio>> fetchGlobalRecommendationsFromLocal() async {
