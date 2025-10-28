@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.dialects.postgresql import insert
 
-from src.models import Album
+from src.models import Album, Audio
 from src.utils import normalize_coordinates
 
 def db_safe(fn):
@@ -21,11 +21,13 @@ def db_safe(fn):
 
 @db_safe
 def delete_specific_album(db: Session, user_id: int, album_id: int):
-  album = db.query(Album).filter(user_id=user_id, album_id=album_id).first()
+  album = db.query(Album).filter_by(user_id=user_id, album_id=album_id).first()
 
   if not album:
     raise HTTPException(status_code=404, detail="Album not found.")
-  
+
+  db.query(Audio).filter_by(album_id=album_id).delete()
+
   db.delete(album)
   db.commit()
   return True

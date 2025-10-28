@@ -50,7 +50,10 @@ class AlbumInputFormState extends State<AlbumInputForm> {
     final jwtToken = await storage.getJwtToken();
     if (jwtToken == null || jwtToken.isEmpty) {
       if (!mounted) return;
-      CustomAlertDialog.failed(context, "Authentication required.");
+      CustomAlertDialog.failed(
+        context,
+        "Authentication required. Please log in.",
+      );
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -74,13 +77,16 @@ class AlbumInputFormState extends State<AlbumInputForm> {
         albumNameController.clear();
         setState(() => image = null);
       } else {
-        log.e("Album creation failed: $response");
+        log.e("[Flutter] Album creation failed: $response");
         CustomAlertDialog.failed(context, "Failed to store album.");
       }
     } catch (e, stacktrace) {
-      log.e("Error creating album", error: e, stackTrace: stacktrace);
+      log.e("[Flutter] Error creating album: $e $stacktrace");
       if (!mounted) return;
-      CustomAlertDialog.failed(context, "An unexpected error occurred.");
+      CustomAlertDialog.failed(
+        context,
+        "An unexpected error occurred. Please try again later.",
+      );
     }
   }
 
@@ -90,10 +96,13 @@ class AlbumInputFormState extends State<AlbumInputForm> {
       if (picked != null) {
         setState(() => image = picked);
       }
-    } catch (e) {
-      log.e("Image picking failed: $e");
+    } catch (e, stacktrace) {
+      log.e("[Flutter] Image picking failed: $e $stacktrace");
       if (!mounted) return;
-      CustomAlertDialog.failed(context, "Failed to pick image.");
+      CustomAlertDialog.failed(
+        context,
+        "Failed to pick image. Please try again.",
+      );
     }
   }
 
@@ -119,7 +128,7 @@ class AlbumInputFormState extends State<AlbumInputForm> {
             decoration: const InputDecoration(labelText: "Album Name"),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return "Album name is required.";
+                return "Album name is required";
               }
               return null;
             },

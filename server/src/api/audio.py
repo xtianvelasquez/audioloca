@@ -66,7 +66,12 @@ async def audio_created(
   if not validate_file_extension(audio_record, VALID_AUDIO_EXTENSION):
     raise HTTPException(status_code=400, detail="Invalid audio file type.")
   
-  if audio_record.content_type not in ["audio/mp3", "audio/aac", "audio/wav", "audio/x-wav"]:
+  VALID_MIME_TYPES = [
+    "audio/mp3", "audio/mpeg", "audio/aac", "audio/x-aac",
+    "audio/wav", "audio/x-wav", "audio/ogg", "audio/x-m4a"
+]
+  
+  if audio_record.content_type not in VALID_MIME_TYPES:
     raise HTTPException(status_code=400, detail="Invalid audio MIME type.")
 
   audio_ext = os.path.splitext(audio_record.filename)[1]

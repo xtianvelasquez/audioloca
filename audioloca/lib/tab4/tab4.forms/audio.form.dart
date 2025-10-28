@@ -58,7 +58,7 @@ class AudioInputFormState extends State<AudioInputForm> {
       final data = await GenreServices().readGenres();
       if (mounted) setState(() => genres = data);
     } catch (e, stackTrace) {
-      log.e("[Flutter] Error fetching genres: $e", stackTrace: stackTrace);
+      log.e("[Flutter] Error fetching genres: $e $stackTrace");
     }
   }
 
@@ -81,7 +81,7 @@ class AudioInputFormState extends State<AudioInputForm> {
       final data = await AlbumServices().readAlbums(jwtToken);
       if (mounted) setState(() => albums = data);
     } catch (e, stackTrace) {
-      log.e("[Flutter] Error fetching albums: $e", stackTrace: stackTrace);
+      log.e("[Flutter] Error fetching albums: $e $stackTrace");
     }
   }
 
@@ -107,10 +107,7 @@ class AudioInputFormState extends State<AudioInputForm> {
 
       if (audioFileSizeInMB > 15) {
         if (!mounted) return;
-        CustomAlertDialog.failed(
-          context,
-          "Audio file size is too big. Please try again!",
-        );
+        CustomAlertDialog.failed(context, "Audio file size is too big.");
         return;
       }
 
@@ -123,7 +120,7 @@ class AudioInputFormState extends State<AudioInputForm> {
         if (!mounted) return;
         CustomAlertDialog.failed(
           context,
-          "Audio duration is unknown. Please try again!",
+          "Audio duration is unknown. Please try again.",
         );
         return;
       }
@@ -132,7 +129,7 @@ class AudioInputFormState extends State<AudioInputForm> {
         if (!mounted) return;
         CustomAlertDialog.failed(
           context,
-          "Audio duration is too long. Please try again!",
+          "Audio duration is too long. Please try again.",
         );
         return;
       }
@@ -180,13 +177,16 @@ class AudioInputFormState extends State<AudioInputForm> {
       } else {
         CustomAlertDialog.failed(
           context,
-          "Failed to store audio. Please try again!",
+          "Failed to store audio. Please try again later.",
         );
       }
     } catch (e, stackTrace) {
-      log.e("Error in handleSubmit: $e", stackTrace: stackTrace);
+      log.e("[Flutter] Error in handleSubmit: $e $stackTrace");
       if (!mounted) return;
-      CustomAlertDialog.failed(context, "An unexpected error occurred.");
+      CustomAlertDialog.failed(
+        context,
+        "An unexpected error occurred. Please try again later.",
+      );
     }
   }
 
@@ -208,9 +208,12 @@ class AudioInputFormState extends State<AudioInputForm> {
         });
       }
     } catch (e, stackTrace) {
-      log.e("[Flutter] Audio pick error: $e", stackTrace: stackTrace);
+      log.e("[Flutter] Audio pick error: $e $stackTrace");
       if (!mounted) return;
-      CustomAlertDialog.failed(context, "Failed to pick audio file.");
+      CustomAlertDialog.failed(
+        context,
+        "Failed to pick audio file. Please try again.",
+      );
     }
   }
 

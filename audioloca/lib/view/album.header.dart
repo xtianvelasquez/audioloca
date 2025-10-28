@@ -7,86 +7,64 @@ class AlbumHeader extends StatelessWidget {
   final String imageUrl;
   final String title;
   final DateTime subtitle;
-  final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
-  final bool showActions;
 
   const AlbumHeader({
     super.key,
     required this.imageUrl,
     required this.title,
     required this.subtitle,
-    this.onEdit,
-    this.onDelete,
-    this.showActions = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: AppColors.color3,
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(12),
+        child: Row(
           children: [
-            Row(
-              children: [
-                CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  imageBuilder: (_, imageProvider) => Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  placeholder: (_, __) => const Center(
-                    child: CircularProgressIndicator(color: AppColors.color1),
-                  ),
-                  errorWidget: (_, __, ___) => Container(
-                    height: 100,
-                    width: 100,
-                    color: Colors.grey[300],
-                    child: Icon(
-                      Icons.broken_image,
-                      size: 40,
-                      color: Colors.grey[700],
-                    ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+                placeholder: (_, __) =>
+                    const CircularProgressIndicator(color: AppColors.color1),
+                errorWidget: (_, __, ___) => Container(
+                  height: 100,
+                  width: 100,
+                  color: Colors.grey[300],
+                  child: Icon(
+                    Icons.broken_image,
+                    size: 40,
+                    color: Colors.grey[700],
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: AppTextStyles.subtitle),
-                      const SizedBox(height: 4),
-                      Text(
-                        DateFormat("MM/dd/yyyy").format(subtitle),
-                        style: AppTextStyles.keyword,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-            if (showActions) ...[
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextButton(onPressed: onEdit, child: const Text("EDIT")),
-                  const SizedBox(width: 8),
-                  TextButton(onPressed: onDelete, child: const Text("DELETE")),
+                  Text(
+                    title,
+                    style: AppTextStyles.subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Created on ${DateFormat('MMM dd, yyyy').format(subtitle)}",
+                    style: AppTextStyles.keyword,
+                  ),
                 ],
               ),
-            ],
+            ),
           ],
         ),
       ),

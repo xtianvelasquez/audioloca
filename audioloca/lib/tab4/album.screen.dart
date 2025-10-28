@@ -63,32 +63,6 @@ class AlbumScreenState extends State<AlbumScreen> {
     }
   }
 
-  Future<void> handleDeleteAlbumTap(Album album) async {
-    final confirmed = await CustomAlertDialog.confirmAction(
-      context: context,
-      title: 'Delete Album',
-      message:
-          'Are you sure you want to delete the album "${album.albumName}"? This action cannot be undone.',
-    );
-
-    if (confirmed) {
-      try {
-        final deletedAlbum = await albumServices.deleteSpecificAlbum(
-          widget.jwtToken,
-          album.albumId,
-        );
-        if (!mounted) return;
-        CustomAlertDialog.success(
-          context,
-          'Album "${deletedAlbum.albumName}" deleted successfully.',
-        );
-      } catch (e) {
-        if (!mounted) return;
-        CustomAlertDialog.failed(context, e.toString());
-      }
-    }
-  }
-
   Future<void> handleTrackTap(Audio audio) async {
     final audioUrl = "${Environment.audiolocaBaseUrl}/${audio.audioRecord}";
     final photoUrl = "${Environment.audiolocaBaseUrl}/${audio.albumCover}";
@@ -121,12 +95,6 @@ class AlbumScreenState extends State<AlbumScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (album == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator(color: AppColors.color1)),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Album", style: AppTextStyles.subtitle),
@@ -134,44 +102,46 @@ class AlbumScreenState extends State<AlbumScreen> {
         foregroundColor: AppColors.light,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: AlbumHeader(
-              imageUrl: resolveImageUrl(album!.albumCover),
-              title: album!.albumName,
-              subtitle: album!.createdAt,
-              showActions: true,
-              onDelete: () => handleDeleteAlbumTap(album!),
-            ),
-          ),
-          Expanded(
-            child: audios.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No audio found.",
-                      style: AppTextStyles.keyword,
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    itemCount: audios.length,
-                    itemBuilder: (context, index) {
-                      final audio = audios[index];
-                      return AudioListItem(
-                        imageUrl: resolveImageUrl(audio.albumCover),
-                        title: audio.audioTitle,
-                        subtitle: audio.username,
-                        streamCount: audio.streamCount,
-                        duration: formatLocalTrackDuration(audio.duration),
-                        onTap: () => handleTrackTap(audio),
-                      );
-                    },
+      body: album == null
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: AlbumHeader(
+                    imageUrl: resolveImageUrl(album!.albumCover),
+                    title: album!.albumName,
+                    subtitle: album!.createdAt,
                   ),
-          ),
-        ],
-      ),
+                ),
+                Expanded(
+                  child: audios.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "No audio found.",
+                            style: AppTextStyles.keyword,
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          itemCount: audios.length,
+                          itemBuilder: (context, index) {
+                            final audio = audios[index];
+                            return AudioListItem(
+                              imageUrl: resolveImageUrl(audio.albumCover),
+                              title: audio.audioTitle,
+                              subtitle: audio.username,
+                              streamCount: audio.streamCount,
+                              duration: formatLocalTrackDuration(
+                                audio.duration,
+                              ),
+                              onTap: () => handleTrackTap(audio),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
     );
   }
 }

@@ -36,6 +36,10 @@ class Tab4State extends State<Tab4> {
   }
 
   Future<void> loadAlbums() async {
+    setState(() {
+      isLoading = true;
+    });
+
     final token = await storage.getJwtToken();
     if (token == null || token.isEmpty) {
       if (!mounted) return;
@@ -56,12 +60,14 @@ class Tab4State extends State<Tab4> {
 
     try {
       final data = await albumServices.readAlbums(token);
+      if (!mounted) return;
       setState(() {
         albums = data;
         isLoading = false;
       });
     } catch (e, stackTrace) {
       log.d("[Flutter] Error fetching albums: $e $stackTrace");
+      if (!mounted) return;
       setState(() => isLoading = false);
     }
   }
@@ -88,6 +94,34 @@ class Tab4State extends State<Tab4> {
       },
     );
     loadAlbums();
+  }
+
+  Future<void> handleDeleteAlbumTap({
+    required BuildContext context,
+    required String jwtToken,
+    required Album album,
+    required VoidCallback onSuccess,
+  }) async {
+    final confirmed = await CustomAlertDialog.confirmAction(
+      context: context,
+      title: 'Delete Album',
+      message:
+          'Are you sure you want to delete the album "${album.albumName}"? This action cannot be undone.',
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await albumServices.deleteSpecificAlbum(jwtToken, album.albumId);
+      if (context.mounted) {
+        CustomAlertDialog.success(context, 'Album deleted successfully.');
+        onSuccess();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        CustomAlertDialog.failed(context, e.toString());
+      }
+    }
   }
 
   @override
@@ -170,7 +204,7 @@ class Tab4State extends State<Tab4> {
                     child: Text(
                       'No albums found. Tap "Add Album" to create one.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: AppColors.color1),
                     ),
                   ),
                 )
@@ -200,6 +234,16 @@ class Tab4State extends State<Tab4> {
                               albumId: album.albumId,
                             ),
                           ),
+                        );
+                      },
+                      onLongPress: () {
+                        handleDeleteAlbumTap(
+                          context: context,
+                          jwtToken: jwtToken!,
+                          album: album,
+                          onSuccess: () {
+                            loadAlbums();
+                          },
                         );
                       },
                       borderRadius: BorderRadius.circular(10),

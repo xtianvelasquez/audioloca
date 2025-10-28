@@ -15,11 +15,24 @@ class Album {
 
   factory Album.fromJson(Map<String, dynamic> json) {
     return Album(
-      albumId: json['album_id'],
-      albumName: json['album_name'],
-      albumCover: json['album_cover'],
-      createdAt: DateTime.parse(json['created_at']),
-      modifiedAt: DateTime.parse(json['modified_at']),
+      albumId: json['album_id'] ?? 0,
+      albumName: json['album_name'] ?? '',
+      albumCover: json['album_cover'] ?? '',
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.fromMillisecondsSinceEpoch(0),
+      modifiedAt: json['modified_at'] != null
+          ? DateTime.parse(json['modified_at'])
+          : DateTime.fromMillisecondsSinceEpoch(0),
+    );
+  }
+  static Album empty() {
+    return Album(
+      albumId: 0,
+      albumName: '',
+      albumCover: null,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+      modifiedAt: DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
 }

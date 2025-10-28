@@ -133,8 +133,9 @@ class AlbumServices {
 
       try {
         final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
+        if (decoded is Map<String, dynamic> && decoded.containsKey('detail')) {
+          log.i('Album deleted: ${decoded['detail']}');
+          return Album.empty();
         } else if (decoded is Map && decoded.containsKey('message')) {
           message = decoded['message'];
         }

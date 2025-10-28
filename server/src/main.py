@@ -12,7 +12,7 @@ app = FastAPI(title="AudioLoca")
 
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["http://localhost:8100", "http://127.0.0.1:8000:8100", "http://192.168.68.113:8100"],
+  allow_origins=["http://localhost:8100", "http://127.0.0.1:8000:8100", "http://192.168.68.121:8100"],
   allow_credentials=True,
   allow_methods=["OPTIONS", "POST", "GET", "DELETE", "PATCH", "PUT"],
   allow_headers=["Content-Type", "Authorization"]
