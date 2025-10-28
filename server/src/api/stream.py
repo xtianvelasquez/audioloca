@@ -4,7 +4,7 @@ from src.database import get_db
 from src.security import verify_token
 from src.crud import (store_stream, store_location,
                       read_location, read_local_audio_location, read_spotify_audio_location,
-                      read_local_streams, read_spotify_streams, read_bounding_location)
+                      read_local_streams, read_spotify_streams, read_bounding_location, read_latest_streams)
 from src.schemas import Locations_Base, Streams_Create, Local_Stream, Spotify_Stream
 from typing import List
 from math import radians, cos
@@ -96,3 +96,9 @@ async def audio_location_spotify(data: Locations_Base, db: Session = Depends(get
 
   streams = read_spotify_streams(db)
   return [build_spotify_stream(stream) for stream in streams]
+
+@router.get("/audioloca/audio/stream", status_code=200)
+async def audio_latest_streams(token_payload=Depends(verify_token), db: Session = Depends(get_db)):
+  user_id = token_payload.get("payload", {}).get("sub")
+  streams = read_latest_streams(db, user_id)
+  return [build_local_stream(stream) for stream in streams]

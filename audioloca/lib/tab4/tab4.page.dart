@@ -6,7 +6,7 @@ import 'package:audioloca/theme.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/core/alert.dialog.dart';
-import 'package:audioloca/local/controllers/album.service.dart';
+import 'package:audioloca/local/services/album.service.dart';
 import 'package:audioloca/local/models/album.model.dart';
 import 'package:audioloca/tab4/tab4.forms/album.form.dart';
 import 'package:audioloca/tab4/tab4.forms/audio.form.dart';

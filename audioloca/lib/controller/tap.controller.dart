@@ -113,9 +113,9 @@ class TapController {
         final uri = Uri.parse(track.externalUrl);
         if (!context.mounted) return;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to play. Opening in Spotify…')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Opening in Spotify…')));
 
         if (await canLaunchUrl(uri)) {
           await launchUrl(uri);

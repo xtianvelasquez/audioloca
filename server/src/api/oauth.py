@@ -101,11 +101,12 @@ async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(ge
 
 @router.post("/audioloca/callback", response_model=Local_Token_Response, status_code=200)
 async def audioloca_callback(data: User_Base, db: Session = Depends(get_db)):
-  user = read_username(db, data.username)
+  username = data.username
+  user = read_username(db, username)
 
   if not user or not verify_password(data.password, user.password):
-    raise HTTPException(status_code=401, detail="Invalid username or password. Please try again.")
-  
+    raise HTTPException(status_code=401, detail="Invalid login credentials.")
+
   jwt_token = create_jwt_token(user)
   store_token(db, user.user_id, jwt_token, TOKEN_TYPE["JWT_TOKEN"], TOKEN_EXPIRATION)
 
@@ -116,13 +117,18 @@ async def audioloca_callback(data: User_Base, db: Session = Depends(get_db)):
 
 @router.post("/audioloca/signup", status_code=201)
 async def audioloca_signup(data: User_Create, db: Session = Depends(get_db)):
-  existing_user = read_username(db, data.username)
+  username = data.username.strip().lower()
 
-  if existing_user:
+  if read_username(db, username):
     raise HTTPException(status_code=400, detail="Username already exists.")
-    
-  store_specific_user(db, None, data.email, data.username, hash_password(data.password))
 
+  if "@" not in data.email or "." not in data.email:
+    raise HTTPException(status_code=400, detail="Invalid email address.")
+
+  if len(data.password) < 8:
+    raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+
+  store_specific_user(db, None, data.email, username, hash_password(data.password))
   return {"message": "User created successfully!"}
 
 @router.get("/user/read", response_model=User_Response, status_code=200)
@@ -137,8 +143,11 @@ async def user_read(token_payload = Depends(verify_token), db: Session = Depends
     joined_at=user.joined_at
   )
 
-@router.post('/logout', status_code=200)
+@router.post("/logout", status_code=200)
 async def logout(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
-  logged = logout_token(db, token_payload['raw'])
-  
+  success = logout_token(db, token_payload['raw'])
+
+  if not success:
+    raise HTTPException(status_code=400, detail="User already logged out or invalid token.")
+
   return {"message": "User logged out successfully!"}

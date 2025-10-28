@@ -2,8 +2,8 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
 import 'package:audioloca/core/alert.dialog.dart';
-import 'package:audioloca/local/controllers/user.service.dart';
-import 'package:audioloca/spotify/controllers/oauth.service.dart';
+import 'package:audioloca/local/services/user.service.dart';
+import 'package:audioloca/spotify/services/oauth.service.dart';
 import 'package:audioloca/tabs/tabs.routing.dart';
 import 'package:audioloca/signup/signup.page.dart';
 

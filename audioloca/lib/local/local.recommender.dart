@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:logger/logger.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/local/controllers/audio.service.dart';
+import 'package:audioloca/local/services/audio.service.dart';
 import 'package:audioloca/local/models/audio.model.dart';
 
 final log = Logger();

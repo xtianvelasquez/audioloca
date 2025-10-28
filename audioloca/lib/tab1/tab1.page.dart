@@ -16,7 +16,7 @@ import 'package:audioloca/spotify/spotify.recommender.dart';
 import 'package:audioloca/spotify/models/track.model.dart';
 import 'package:audioloca/tab1/tab1.widgets/local.recommender.dart';
 import 'package:audioloca/tab1/tab1.widgets/spotify.recommender.dart';
-import 'package:audioloca/spotify/controllers/track.service.dart';
+import 'package:audioloca/spotify/services/track.service.dart';
 import 'package:audioloca/player/views/mini.player.dart';
 
 final log = Logger();

@@ -68,7 +68,7 @@ class EmotionRecognition {
   bool get isModelReady => isBasicReady && isCompoundReady;
 
   // -------------------------------------------------------------
-  // CAMERA PREDICTION FLOW (kept the same)
+  // CAMERA PREDICTION FLOW
   // -------------------------------------------------------------
   Future<EmotionResult> requestCameraPermission() async {
     var status = await Permission.camera.status;

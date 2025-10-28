@@ -1,24 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/environment.dart';
+import 'package:audioloca/core/utils.dart';
 import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/core/alert.dialog.dart';
-import 'package:audioloca/local/controllers/user.service.dart';
+import 'package:audioloca/local/services/user.service.dart';
+import 'package:audioloca/local/services/audio.service.dart';
 import 'package:audioloca/local/models/user.model.dart';
-import 'package:audioloca/tabs/tabs.routing.dart';
+import 'package:audioloca/local/models/audio.model.dart';
 import 'package:audioloca/view/user.header.dart';
+import 'package:audioloca/view/audio.card.dart';
+import 'package:audioloca/tabs/tabs.routing.dart';
+import 'package:audioloca/player/controllers/local.player.dart';
+import 'package:audioloca/player/views/full.player.dart';
 import 'package:audioloca/player/views/mini.player.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
 final userServices = UserServices();
+final audioServices = AudioServices();
+final playerService = LocalPlayerService();
 
-class Tab5 extends StatelessWidget {
+class Tab5 extends StatefulWidget {
   const Tab5({super.key});
+  @override
+  State<Tab5> createState() => Tab5State();
+}
 
-  Future<User?> fetchUser() async {
-    return await userServices.fetchUserProfile();
+class Tab5State extends State<Tab5> {
+  String? jwtToken;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
   }
+
+  Future<void> _loadToken() async {
+    jwtToken = await storage.getJwtToken();
+    if (jwtToken == null || jwtToken!.isEmpty) {
+      if (!mounted) return;
+      CustomAlertDialog.failed(
+        context,
+        "Authentication required. Please log in.",
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const TabsRouting()),
+      );
+    }
+    setState(() {});
+  }
+
+  Future<User?> fetchUser() => userServices.fetchUserProfile();
+
+  Future<List<Audio>> fetchLatestStreams() =>
+      audioServices.readLatestStreams(jwtToken!);
 
   Future<void> handleLogoutTap(BuildContext context) async {
     final success = await userServices.logout();
@@ -43,46 +81,104 @@ class Tab5 extends StatelessWidget {
     }
   }
 
+  Future<void> handleTrackTap(Audio audio) async {
+    final audioUrl = "${Environment.audiolocaBaseUrl}/${audio.audioRecord}";
+    final photoUrl = "${Environment.audiolocaBaseUrl}/${audio.albumCover}";
+
+    await playerService.playFromUrl(
+      url: audioUrl,
+      title: audio.audioTitle,
+      subtitle: audio.username,
+      imageUrl: photoUrl,
+    );
+
+    setState(() {});
+
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const FullPlayerScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (jwtToken == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text("AudioLoca"),
         backgroundColor: AppColors.color1,
-        foregroundColor: AppColors.light,
-        elevation: 0,
       ),
       body: FutureBuilder<User?>(
         future: fetchUser(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('No user data found.'));
           }
 
-          final user = snapshot.data!;
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: UserHeader(
+          final user = userSnapshot.data!;
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {});
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  UserHeader(
                     title: user.username,
                     subtitle: user.joinedAt,
                     showActions: true,
                     onLogout: () => handleLogoutTap(context),
                   ),
-                ),
-              ],
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      "Recently Played",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  FutureBuilder<List<Audio>>(
+                    future: fetchLatestStreams(),
+                    builder: (context, streamsSnapshot) {
+                      if (!streamsSnapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final streams = streamsSnapshot.data!;
+                      if (streams.isEmpty) {
+                        return const Center(
+                          child: Text("No recently played audio yet."),
+                        );
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: streams.length,
+                        itemBuilder: (context, index) {
+                          final audio = streams[index];
+                          return AudioListItem(
+                            imageUrl: resolveImageUrl(audio.albumCover),
+                            title: audio.audioTitle,
+                            subtitle: audio.username,
+                            duration: formatLocalTrackDuration(audio.duration),
+                            streamCount: audio.streamCount,
+                            onTap: () => handleTrackTap(audio),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         },

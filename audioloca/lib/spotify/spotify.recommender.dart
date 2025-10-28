@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/spotify/controllers/track.service.dart';
+import 'package:audioloca/spotify/services/track.service.dart';
 
 final log = Logger();
 final storage = SecureStorageService();

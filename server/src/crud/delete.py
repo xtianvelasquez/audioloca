@@ -31,3 +31,13 @@ def delete_specific_album(db: Session, user_id: int, album_id: int):
   db.delete(album)
   db.commit()
   return True
+
+def delete_specific_audio(db: Session, user_id: int, audio_id: int):
+  audio = db.query(Audio).filter_by(user_id=user_id, audio_id=audio_id).first()
+
+  if not audio:
+    raise HTTPException(status_code=404, detail="Album not found.")
+  
+  db.delete(audio)
+  db.commit()
+  return True

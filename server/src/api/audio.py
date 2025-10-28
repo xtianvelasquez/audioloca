@@ -8,10 +8,10 @@ from src.database import get_db
 from src.security import verify_token
 from src.crud import (read_genre_by_id, store_audio, read_all_audio, read_specific_audio, 
                       read_audio_search, read_audio_album, read_audio_by_genre, link_audio_to_genre,
-                      read_global_audio)
+                      read_global_audio, delete_specific_audio)
 from src.utils import validate_file_extension
 from src.schemas import Genres_Response, Audio_Response, GenreRequest
-from src.config import VALID_AUDIO_EXTENSION
+from src.config import VALID_AUDIO_EXTENSION, VALID_AUDIO_MIME_TYPES
 
 router = APIRouter()
 
@@ -30,22 +30,6 @@ def build_audio_response(audio) -> Audio_Response:
     created_at=audio.created_at,
     modified_at=audio.modified_at
   )
-
-@router.post("/audioloca/audio/genre", response_model=List[Audio_Response], status_code=200)
-async def audio_by_genres(genre_ids: List[int] = Body(..., embed=False), db: Session = Depends(get_db)):
-  audios = read_audio_by_genre(db, genre_ids)
-  print(f"Frontend request received with genre id: {genre_ids}")
-
-  if not audios:
-    return []
-
-  for audio in audios:
-    genre_names = [link.genre.genre_name for link in audio.genre_links if link.genre]
-    genre_display = ", ".join(genre_names) if genre_names else "Unknown"
-    print(f"Audio: {audio.audio_title} | Genres: {genre_display}")
-  
-  print(f"Total public audio fetched: {len(audios)}")
-  return [build_audio_response(audio) for audio in audios]
 
 @router.post("/audioloca/audio/create", response_model=Audio_Response, status_code=201)
 async def audio_created(
@@ -66,22 +50,21 @@ async def audio_created(
   if not validate_file_extension(audio_record, VALID_AUDIO_EXTENSION):
     raise HTTPException(status_code=400, detail="Invalid audio file type.")
   
-  VALID_MIME_TYPES = [
-    "audio/mp3", "audio/mpeg", "audio/aac", "audio/x-aac",
-    "audio/wav", "audio/x-wav", "audio/ogg", "audio/x-m4a"
-]
-  
-  if audio_record.content_type not in VALID_MIME_TYPES:
+  if audio_record.content_type not in VALID_AUDIO_MIME_TYPES:
     raise HTTPException(status_code=400, detail="Invalid audio MIME type.")
 
-  audio_ext = os.path.splitext(audio_record.filename)[1]
+  safe_name = audio_record.filename.replace(" ", "_").replace("..", "")
+  audio_ext = os.path.splitext(safe_name)[1]
 
   audio_path = f"media/audios/{uuid.uuid4().hex}{audio_ext}"
 
   os.makedirs(os.path.dirname(audio_path), exist_ok=True)
 
-  with open(audio_path, "wb") as f:
-    shutil.copyfileobj(audio_record.file, f)
+  try:
+    with open(audio_path, "wb") as f:
+      shutil.copyfileobj(audio_record.file, f)
+  finally:
+    audio_record.file.close()
 
   audio = store_audio(
     db,
@@ -103,18 +86,42 @@ async def audio_created(
 
   return build_audio_response(audio)
 
+@router.get("/audioloca/audios/read", response_model=List[Audio_Response], status_code=200)
+async def audio_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
+  user_id = token_payload.get("payload", {}).get("sub")
+  audios = read_all_audio(db, user_id)
+  return [build_audio_response(audio) for audio in audios]
+
 @router.post("/audioloca/audio/read", response_model=Audio_Response, status_code=200)
-async def specific_audio_read(audio_id: int, token_payload = Depends(verify_token), db: Session = Depends(get_db)):
+async def specific_audio_read(
+  audio_id: int,
+  token_payload = Depends(verify_token),
+  db: Session = Depends(get_db)
+  ):
   user_id = token_payload.get("payload", {}).get("sub")
   audio = read_specific_audio(db, user_id, audio_id)
   
   return build_audio_response(audio)
 
-@router.get("/audioloca/audios/read", response_model=List[Audio_Response], status_code=200)
-async def audio_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
-  user_id = token_payload.get("payload", {}).get("sub")
-  audios = read_all_audio(db, user_id)
+@router.get("/audioloca/audios/global", response_model=List[Audio_Response], status_code=200)
+async def global_audio_read(db: Session = Depends(get_db)):
+  audios = read_global_audio(db)
+  return [build_audio_response(audio) for audio in audios]
+
+@router.post("/audioloca/audio/genre", response_model=List[Audio_Response], status_code=200)
+async def audio_by_genres(genre_ids: List[int] = Body(..., embed=False), db: Session = Depends(get_db)):
+  audios = read_audio_by_genre(db, genre_ids)
+  print(f"Frontend request received with genre id: {genre_ids}")
+
+  if not audios:
+    return []
+
+  for audio in audios:
+    genre_names = [link.genre.genre_name for link in audio.genre_links if link.genre]
+    genre_display = ", ".join(genre_names) if genre_names else "Unknown"
+    print(f"Audio: {audio.audio_title} | Genres: {genre_display}")
   
+  print(f"Total public audio fetched: {len(audios)}")
   return [build_audio_response(audio) for audio in audios]
 
 @router.post("/audioloca/audio/album", response_model=List[Audio_Response], status_code=200)
@@ -129,15 +136,23 @@ async def audio_album_read(
   return [build_audio_response(audio) for audio in audios]
 
 @router.get("/audioloca/audio/search", response_model=List[Audio_Response], status_code=200)
-async def audio_search(
-  query: str = Query(..., min_length=1),
-  db: Session = Depends(get_db)
-):
+async def audio_search(query: str = Query(..., min_length=1), db: Session = Depends(get_db)):
   audios = read_audio_search(db, query)
   return [build_audio_response(audio) for audio in audios]
 
-@router.get("/audioloca/audios/global", response_model=List[Audio_Response], status_code=200)
-async def audio_read(db: Session = Depends(get_db)):
-  audios = read_global_audio(db)
-  
-  return [build_audio_response(audio) for audio in audios]
+@router.post("/audioloca/audio/delete", status_code=200)
+async def audio_delete(
+  audio_id: int = Body(..., embed=True),
+  token_payload = Depends(verify_token),
+  db: Session = Depends(get_db)
+  ):
+  user_id = token_payload.get("payload", {}).get("sub")
+  deleted_audio = delete_specific_audio(db, user_id, audio_id)
+
+  if not deleted_audio:
+    raise HTTPException(status_code=404, detail="Audio not found or already deleted.")
+
+  if os.path.exists(deleted_audio.audio_record):
+    os.remove(deleted_audio.audio_record)
+
+  return {"detail": "Audio deleted successfully."}

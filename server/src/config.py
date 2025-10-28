@@ -7,6 +7,14 @@ TOKEN_EXPIRATION = datetime.utcnow().replace(second=0, microsecond=0) + timedelt
 VALID_PHOTO_EXTENSION = [".jpg", ".jpeg", ".png"]
 VALID_AUDIO_EXTENSION = [".mp3", ".aac", ".wav", ".x-wav"]
 
+VALID_AUDIO_MIME_TYPES = [
+  "audio/mp3", "audio/mpeg", "audio/aac", "audio/x-aac",
+  "audio/wav", "audio/x-wav", "audio/ogg", "audio/x-m4a"
+]
+VALID_PHOTO_MIME_TYPES = [
+  "image/jpg", "image/jpeg", "image/png"
+]
+
 TOKEN_TYPE = {
   "ACCESS_TOKEN": 1,
   "REFRESH_TOKEN": 2,

@@ -26,6 +26,7 @@ class Album {
           : DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
+
   static Album empty() {
     return Album(
       albumId: 0,

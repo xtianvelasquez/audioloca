@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 
 import 'package:audioloca/core/alert.dialog.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/local/controllers/genre.service.dart';
-import 'package:audioloca/local/controllers/album.service.dart';
-import 'package:audioloca/local/controllers/audio.service.dart';
+import 'package:audioloca/local/services/genre.service.dart';
+import 'package:audioloca/local/services/album.service.dart';
+import 'package:audioloca/local/services/audio.service.dart';
 import 'package:audioloca/local/models/genres.model.dart';
 import 'package:audioloca/local/models/album.model.dart';
 import 'package:audioloca/login/login.page.dart';

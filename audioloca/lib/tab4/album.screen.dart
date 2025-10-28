@@ -5,8 +5,8 @@ import 'package:audioloca/core/utils.dart';
 import 'package:audioloca/core/alert.dialog.dart';
 import 'package:audioloca/player/controllers/local.player.dart';
 import 'package:audioloca/player/views/full.player.dart';
-import 'package:audioloca/local/controllers/album.service.dart';
-import 'package:audioloca/local/controllers/audio.service.dart';
+import 'package:audioloca/local/services/album.service.dart';
+import 'package:audioloca/local/services/audio.service.dart';
 import 'package:audioloca/local/models/album.model.dart';
 import 'package:audioloca/local/models/audio.model.dart';
 import 'package:audioloca/view/audio.card.dart';
@@ -74,6 +74,8 @@ class AlbumScreenState extends State<AlbumScreen> {
         subtitle: audio.username,
         imageUrl: photoUrl,
       );
+
+      setState(() {});
 
       if (!mounted) return;
       Navigator.push(

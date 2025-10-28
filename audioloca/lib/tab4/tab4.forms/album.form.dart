@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 
 import 'package:audioloca/core/alert.dialog.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/local/controllers/album.service.dart';
+import 'package:audioloca/local/services/album.service.dart';
 import 'package:audioloca/login/login.page.dart';
 
 final log = Logger();

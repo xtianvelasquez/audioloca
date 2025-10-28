@@ -184,6 +184,16 @@ def read_spotify_streams(db: Session):
   return (db.query(Streams).filter(Streams.type == "spotify").order_by(desc(Streams.stream_count)).limit(50).all())
 
 @db_safe
+def read_latest_streams(db: Session, user_id: int):
+  return (
+    db.query(Streams)
+    .filter(Streams.user_id == user_id, Streams.last_played.isnot(None))
+    .order_by(desc(Streams.last_played))
+    .limit(10)
+    .all()
+  )
+
+@db_safe
 def read_audio_search(db: Session, query: str):
   search_term = f"%{query}%"
   return (

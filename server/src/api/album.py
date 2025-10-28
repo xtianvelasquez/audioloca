@@ -9,7 +9,7 @@ from src.security import verify_token
 from src.crud import store_album, read_all_album, read_specific_album, delete_specific_album
 from src.utils import validate_file_extension
 from src.schemas import Album_Response
-from src.config import VALID_PHOTO_EXTENSION
+from src.config import VALID_PHOTO_EXTENSION, VALID_PHOTO_MIME_TYPES
 
 router = APIRouter()
 
@@ -38,17 +38,20 @@ async def album_created(
   if not validate_file_extension(album_cover, VALID_PHOTO_EXTENSION):
     raise HTTPException(status_code=400, detail="Invalid photo file type.")
   
-  if album_cover.content_type not in ["image/jpg", "image/jpeg", "image/png"]:
+  if album_cover.content_type not in VALID_PHOTO_MIME_TYPES:
     raise HTTPException(status_code=400, detail="Invalid photo MIME type.")
 
-  cover_ext = os.path.splitext(album_cover.filename)[1]
-
+  safe_name = album_cover.filename.replace(" ", "_")
+  cover_ext = os.path.splitext(safe_name)[1]
   cover_path = f"media/covers/{uuid.uuid4().hex}{cover_ext}"
 
   os.makedirs(os.path.dirname(cover_path), exist_ok=True)
 
-  with open(cover_path, "wb") as f:
-    shutil.copyfileobj(album_cover.file, f)
+  try:
+    with open(cover_path, "wb") as buffer:
+      shutil.copyfileobj(album_cover.file, buffer)
+  finally:
+    album_cover.file.close()
 
   album = store_album(
     db,
@@ -84,9 +87,14 @@ async def album_delete(
   album_id: int = Body(..., embed=True),
   token_payload = Depends(verify_token),
   db: Session = Depends(get_db)
-  ):
+):
   user_id = token_payload.get('payload', {}).get('sub')
   deleted_album = delete_specific_album(db, user_id, album_id)
 
-  if deleted_album:
-    return {"detail": "Album deleted successfully."}
+  if not deleted_album:
+    raise HTTPException(status_code=404, detail="Album not found or already deleted.")
+
+  if os.path.exists(deleted_album.album_cover):
+    os.remove(deleted_album.album_cover)
+
+  return {"detail": "Album deleted successfully."}

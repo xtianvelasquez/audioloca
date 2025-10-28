@@ -18,6 +18,7 @@ class ApiEndpoints {
   static const String searchAudio = '/audioloca/audio/search';
   static const String createAudio = '/audioloca/audio/create';
   static const String globalAudio = '/audioloca/audios/global';
+  static const String latestStreams = "/audioloca/audio/stream";
 }
 
 class AudioServices {
@@ -125,6 +126,22 @@ class AudioServices {
       parser: (data) {
         if (data is List) {
           return data.map((item) => Audio.fromJson(item)).toList();
+        }
+        throw FormatException('Unexpected audio list format.');
+      },
+    );
+  }
+
+  // =======================
+  // GET latest streamed audio
+  // =======================
+  Future<List<Audio>> readLatestStreams(String jwtToken) async {
+    return _get<List<Audio>>(
+      ApiEndpoints.latestStreams,
+      headers: _headers(jwtToken),
+      parser: (data) {
+        if (data is List) {
+          return data.map((json) => Audio.fromJson(json)).toList();
         }
         throw FormatException('Unexpected audio list format.');
       },
