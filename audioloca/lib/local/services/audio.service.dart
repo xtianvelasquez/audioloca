@@ -260,7 +260,7 @@ class AudioServices {
   Future<T> _post<T>(
     String endpoint, {
     required Map<String, String> headers,
-    required dynamic body, // ✅ allow List<int>
+    required dynamic body,
     required T Function(dynamic) parser,
   }) async {
     final url = Uri.parse('${Environment.audiolocaBaseUrl}$endpoint');
