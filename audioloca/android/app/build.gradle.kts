@@ -53,3 +53,7 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation(project(":spotify-app-remote"))
+}

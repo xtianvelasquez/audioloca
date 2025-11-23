@@ -15,4 +15,8 @@ class NowPlayingManager {
 
   void useLocal() => notifier.value = NowPlayingSource.local;
   void useSpotify() => notifier.value = NowPlayingSource.spotify;
+
+  void clear() {
+    notifier.value = NowPlayingSource.local;
+  }
 }

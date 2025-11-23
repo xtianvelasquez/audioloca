@@ -1,4 +1,3 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,6 +23,23 @@ class TapController {
     BuildContext context,
     bool mounted,
   ) async {
+    final jwtToken = await storage.getJwtToken();
+    if (jwtToken == null || !context.mounted) return;
+
+    final locationReady = await locationServices.ensureLocationReady(context);
+    if (!locationReady) {
+      log.w('[Flutter] Location not ready. Skipping stream logging.');
+      return;
+    }
+
+    Future.microtask(
+      () => _logStreamCount(
+        jwtToken: jwtToken,
+        type: "local",
+        audioId: audio.audioId,
+      ),
+    );
+
     final localPlayer = LocalPlayerService();
     final manager = NowPlayingManager();
 
@@ -38,34 +54,6 @@ class TapController {
         imageUrl: photoUrl,
       );
       manager.useLocal();
-
-      final jwtToken = await storage.getJwtToken();
-      if (jwtToken != null) {
-        if (!context.mounted) return;
-
-        final locationReady = await locationServices.ensureLocationReady(
-          context,
-        );
-        if (!locationReady) {
-          log.w('[Flutter] Location not ready. Skipping stream logging.');
-          return;
-        }
-
-        Position position;
-        try {
-          position = await locationServices.getUserPosition();
-        } catch (e, stackTrace) {
-          log.e('[Flutter] Failed to get position: $e $stackTrace');
-          return;
-        }
-
-        await streamServices.sendStream(
-          jwtToken,
-          position: position,
-          audioId: audio.audioId,
-          type: "local",
-        );
-      }
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,11 +72,24 @@ class TapController {
     bool mounted, {
     String? imageUrl,
   }) async {
+    final jwtToken = await storage.getJwtToken();
+    if (jwtToken == null || !context.mounted) return;
+
+    final locationReady = await locationServices.ensureLocationReady(context);
+    if (!locationReady) {
+      log.w('[Flutter] Location not ready. Skipping stream logging.');
+      return;
+    }
+
+    await _logStreamCount(
+      jwtToken: jwtToken,
+      type: "spotify",
+      spotifyId: track.id,
+    );
+
     final spotify = SpotifyPlayerService();
     final manager = NowPlayingManager();
     final uri = 'spotify:track:${track.id}';
-
-    bool shouldSendStream = false;
 
     try {
       await spotify.playTrackUri(
@@ -98,7 +99,6 @@ class TapController {
         imageUrl: imageUrl ?? '',
       );
       manager.useSpotify();
-      shouldSendStream = true;
     } catch (e) {
       if (track.previewUrl != null) {
         await LocalPlayerService().playFromUrl(
@@ -108,7 +108,6 @@ class TapController {
           imageUrl: imageUrl ?? '',
         );
         manager.useLocal();
-        shouldSendStream = true;
       } else {
         final uri = Uri.parse(track.externalUrl);
         if (!context.mounted) return;
@@ -119,7 +118,6 @@ class TapController {
 
         if (await canLaunchUrl(uri)) {
           await launchUrl(uri);
-          shouldSendStream = true;
         } else {
           if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -128,35 +126,25 @@ class TapController {
         }
       }
     }
+  }
 
-    if (shouldSendStream && context.mounted) {
-      final jwtToken = await storage.getAccessToken();
-      if (jwtToken != null) {
-        if (!context.mounted) return;
-
-        final locationReady = await locationServices.ensureLocationReady(
-          context,
-        );
-        if (!locationReady) {
-          log.w('[Flutter] Location not ready. Skipping stream logging.');
-          return;
-        }
-
-        Position position;
-        try {
-          position = await locationServices.getUserPosition();
-        } catch (e, stackTrace) {
-          log.e('[Flutter] Failed to get position: $e $stackTrace');
-          return;
-        }
-
-        await streamServices.sendStream(
-          jwtToken,
-          position: position,
-          spotifyId: track.id,
-          type: "spotify",
-        );
-      }
+  Future<void> _logStreamCount({
+    required String jwtToken,
+    required String type,
+    int? audioId,
+    String? spotifyId,
+  }) async {
+    try {
+      final position = await locationServices.getUserPosition();
+      await streamServices.sendStream(
+        jwtToken,
+        position: position,
+        audioId: audioId,
+        spotifyId: spotifyId,
+        type: type,
+      );
+    } catch (e, stackTrace) {
+      log.e('[Flutter] Failed to log stream: $e $stackTrace');
     }
   }
 }

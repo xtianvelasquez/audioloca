@@ -9,18 +9,38 @@ import 'package:audioloca/environment.dart';
 final log = Logger();
 
 class LocationServices {
+  static LocationServices? _instance;
+
   final bool useMockLocation;
   final double? mockLatitude;
   final double? mockLongitude;
 
-  LocationServices({
+  StreamSubscription<Position>? _positionStream;
+  DateTime? _lastUpdate;
+
+  LocationServices._internal({
     this.useMockLocation = false,
     this.mockLatitude,
     this.mockLongitude,
   });
 
-  StreamSubscription<Position>? positionStream;
-  DateTime? lastUpdate;
+  factory LocationServices({
+    bool useMockLocation = false,
+    double? mockLatitude,
+    double? mockLongitude,
+  }) {
+    _instance ??= LocationServices._internal(
+      useMockLocation: useMockLocation,
+      mockLatitude: mockLatitude,
+      mockLongitude: mockLongitude,
+    );
+    return _instance!;
+  }
+
+  static void disposeInstance() {
+    _instance?._dispose();
+    _instance = null;
+  }
 
   Future<bool> ensureLocationReady(BuildContext context) async {
     try {
@@ -92,6 +112,8 @@ class LocationServices {
     LocationAccuracy accuracy = LocationAccuracy.high,
     int distanceFilter = 100,
   }) {
+    stopRealtimeTracking();
+
     if (useMockLocation) {
       final mockPosition = Position(
         latitude: mockLatitude!,
@@ -116,23 +138,19 @@ class LocationServices {
       distanceFilter: distanceFilter,
     );
 
-    positionStream =
+    _positionStream =
         Geolocator.getPositionStream(
           locationSettings: locationSettings,
         ).listen((Position position) {
           final now = DateTime.now();
-
-          if (lastUpdate != null &&
-              now.difference(lastUpdate!) < const Duration(minutes: 1)) {
+          if (_lastUpdate != null &&
+              now.difference(_lastUpdate!) < const Duration(minutes: 1)) {
             return;
           }
-
-          lastUpdate = now;
-
+          _lastUpdate = now;
           log.i(
             '[Flutter] Real-time location: ${position.latitude}, ${position.longitude}',
           );
-
           onLocationUpdate(position);
         });
   }
@@ -147,15 +165,12 @@ class LocationServices {
 
     try {
       final response = await http.get(url);
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final address = data["name"] ?? data["display_name"];
-
         log.i(
           "[Flutter] Latitude: $latitude, Longitude: $longitude, Location Address: $address",
         );
-
         return address;
       } else {
         log.i('Error: ${response.body}');
@@ -168,7 +183,18 @@ class LocationServices {
   }
 
   void stopRealtimeTracking() {
-    positionStream?.cancel();
-    positionStream = null;
+    if (_positionStream != null) {
+      log.i('[Flutter] Stopping real-time tracking...');
+      _positionStream?.cancel();
+      _positionStream = null;
+      _lastUpdate = null;
+    } else {
+      log.i('[Flutter] No active position stream to stop.');
+    }
+  }
+
+  void _dispose() {
+    stopRealtimeTracking();
+    log.i('[Flutter] Location service disposed.');
   }
 }

@@ -185,13 +185,18 @@ def read_spotify_streams(db: Session):
 
 @db_safe
 def read_latest_streams(db: Session, user_id: int):
-  return (
-    db.query(Streams)
-    .filter(Streams.user_id == user_id, Streams.last_played.isnot(None))
-    .order_by(desc(Streams.last_played))
-    .limit(10)
-    .all()
-  )
+    return (
+        db.query(Streams)
+        .filter(
+            Streams.user_id == user_id,
+            Streams.last_played.isnot(None),
+            Streams.type == "local"
+        )
+        .distinct(Streams.audio_id)
+        .order_by(Streams.audio_id, desc(Streams.last_played))
+        .limit(10)
+        .all()
+    )
 
 @db_safe
 def read_audio_search(db: Session, query: str):

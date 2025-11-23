@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/business/emotion.recognition.dart';
@@ -8,7 +9,15 @@ final storage = SecureStorageService();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await GeolocatorPlatform.instance.isLocationServiceEnabled();
+  } catch (e) {
+    debugPrint('Geolocator initialization failed: $e');
+  }
+
   await emotionService.loadModels();
+
   runApp(const AudioLoca());
 }
 

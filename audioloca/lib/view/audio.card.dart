@@ -8,7 +8,7 @@ class AudioListItem extends StatelessWidget {
   final String title;
   final String subtitle;
   final String duration;
-  final int streamCount;
+  final int? streamCount;
   final VoidCallback onTap;
 
   const AudioListItem({
@@ -17,13 +17,13 @@ class AudioListItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.duration,
-    required this.streamCount,
+    this.streamCount,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final formattedCount = streamCount != 0
+    final formattedCount = (streamCount != null && streamCount! > 0)
         ? NumberFormat.decimalPattern().format(streamCount)
         : null;
 
