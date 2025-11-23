@@ -18,8 +18,13 @@ final tapController = TapController();
 
 class LocalListView extends StatefulWidget {
   final List<Audio> allTracks;
+  final bool showRank;
 
-  const LocalListView({super.key, required this.allTracks});
+  const LocalListView({
+    super.key,
+    required this.allTracks,
+    this.showRank = false,
+  });
 
   @override
   State<LocalListView> createState() => LocalListViewState();
@@ -74,6 +79,8 @@ class LocalListViewState extends State<LocalListView> {
                 context,
                 context.mounted,
               ),
+              showRank: widget.showRank,
+              rank: widget.showRank ? index + 1 : null,
             );
           },
         ),

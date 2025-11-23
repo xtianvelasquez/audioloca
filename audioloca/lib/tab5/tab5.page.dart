@@ -127,8 +127,11 @@ class Tab5State extends State<Tab5> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("AudioLoca"),
         backgroundColor: AppColors.color1,
+        foregroundColor: AppColors.light,
+        elevation: 0,
       ),
       body: FutureBuilder<User?>(
         future: fetchUser(),

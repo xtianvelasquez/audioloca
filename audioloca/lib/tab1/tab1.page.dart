@@ -423,22 +423,10 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
 
                       localAudioLocationTracks.isEmpty
                           ? const Text("No local location tracks available.")
-                          : LocalListView(allTracks: localAudioLocationTracks),
-
-                      if (accessToken != null) ...[
-                        const SizedBox(height: 16),
-                        const Text(
-                          "Spotify Location-Based Tracks",
-                          style: sectionStyle,
-                        ),
-                        spotifyAudioLocationTracks.isEmpty
-                            ? const Text(
-                                "No Spotify location tracks available.",
-                              )
-                            : SpotifyListView(
-                                allTracks: spotifyAudioLocationTracks,
-                              ),
-                      ],
+                          : LocalListView(
+                              allTracks: localAudioLocationTracks,
+                              showRank: true,
+                            ),
                     ],
                   ),
                 ],
