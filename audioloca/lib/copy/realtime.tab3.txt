@@ -1,0 +1,361 @@
+import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:flutter/services.dart';
+
+final log = Logger();
+
+class Tab3 extends StatefulWidget {
+  const Tab3({super.key});
+  @override
+  State<Tab3> createState() => Tab3State();
+}
+
+class Tab3State extends State<Tab3> {
+  CameraController? _cameraController;
+  FaceDetector? _faceDetector;
+
+  String _predictedEmotion = "Initializing...";
+  double _confidence = 0.0;
+  String _debugInfo = "";
+
+  bool _isProcessing = false;
+  bool _isInitialized = false;
+
+  int _lastProcessTime = 0;
+
+  // Platform channel for native communication
+  static const platform = MethodChannel('com.example.audioloca/emotion');
+
+  // Performance tracking
+  int _frameCount = 0;
+  final double _fps = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAll();
+  }
+
+  Future<void> _initializeAll() async {
+    try {
+      await _initCamera();
+      _initFaceDetector();
+
+      // Initialize native emotion detector
+      await platform.invokeMethod('initEmotionDetector');
+
+      _isInitialized = true;
+
+      if (mounted) {
+        setState(() {
+          _predictedEmotion = "Ready - show your face";
+        });
+      }
+    } catch (e, stackTrace) {
+      log.e("Initialization error: $e $stackTrace");
+      if (mounted) {
+        setState(() {
+          _predictedEmotion = "Error: $e";
+        });
+      }
+    }
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      final cameras = await availableCameras();
+
+      // Find front camera
+      CameraDescription? frontCamera;
+      for (var camera in cameras) {
+        if (camera.lensDirection == CameraLensDirection.front) {
+          frontCamera = camera;
+          break;
+        }
+      }
+
+      if (frontCamera == null && cameras.isNotEmpty) {
+        frontCamera = cameras.first;
+      } else if (frontCamera == null) {
+        throw Exception("No cameras available.");
+      }
+
+      _cameraController = CameraController(
+        frontCamera,
+        ResolutionPreset.low,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.yuv420,
+      );
+
+      await _cameraController!.initialize();
+
+      // Start optimized frame processing
+      _cameraController!.startImageStream((CameraImage image) {
+        if (_isProcessing || !_isInitialized) return;
+
+        // Frame skipping for performance
+        _frameCount++;
+        if (_frameCount % 2 != 0) return;
+
+        _isProcessing = true;
+
+        // Process frame with native code
+        Future.microtask(() async {
+          try {
+            await _processFrameWithNative(image);
+          } catch (e, stackTrace) {
+            log.e("Frame processing error: $e $stackTrace");
+          } finally {
+            _isProcessing = false;
+          }
+        });
+      });
+
+      if (mounted) setState(() {});
+    } catch (e, stackTrace) {
+      log.e("Camera error: $e $stackTrace");
+      if (mounted) {
+        setState(() {
+          _predictedEmotion = "Camera error: $e";
+        });
+      }
+    }
+  }
+
+  void _initFaceDetector() {
+    _faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        performanceMode: FaceDetectorMode.fast,
+        enableContours: false,
+        enableLandmarks: false,
+        enableClassification: false,
+        enableTracking: true,
+        minFaceSize: 0.15,
+      ),
+    );
+  }
+
+  Future<void> _processFrameWithNative(CameraImage image) async {
+    try {
+      // final startTime = DateTime.now();
+
+      // 1. Face detection in Flutter (fast)
+      final InputImage inputImage = _buildInputImageFromCameraImage(image);
+      final List<Face> faces = await _faceDetector!.processImage(inputImage);
+
+      if (faces.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _predictedEmotion = "No face detected.";
+            _confidence = 0.0;
+          });
+        }
+        return;
+      } else if (faces.length > 1) {
+        setState(() {
+          _predictedEmotion =
+              "Multiple faces detected. Please capture only one.";
+          _confidence = 0.0;
+        });
+        return;
+      }
+
+      // Get largest face
+      final Face face = faces.reduce(
+        (a, b) =>
+            (a.boundingBox.width * a.boundingBox.height) >
+                (b.boundingBox.width * b.boundingBox.height)
+            ? a
+            : b,
+      );
+
+      final Rect box = face.boundingBox;
+
+      // 2. Send to native for processing
+      final resultRaw = await platform.invokeMethod('processCameraFrame', {
+        'yPlane': image.planes[0].bytes,
+        'uPlane': image.planes[1].bytes,
+        'vPlane': image.planes[2].bytes,
+        'width': image.width,
+        'height': image.height,
+        'yRowStride': image.planes[0].bytesPerRow,
+        'uvRowStride': image.planes[1].bytesPerRow,
+        'uvPixelStride': image.planes[1].bytesPerPixel ?? 1,
+        'faceBox': {
+          'left': box.left,
+          'top': box.top,
+          'right': box.right,
+          'bottom': box.bottom,
+        },
+      });
+
+      final Map<String, dynamic> result = Map<String, dynamic>.from(
+        resultRaw as Map,
+      );
+
+      // 3. Get results from native
+      final emotion = result['emotion'] as String;
+      final confidence = result['confidence'] as double;
+
+      // Calculate FPS
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if (now - _lastProcessTime < 100) return; // ~10fps
+      _lastProcessTime = now;
+
+      // 4. Update UI
+      if (mounted) {
+        setState(() {
+          _predictedEmotion = emotion;
+          _confidence = confidence;
+          _debugInfo = "FPS: ${_fps.toStringAsFixed(1)} | Native";
+        });
+      }
+    } catch (e, stackTrace) {
+      log.e("Native processing error: $e $stackTrace");
+    }
+  }
+
+  // Simple YUV to NV21 conversion for face detection
+  InputImage _buildInputImageFromCameraImage(CameraImage image) {
+    final InputImageRotation rotation = _rotationIntToImageRotation(
+      _cameraController!.description.sensorOrientation,
+    );
+
+    final InputImageMetadata metadata = InputImageMetadata(
+      size: Size(image.width.toDouble(), image.height.toDouble()),
+      rotation: rotation,
+      format: InputImageFormat.nv21,
+      bytesPerRow: image.planes[0].bytesPerRow,
+    );
+
+    return InputImage.fromBytes(
+      bytes: _convertYUV420ToNV21Fast(image),
+      metadata: metadata,
+    );
+  }
+
+  Uint8List _convertYUV420ToNV21Fast(CameraImage image) {
+    final int width = image.width;
+    final int height = image.height;
+    final int ySize = width * height;
+
+    final Uint8List nv21 = Uint8List(ySize + (ySize ~/ 2));
+    final planeY = image.planes[0];
+    final planeU = image.planes[1];
+    final planeV = image.planes[2];
+
+    // Copy Y plane
+    nv21.setRange(0, ySize, planeY.bytes);
+
+    // Interleave V and U planes
+    int uvIndex = ySize;
+    for (int row = 0; row < height ~/ 2; row++) {
+      final int uRowStart = row * planeU.bytesPerRow;
+      final int vRowStart = row * planeV.bytesPerRow;
+
+      for (int col = 0; col < width ~/ 2; col++) {
+        final int uIndex = uRowStart + col * (planeU.bytesPerPixel ?? 1);
+        final int vIndex = vRowStart + col * (planeV.bytesPerPixel ?? 1);
+
+        nv21[uvIndex++] = planeV.bytes[vIndex];
+        nv21[uvIndex++] = planeU.bytes[uIndex];
+      }
+    }
+
+    return nv21;
+  }
+
+  InputImageRotation _rotationIntToImageRotation(int rotation) {
+    switch (rotation) {
+      case 0:
+        return InputImageRotation.rotation0deg;
+      case 90:
+        return InputImageRotation.rotation90deg;
+      case 180:
+        return InputImageRotation.rotation180deg;
+      case 270:
+        return InputImageRotation.rotation270deg;
+      default:
+        return InputImageRotation.rotation0deg;
+    }
+  }
+
+  @override
+  void dispose() {
+    // Clean up native resources
+    platform.invokeMethod('disposeEmotionDetector');
+    _cameraController?.dispose();
+    _faceDetector?.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Real-time Emotion Detection (Native)')),
+      body: _cameraController == null || !_cameraController!.value.isInitialized
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 20),
+                  Text(_predictedEmotion),
+                ],
+              ),
+            )
+          : Stack(
+              children: [
+                CameraPreview(_cameraController!),
+                Positioned(
+                  bottom: 20,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.7),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _predictedEmotion,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${(_confidence * 100).toStringAsFixed(1)}%',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontSize: 16,
+                            ),
+                          ),
+                          if (_debugInfo.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              _debugInfo,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}

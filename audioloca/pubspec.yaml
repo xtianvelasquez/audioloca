@@ -91,6 +91,8 @@ flutter:
     - assets/images/audioloca.png
     - assets/mobilenetv2_rafdb_finetuned.tflite
     - assets/compound_mobilenetv2_rafdb_finetuned.tflite
+    - assets/basic_model.tflite
+    - assets/basic_finetuned.tflite
 
   # To add assets to your application, add an assets section, like this:
   # assets:
