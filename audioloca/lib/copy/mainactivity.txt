@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
+import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.YuvImage
 import android.os.Bundle
@@ -125,16 +126,12 @@ class MainActivity: FlutterActivity() {
         
         // 2. Initialize ML Kit Face Detector
         val faceDetectorOptions = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
-            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
-            .enableTracking()
-            .setMinFaceSize(0.25f)
+            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
+            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
             .build()
-        
+
         faceDetector = FaceDetection.getClient(faceDetectorOptions)
-        Log.d("NativeEmotion", "Face detector initialized.")
     }
     
     private fun processFrameNative(params: Map<String, Any>): Map<String, Any> {
@@ -205,20 +202,25 @@ class MainActivity: FlutterActivity() {
                 yRowStride, uRowStride, vRowStride,
                 uPixelStride, vPixelStride
             )
+
+            val matrix = Matrix()
+            matrix.postRotate(sensorOrientation.toFloat())
+            val rotatedBitmap = Bitmap.createBitmap(
+                rgbBitmap, 0, 0, rgbBitmap.width, rgbBitmap.height, matrix, true
+            )
             
             // 5. Crop face with padding
-            val padding = 20f
-            val cropLeft = (faceBox.left - padding).coerceAtLeast(0f)
-            val cropTop = (faceBox.top - padding).coerceAtLeast(0f)
-            val cropRight = (faceBox.right + padding).coerceAtMost(width.toFloat())
-            val cropBottom = (faceBox.bottom + padding).coerceAtMost(height.toFloat())
-            
+            val cropLeft = faceBox.left.coerceAtLeast(0)
+            val cropTop = faceBox.top.coerceAtLeast(0)
+            val cropRight = faceBox.right.coerceAtMost(rotatedBitmap.width)
+            val cropBottom = faceBox.bottom.coerceAtMost(rotatedBitmap.height)
+
             val croppedBitmap = Bitmap.createBitmap(
-                rgbBitmap,
-                cropLeft.toInt(),
-                cropTop.toInt(),
-                (cropRight - cropLeft).toInt(),
-                (cropBottom - cropTop).toInt()
+                rotatedBitmap,
+                cropLeft,
+                cropTop,
+                cropRight - cropLeft,
+                cropBottom - cropTop
             )
             
             // 6. Preprocess for TFLite
@@ -243,6 +245,7 @@ class MainActivity: FlutterActivity() {
             // 9. Clean up
             rgbBitmap.recycle()
             croppedBitmap.recycle()
+            rotatedBitmap.recycle()
             
             Log.d("NativeEmotion", "Detected: ${emotionLabels[maxIndex]} ($confidence)")
             
@@ -334,10 +337,9 @@ class MainActivity: FlutterActivity() {
             val g = (pixel shr 8) and 0xFF
             val b = pixel and 0xFF
             
-            // TRY THIS: ImageNet normalization for MobileNetV2
-            inputBuffer.putFloat((r - 123.68f) / 58.4f)
-            inputBuffer.putFloat((g - 116.78f) / 57.12f)
-            inputBuffer.putFloat((b - 103.94f) / 57.38f)
+            inputBuffer.putFloat(r / 127.5f - 1.0f)
+            inputBuffer.putFloat(g / 127.5f - 1.0f)
+            inputBuffer.putFloat(b / 127.5f - 1.0f)
         }
         
         resizedBitmap.recycle()

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioloca/tab1/tab1.page.dart';
 import 'package:audioloca/tab2/tab2.page.dart';
+import 'package:audioloca/tab3/tab3.page.dart';
 import 'package:audioloca/tab4/tab4.page.dart';
 import 'package:audioloca/tab5/tab5.page.dart';
 import 'package:audioloca/theme.dart';
@@ -15,7 +16,7 @@ class TabsRouting extends StatefulWidget {
 class TabsRoutingState extends State<TabsRouting> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = [Tab1(), Tab2(), Tab4(), Tab5()];
+  final List<Widget> pages = [Tab1(), Tab2(), Tab3(), Tab4(), Tab5()];
 
   void onItemTapped(int index) {
     setState(() {
@@ -35,6 +36,7 @@ class TabsRoutingState extends State<TabsRouting> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Explore'),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_music),
             label: 'Audio',

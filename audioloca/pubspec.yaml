@@ -89,7 +89,7 @@ flutter:
     - assets/mobilenetv2_stage4_final.tflite
     - assets/emotion_model.tflite
     - assets/images/audioloca.png
-    - assets/mobilenetv2_rafdb_finetuned.tflite
+    # - assets/mobilenetv2_rafdb_finetuned.tflite
     - assets/compound_mobilenetv2_rafdb_finetuned.tflite
     - assets/basic_model.tflite
     - assets/basic_finetuned.tflite
