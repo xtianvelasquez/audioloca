@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/player/views/mini.player.dart';
 
 final log = Logger();
 
@@ -232,7 +233,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.7),
+                        color: AppColors.color1.withValues(alpha: 0.7),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -242,7 +243,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
                             _predictedEmotion,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -251,7 +252,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
                             '${(_confidence * 100).toStringAsFixed(1)}%',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.8),
-                              fontSize: 16,
+                              fontSize: 15,
                             ),
                           ),
                           if (_debugInfo.isNotEmpty) ...[
@@ -271,6 +272,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
                 ),
               ],
             ),
+      bottomNavigationBar: const MiniPlayer(),
     );
   }
 }

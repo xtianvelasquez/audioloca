@@ -36,7 +36,10 @@ class TabsRoutingState extends State<TabsRouting> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Explore'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_camera),
+            label: 'Capture',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_music),
             label: 'Audio',

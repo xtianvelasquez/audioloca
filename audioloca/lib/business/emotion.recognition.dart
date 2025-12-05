@@ -272,7 +272,9 @@ class EmotionRecognition {
       final tempDir = await getTemporaryDirectory();
 
       // Basic model
-      final basicData = await rootBundle.load('assets/basic_finetuned.tflite');
+      final basicData = await rootBundle.load(
+        'assets/mobilenetv2_rafdb_finetuned.tflite',
+      );
       final basicFile = File(
         '${tempDir.path}/mobilenetv2_rafdb_finetuned.tflite',
       );

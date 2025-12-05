@@ -112,7 +112,7 @@ class MainActivity: FlutterActivity() {
     private fun initNativeDetectors() {
         // 1. Initialize TensorFlow Lite interpreter
         try {
-            val model = FileUtil.loadMappedFile(this, "mobilenetv2_rafdb_finetuned.tflite")
+            val model = FileUtil.loadMappedFile(this, "basic_finetuned.tflite")
             val options = Interpreter.Options()
             options.setNumThreads(4)
             options.setUseNNAPI(true)
