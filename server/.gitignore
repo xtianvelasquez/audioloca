@@ -1,4 +1,7 @@
-\app\media\
-\app\media\covers
-\app\media\photos
-\app\media\audios
+.env
+!.env.example
+
+app/media/
+media/
+__pycache__/
+*.pyc

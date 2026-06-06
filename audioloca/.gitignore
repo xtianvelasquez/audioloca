@@ -33,6 +33,12 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Local app configuration
+lib/environment.local.dart
+.env
+*.env
+!.env.example
+
 # Symbolication related
 app.*.symbols
 

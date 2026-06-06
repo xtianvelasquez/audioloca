@@ -1,0 +1,9 @@
+audioloca/build_log_2.txt
+audioloca/build_log.txt
+audioloca/android/.kotlin/sessions/kotlin-compiler-12529699316616925083.salive
+RUNNING.md
+.env
+*.env
+!.env.example
+**/__pycache__/
+*.pyc

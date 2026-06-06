@@ -75,10 +75,7 @@ class OAuthServices {
     await storage.saveJwtToken(jwtToken);
     await storage.deleteCodeVerifier();
 
-    log.i('[Flutter] Access Token: $accessToken');
-    log.i('[Flutter] Expires At: $expiration');
-    log.i('[Flutter] Refresh Token: $refreshToken');
-    log.i('[Flutter] JWT Token: $jwtToken');
+    log.i('[Flutter] Spotify login succeeded. Expires At: $expiration');
 
     return true;
   }
