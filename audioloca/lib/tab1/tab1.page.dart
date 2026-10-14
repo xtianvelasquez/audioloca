@@ -445,12 +445,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
               // Search Bar Capsule
               _buildSearchBarCapsule(),
 
-              const SizedBox(height: 18),
-
-              // Quick Actions Row (Search, Camera, Map, Profile)
-              _buildQuickActionsRow(),
-
-              const SizedBox(height: 22),
+              const SizedBox(height: 20),
 
               // Discover / Local Tracks Section
               Row(
@@ -676,107 +671,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
     );
   }
 
-  // Quick Action Buttons Row (Search, Camera, Map, Profile)
-  Widget _buildQuickActionsRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildActionTile(
-          icon: Icons.music_note_rounded,
-          label: "Search",
-          isPrimary: true,
-          onTap: () => TabsRouting.of(context)?.setTab(1),
-        ),
-        _buildActionTile(
-          icon: Icons.photo_camera_rounded,
-          label: "Camera",
-          onTap: () => TabsRouting.of(context)?.setTab(2),
-        ),
-        _buildActionTile(
-          icon: Icons.location_on_rounded,
-          label: "Map",
-          onTap: () => _tabController.animateTo(2),
-        ),
-        _buildActionTile(
-          icon: Icons.person_rounded,
-          label: "Profile",
-          onTap: () => TabsRouting.of(context)?.setTab(4),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildActionTile({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    bool isPrimary = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            width: 58,
-            height: 58,
-            decoration: isPrimary
-                ? BoxDecoration(
-                    gradient: AppGradients.primaryButton,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryPurple.withValues(alpha: 0.38),
-                        offset: const Offset(2, 6),
-                        blurRadius: 12,
-                      ),
-                      BoxShadow(
-                        color: Colors.white.withValues(alpha: 0.4),
-                        offset: const Offset(-2, -2),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  )
-                : BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      width: 1.2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.shadowDark.withValues(alpha: 0.16),
-                        offset: const Offset(2, 5),
-                        blurRadius: 10,
-                      ),
-                      const BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-2, -2),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-            child: Center(
-              child: Icon(
-                icon,
-                color: isPrimary ? Colors.white : AppColors.primaryPurple,
-                size: 26,
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   // -------------------------------------------------------------
   // TAB 2: EMOTION RECOGNITION & MOOD RECOMMENDATIONS

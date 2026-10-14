@@ -375,52 +375,6 @@ class Tab5State extends State<Tab5> {
               fontWeight: FontWeight.w500,
             ),
           ),
-
-          const SizedBox(height: 14),
-
-          // Audio status pill
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.pillBg.withValues(alpha: 0.7),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(
-                  Icons.music_note_rounded,
-                  size: 16,
-                  color: AppColors.primaryPurple,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  "No audio found.",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Big Clay Play Button matching Screen 5
-          SizedBox(
-            width: double.infinity,
-            child: ClayButton(
-              text: "Play",
-              icon: Icons.play_arrow_rounded,
-              radius: 26,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              onPressed: () {
-                // Play recent audio or trigger playback
-              },
-            ),
-          ),
         ],
       ),
     );
