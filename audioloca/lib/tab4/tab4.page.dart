@@ -143,40 +143,66 @@ class Tab4State extends State<Tab4> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Header with AudioLoca title and floating 3D note (matching Screen 8)
+              // Top Header with AudioLoca title and logo
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "AudioLoca",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.dark,
-                      letterSpacing: -0.3,
-                    ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.shadowDark.withValues(alpha: 0.15),
+                              offset: const Offset(1, 2),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            'assets/images/audioloca.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Text(
+                        "AudioLoca",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dark,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
                     width: 38,
                     height: 38,
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: const RadialGradient(
-                        colors: [Color(0xFFBA9EF9), Color(0xFF6F43CC)],
-                        center: Alignment(-0.3, -0.3),
-                      ),
+                      color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryPurple.withValues(alpha: 0.3),
+                          color: AppColors.primaryPurple.withValues(alpha: 0.25),
                           offset: const Offset(1, 4),
                           blurRadius: 8,
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.music_note_rounded,
-                      color: Colors.white,
-                      size: 22,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/audioloca.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ],

@@ -48,224 +48,255 @@ class _FullPlayerScreenState extends State<FullPlayerScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgMid,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenHeight = constraints.maxHeight;
+            // Dynamically scale artwork based on screen height
+            final artSize = (screenHeight * 0.36).clamp(180.0, 260.0);
 
-              // Top Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ClayCircleButton(
-                    icon: Icons.keyboard_arrow_down_rounded,
-                    size: 42,
-                    iconSize: 26,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  const Text(
-                    "Now Playing",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.dark,
-                    ),
-                  ),
-                  const SizedBox(width: 42), // Balance spacing
-                ],
-              ),
-
-              const SizedBox(height: 28),
-
-              // Large Clay Cover Art Frame
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: ClayDecorations.card(radius: 32),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(22),
-                    child: imageUrl.isNotEmpty
-                        ? Image.network(
-                            imageUrl,
-                            height: 270,
-                            width: 270,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              height: 270,
-                              width: 270,
-                              color: AppColors.pillBg,
-                              child: const Icon(
-                                Icons.music_note_rounded,
-                                size: 80,
-                                color: AppColors.color2,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            height: 270,
-                            width: 270,
-                            color: AppColors.pillBg,
-                            child: const Icon(
-                              Icons.music_note_rounded,
-                              size: 80,
-                              color: AppColors.color2,
-                            ),
-                          ),
-                  ),
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: screenHeight,
                 ),
-              ),
-
-              const SizedBox(height: 28),
-
-              // Track Title & Artist
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.dark,
-                  letterSpacing: -0.3,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              const Spacer(),
-
-              // Playback Slider & Controls
-              StreamBuilder<PlaybackStateData>(
-                stream: _stateStream,
-                builder: (context, snapshot) {
-                  final data = snapshot.data;
-                  final position = data?.position ?? Duration.zero;
-                  final duration = data?.duration ?? Duration.zero;
-                  final playing = data?.playerState.playing ?? false;
-
-                  final max = duration.inMilliseconds.toDouble();
-                  final value =
-                      position.inMilliseconds.toDouble().clamp(0.0, max);
-
-                  return Column(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Slider
-                      SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: AppColors.primaryPurple,
-                          inactiveTrackColor: AppColors.pillBg,
-                          thumbColor: AppColors.primaryPurple,
-                          trackHeight: 6,
-                          thumbShape: const RoundSliderThumbShape(
-                            enabledThumbRadius: 8,
-                          ),
-                          overlayColor:
-                              AppColors.primaryPurple.withValues(alpha: 0.2),
-                        ),
-                        child: Slider(
-                          min: 0,
-                          max: max > 0 ? max : 1,
-                          value: value,
-                          onChanged: (val) {
-                            final target = Duration(milliseconds: val.toInt());
-                            useSpotify
-                                ? spotify.seek(target)
-                                : local.seek(target);
-                          },
-                        ),
-                      ),
-
-                      // Time Labels
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              formatTime(position),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text(
-                              formatTime(duration),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Circular Clay Playback Controls
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Column(
                         children: [
-                          ClayCircleButton(
-                            icon: Icons.replay_10_rounded,
-                            size: 48,
-                            iconSize: 24,
-                            onPressed: () => useSpotify
-                                ? spotify.rewind10()
-                                : local.rewind10(),
+                          const SizedBox(height: 10),
+
+                          // Top Bar
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ClayCircleButton(
+                                icon: Icons.keyboard_arrow_down_rounded,
+                                size: 42,
+                                iconSize: 26,
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              const Text(
+                                "Now Playing",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.dark,
+                                ),
+                              ),
+                              const SizedBox(width: 42), // Balance spacing
+                            ],
                           ),
-                          const SizedBox(width: 24),
-                          ClayCircleButton(
-                            icon: playing
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            size: 68,
-                            iconSize: 36,
-                            isPrimary: true,
-                            onPressed: () {
-                              if (playing) {
-                                useSpotify ? spotify.pause() : local.pause();
-                              } else {
-                                useSpotify
-                                    ? spotify.resume()
-                                    : local.player.play().catchError((e) {
-                                        debugPrint('Local play error: $e');
-                                      });
-                              }
-                            },
+
+                          SizedBox(height: screenHeight < 680 ? 12 : 20),
+
+                          // Responsive Clay Cover Art Frame
+                          Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: ClayDecorations.card(radius: 28),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: imageUrl.isNotEmpty
+                                    ? Image.network(
+                                        imageUrl,
+                                        height: artSize,
+                                        width: artSize,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => Container(
+                                          height: artSize,
+                                          width: artSize,
+                                          color: AppColors.pillBg,
+                                          child: const Icon(
+                                            Icons.music_note_rounded,
+                                            size: 70,
+                                            color: AppColors.color2,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: artSize,
+                                        width: artSize,
+                                        color: AppColors.pillBg,
+                                        child: const Icon(
+                                          Icons.music_note_rounded,
+                                          size: 70,
+                                          color: AppColors.color2,
+                                        ),
+                                      ),
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 24),
-                          ClayCircleButton(
-                            icon: Icons.forward_10_rounded,
-                            size: 48,
-                            iconSize: 24,
-                            onPressed: () => useSpotify
-                                ? spotify.forward10()
-                                : local.forward10(),
+
+                          SizedBox(height: screenHeight < 680 ? 14 : 22),
+
+                          // Track Title & Artist
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark,
+                              letterSpacing: -0.3,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            subtitle,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textSecondary,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
-                    ],
-                  );
-                },
-              ),
 
-              const SizedBox(height: 36),
-            ],
-          ),
+                      // Playback Slider & Controls
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 20),
+                        child: StreamBuilder<PlaybackStateData>(
+                          stream: _stateStream,
+                          builder: (context, snapshot) {
+                            final data = snapshot.data;
+                            final position = data?.position ?? Duration.zero;
+                            final duration = data?.duration ?? Duration.zero;
+                            final playing = data?.playerState.playing ?? false;
+
+                            final max = duration.inMilliseconds.toDouble();
+                            final value = position.inMilliseconds
+                                .toDouble()
+                                .clamp(0.0, max);
+
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Slider
+                                SliderTheme(
+                                  data: SliderTheme.of(context).copyWith(
+                                    activeTrackColor: AppColors.primaryPurple,
+                                    inactiveTrackColor: AppColors.pillBg,
+                                    thumbColor: AppColors.primaryPurple,
+                                    trackHeight: 5,
+                                    thumbShape: const RoundSliderThumbShape(
+                                      enabledThumbRadius: 7,
+                                    ),
+                                    overlayColor: AppColors.primaryPurple
+                                        .withValues(alpha: 0.2),
+                                  ),
+                                  child: Slider(
+                                    min: 0,
+                                    max: max > 0 ? max : 1,
+                                    value: value,
+                                    onChanged: (val) {
+                                      final target =
+                                          Duration(milliseconds: val.toInt());
+                                      useSpotify
+                                          ? spotify.seek(target)
+                                          : local.seek(target);
+                                    },
+                                  ),
+                                ),
+
+                                // Time Labels
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        formatTime(position),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.textSecondary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        formatTime(duration),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.textSecondary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                const SizedBox(height: 14),
+
+                                // Circular Clay Playback Controls
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ClayCircleButton(
+                                      icon: Icons.replay_10_rounded,
+                                      size: 46,
+                                      iconSize: 22,
+                                      onPressed: () => useSpotify
+                                          ? spotify.rewind10()
+                                          : local.rewind10(),
+                                    ),
+                                    const SizedBox(width: 22),
+                                    ClayCircleButton(
+                                      icon: playing
+                                          ? Icons.pause_rounded
+                                          : Icons.play_arrow_rounded,
+                                      size: 64,
+                                      iconSize: 34,
+                                      isPrimary: true,
+                                      onPressed: () {
+                                        if (playing) {
+                                          useSpotify
+                                              ? spotify.pause()
+                                              : local.pause();
+                                        } else {
+                                          useSpotify
+                                              ? spotify.resume()
+                                              : local.player
+                                                  .play()
+                                                  .catchError((e) {
+                                                  debugPrint(
+                                                      'Local play error: $e');
+                                                });
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(width: 22),
+                                    ClayCircleButton(
+                                      icon: Icons.forward_10_rounded,
+                                      size: 46,
+                                      iconSize: 22,
+                                      onPressed: () => useSpotify
+                                          ? spotify.forward10()
+                                          : local.forward10(),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

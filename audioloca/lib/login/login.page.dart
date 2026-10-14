@@ -143,26 +143,30 @@ class LoginPageState extends State<LoginPage>
                         Container(
                           width: 100,
                           height: 100,
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: const RadialGradient(
-                              colors: [Color(0xFFBA9EF9), Color(0xFF6F43CC)],
-                              center: Alignment(-0.3, -0.3),
-                            ),
+                            color: Colors.white,
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.primaryPurple.withValues(
-                                  alpha: 0.35,
+                                  alpha: 0.25,
                                 ),
                                 offset: const Offset(2, 6),
                                 blurRadius: 12,
                               ),
+                              const BoxShadow(
+                                color: Colors.white,
+                                offset: Offset(-2, -2),
+                                blurRadius: 6,
+                              ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.headphones_rounded,
-                            size: 52,
-                            color: Colors.white,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/images/audioloca.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),

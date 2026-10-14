@@ -196,30 +196,34 @@ class SignupPageState extends State<SignupPage>
                     decoration: ClayDecorations.card(radius: 32),
                     child: Column(
                       children: [
-                        // Headphone Graphic
+                        // Logo inside clay circle
                         Container(
-                          width: 80,
-                          height: 80,
+                          width: 84,
+                          height: 84,
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: const RadialGradient(
-                              colors: [Color(0xFFBA9EF9), Color(0xFF6F43CC)],
-                              center: Alignment(-0.3, -0.3),
-                            ),
+                            color: Colors.white,
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.primaryPurple.withValues(
-                                  alpha: 0.35,
+                                  alpha: 0.25,
                                 ),
                                 offset: const Offset(2, 6),
                                 blurRadius: 12,
                               ),
+                              const BoxShadow(
+                                color: Colors.white,
+                                offset: Offset(-2, -2),
+                                blurRadius: 6,
+                              ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.headphones_rounded,
-                            size: 44,
-                            color: Colors.white,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/images/audioloca.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 14),
