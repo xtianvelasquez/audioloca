@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'package:audioloca/theme.dart';
 import 'package:audioloca/core/secure.storage.dart';
-import 'package:audioloca/core/alert.dialog.dart';
-import 'package:audioloca/business/emotion.recognition.dart';
 import 'package:audioloca/business/location.services.dart';
 import 'package:audioloca/local/local.recommender.dart';
 import 'package:audioloca/local/models/audio.model.dart';
@@ -22,7 +20,6 @@ import 'package:audioloca/tabs/tabs.routing.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
-final emotionRecognition = EmotionRecognition();
 final locationServices = LocationServices();
 final localRecommender = LocalRecommender();
 final spotifyRecommender = SpotifyRecommender();
@@ -39,7 +36,6 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
   int _activeSubTab = 0;
 
   String? detectedMood;
-  String? detectedEmotionConfidence;
   String? detectedLocation;
   String? accessToken;
   LatLng? currentLatLng;
@@ -47,21 +43,17 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
   List<Audio> globalLocalTracks = [];
   List<SpotifyTrack> globalSpotifyTracks = [];
 
-  List<Audio> localTracks = [];
   List<Audio> localAudioLocationTracks = [];
-
-  List<SpotifyTrack> spotifyTracks = [];
   List<SpotifyTrack> spotifyAudioLocationTracks = [];
 
   bool isLoading = true;
-  bool isLoadingMood = false;
   StreamSubscription<Position>? locationStream;
   final MapController _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (_tabController.index != _activeSubTab) {
         setState(() {
@@ -100,7 +92,6 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
     accessToken = await spotifyRecommender.getValidAccessToken();
 
     await loadGlobalRecommendations();
-    await loadMoodRecommendations();
     await loadLocationRecommendations();
 
     if (mounted) setState(() => isLoading = false);
@@ -125,34 +116,6 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
       }
     } catch (e, stackTrace) {
       log.e("Failed to global recos: $e $stackTrace");
-    }
-  }
-
-  Future<void> loadMoodRecommendations({bool forceRefresh = false}) async {
-    setState(() => isLoadingMood = true);
-    try {
-      final local =
-          await localRecommender.fetchMoodRecommendationsFromLocal();
-
-      List<SpotifyTrack> spotify = [];
-      if (accessToken != null) {
-        final rawSpotify = await spotifyRecommender
-            .fetchMoodRecommendationsFromSpotify(forceRefresh: forceRefresh);
-        spotify = rawSpotify
-            .map((json) => SpotifyTrack.fromJson(json))
-            .toList();
-      }
-
-      if (mounted) {
-        setState(() {
-          localTracks = local;
-          spotifyTracks = spotify;
-        });
-      }
-    } catch (e, stackTrace) {
-      log.e("Failed to fetch mood recos: $e $stackTrace");
-    } finally {
-      if (mounted) setState(() => isLoadingMood = false);
     }
   }
 
@@ -197,30 +160,6 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> scanMood() async {
-    final result = await emotionRecognition.requestCameraPermission();
-
-    if (result.isSuccess) {
-      log.i('[Flutter] Label: ${result.emotionLabel}');
-      log.i(
-        '[Flutter] Confidence: ${result.confidenceScore?.toStringAsFixed(4)}',
-      );
-
-      if (result.emotionLabel != null) {
-        await storage.saveLastMood(result.emotionLabel!);
-        setState(() {
-          detectedMood = result.emotionLabel!;
-          detectedEmotionConfidence = result.confidenceScore?.toStringAsFixed(4);
-        });
-        await loadMoodRecommendations(forceRefresh: true);
-      }
-    } else {
-      log.i('[Flutter] Error: ${result.errorMessage}');
-      if (!mounted) return;
-      CustomAlertDialog.failed(context, result.errorMessage!);
-    }
-  }
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -253,10 +192,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                         // 1. Home / All tab
                         _buildHomeTab(),
 
-                        // 2. Emotion Recognition & Mood Recos
-                        _buildEmotionTab(),
-
-                        // 3. Location & Map Recos
+                        // 2. Location & Map Recos
                         _buildLocationTab(),
                       ],
                     ),
@@ -378,8 +314,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
       child: Row(
         children: [
           _buildSegmentItem(0, "All"),
-          _buildSegmentItem(1, "Emotion"),
-          _buildSegmentItem(2, "Location"),
+          _buildSegmentItem(1, "Location"),
         ],
       ),
     );
@@ -673,273 +608,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
 
 
 
-  // -------------------------------------------------------------
-  // TAB 2: EMOTION RECOGNITION & MOOD RECOMMENDATIONS
-  // -------------------------------------------------------------
-  Widget _buildEmotionTab() {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      children: [
-        const SizedBox(height: 12),
 
-        // 3D Mood Character & Scan Hero
-        _buildMoodHero(),
-
-        const SizedBox(height: 20),
-
-        // Big Clay Scan Button
-        Center(
-          child: ClayButton(
-            text: "Scan",
-            icon: Icons.sentiment_satisfied_alt_rounded,
-            padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 14),
-            onPressed: scanMood,
-          ),
-        ),
-
-        const SizedBox(height: 24),
-
-        // Detected Mood Card
-        const Text(
-          "Detected Mood",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColors.dark,
-          ),
-        ),
-        const SizedBox(height: 10),
-        ClayCard(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.pillBg,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadowDark.withValues(alpha: 0.12),
-                      offset: const Offset(1, 2),
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    "😊",
-                    style: TextStyle(fontSize: 22),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      detectedMood ?? "No mood detected yet",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.dark,
-                      ),
-                    ),
-                    if (detectedEmotionConfidence != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        "($detectedEmotionConfidence)",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textSecondary,
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // Mood-Based Recommendations
-        const Text(
-          "Mood-Based Recommendations",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColors.dark,
-          ),
-        ),
-        const SizedBox(height: 12),
-
-        if (isLoadingMood)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 30),
-            child: Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primaryPurple,
-              ),
-            ),
-          )
-        else ...[
-          if (localTracks.isEmpty)
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: ClayDecorations.card(radius: 20),
-              child: const Center(
-                child: Text(
-                  "No mood recommendations yet. Tap Scan above!",
-                  style: TextStyle(color: AppColors.textSecondary),
-                ),
-              ),
-            )
-          else
-            LocalListView(allTracks: localTracks),
-
-          if (accessToken != null && spotifyTracks.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            const Text(
-              "Spotify Recommendations",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.dark,
-              ),
-            ),
-            const SizedBox(height: 12),
-            SpotifyListView(allTracks: spotifyTracks),
-          ],
-        ],
-
-        const SizedBox(height: 80),
-      ],
-    );
-  }
-
-  // 3D Mood Character Sphere
-  Widget _buildMoodHero() {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            // Floating 3D notes
-            Positioned(
-              top: 0,
-              left: 30,
-              child: Icon(
-                Icons.music_note_rounded,
-                size: 26,
-                color: AppColors.primaryLight.withValues(alpha: 0.8),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 30,
-              child: Icon(
-                Icons.music_note_rounded,
-                size: 22,
-                color: AppColors.primaryLight.withValues(alpha: 0.8),
-              ),
-            ),
-
-            // Character Body
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const RadialGradient(
-                  colors: [
-                    Color(0xFFB59BF8),
-                    Color(0xFF865DF2),
-                    Color(0xFF5D31BD),
-                  ],
-                  center: Alignment(-0.35, -0.35),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryDark.withValues(alpha: 0.35),
-                    offset: const Offset(4, 10),
-                    blurRadius: 18,
-                  ),
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    offset: const Offset(-3, -3),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF2E175E),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF2E175E),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      width: 14,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2E175E),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
-        const Text(
-          "Scan My Mood",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: AppColors.dark,
-          ),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          "How are you feeling today?",
-          style: TextStyle(
-            fontSize: 13,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      ],
-    );
-  }
 
   // -------------------------------------------------------------
   // TAB 3: LOCATION & MAP RECOMMENDATIONS
