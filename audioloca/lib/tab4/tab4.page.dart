@@ -150,21 +150,20 @@ class Tab4State extends State<Tab4> {
                   Row(
                     children: [
                       Container(
-                        width: 30,
-                        height: 30,
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
+                          shape: BoxShape.circle,
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.shadowDark.withValues(alpha: 0.15),
+                              color: AppColors.shadowDark.withValues(alpha: 0.18),
                               offset: const Offset(1, 2),
                               blurRadius: 4,
                             ),
                           ],
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                        child: ClipOval(
                           child: Image.asset(
                             'assets/images/audioloca.png',
                             fit: BoxFit.cover,

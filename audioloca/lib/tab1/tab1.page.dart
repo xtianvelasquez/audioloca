@@ -508,21 +508,20 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                 Row(
                   children: [
                     Container(
-                      width: 28,
-                      height: 28,
+                      width: 32,
+                      height: 32,
                       decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.15),
+                            color: Colors.black.withValues(alpha: 0.18),
                             offset: const Offset(0, 2),
                             blurRadius: 4,
                           ),
                         ],
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
+                      child: ClipOval(
                         child: Image.asset(
                           'assets/images/audioloca.png',
                           fit: BoxFit.cover,

@@ -317,16 +317,28 @@ class Tab5State extends State<Tab5> {
       decoration: ClayDecorations.card(radius: 26),
       child: Column(
         children: [
-          // User Avatar Image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Container(
-              width: 170,
-              height: 170,
-              decoration: BoxDecoration(
-                color: AppColors.pillBg,
-                borderRadius: BorderRadius.circular(18),
-              ),
+          // User Avatar / Logo Image
+          Container(
+            width: 140,
+            height: 140,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryPurple.withValues(alpha: 0.22),
+                  offset: const Offset(2, 6),
+                  blurRadius: 14,
+                ),
+                const BoxShadow(
+                  color: Colors.white,
+                  offset: Offset(-2, -2),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            child: ClipOval(
               child: Image.asset(
                 'assets/images/audioloca.png',
                 fit: BoxFit.cover,
