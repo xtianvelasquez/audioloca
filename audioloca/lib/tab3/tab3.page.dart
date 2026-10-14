@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:audioloca/theme.dart';
 import 'package:audioloca/player/views/mini.player.dart';
 import 'package:audioloca/tabs/tabs.routing.dart';
+import 'package:audioloca/core/utils.dart';
 
 final log = Logger();
 
@@ -62,7 +63,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
       log.e("Initialization error: $e $stackTrace");
       if (mounted) {
         setState(() {
-          _predictedEmotion = "Error: ${e.toString()}";
+          _predictedEmotion = "Error: ${sanitizeErrorMessage(e)}";
         });
       }
     }
@@ -125,7 +126,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
       log.e("Camera initialization error: $e $stackTrace");
       if (mounted) {
         setState(() {
-          _predictedEmotion = "Camera error: ${e.toString()}";
+          _predictedEmotion = "Camera error: ${sanitizeErrorMessage(e)}";
         });
       }
     }
@@ -181,7 +182,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
       log.e("Native processing error: $e $stackTrace");
       if (mounted) {
         setState(() {
-          _debugInfo = "Error: ${e.toString()}";
+          _debugInfo = "Error: ${sanitizeErrorMessage(e)}";
         });
       }
     }

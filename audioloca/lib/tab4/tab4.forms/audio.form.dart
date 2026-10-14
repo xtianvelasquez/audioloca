@@ -187,10 +187,7 @@ class AudioInputFormState extends State<AudioInputForm> {
     } catch (e, stackTrace) {
       log.e("[Flutter] Error in handleSubmit: $e $stackTrace");
       if (!mounted) return;
-      CustomAlertDialog.failed(
-        context,
-        "An unexpected error occurred. Please try again later.",
-      );
+      CustomAlertDialog.failed(context, e);
     }
   }
 

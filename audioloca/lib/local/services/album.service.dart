@@ -6,6 +6,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/local/models/album.model.dart';
+import 'package:audioloca/core/utils.dart';
 
 final log = Logger();
 
@@ -37,24 +38,14 @@ class AlbumServices {
         if (data is List) {
           return data.map((json) => Album.fromJson(json)).toList();
         } else {
-          throw FormatException('Unexpected albums response format.');
+          throw const FormatException('Unexpected albums response format.');
         }
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(
+        response,
+        defaultMessage: 'Failed to fetch albums.',
+      );
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching albums: $e $stackTrace');
       rethrow;
@@ -81,24 +72,14 @@ class AlbumServices {
         if (data is Map<String, dynamic>) {
           return Album.fromJson(data);
         } else {
-          throw FormatException('Unexpected album response format.');
+          throw const FormatException('Unexpected album response format.');
         }
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(
+        response,
+        defaultMessage: 'Failed to fetch album details.',
+      );
     } catch (e, stackTrace) {
       log.e('[Flutter] Error fetching specific album: $e $stackTrace');
       rethrow;
@@ -121,29 +102,13 @@ class AlbumServices {
       );
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data is Map<String, dynamic>) {
-          return Album.fromJson(data);
-        } else {
-          throw FormatException('Unexpected album response format.');
-        }
+        return Album.empty();
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map<String, dynamic> && decoded.containsKey('detail')) {
-          log.i('Album deleted: ${decoded['detail']}');
-          return Album.empty();
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(
+        response,
+        defaultMessage: 'Failed to delete album.',
+      );
     } catch (e, stackTrace) {
       log.e('[Flutter] Error deleting specific album: $e $stackTrace');
       rethrow;
@@ -183,16 +148,20 @@ class AlbumServices {
       final response = await request.send();
       final responseBody = await http.Response.fromStream(response);
 
-      if (response.statusCode == 201) {
+      if (responseBody.statusCode == 201) {
         log.i('[Flutter] Album created successfully: ${responseBody.body}');
         return true;
       } else {
-        log.w('[Flutter] Album creation failed: ${responseBody.body}');
-        return false;
+        final cleanMsg = parseApiResponseError(
+          responseBody,
+          defaultMessage: 'Failed to create album.',
+        );
+        log.w('[Flutter] Album creation failed: $cleanMsg');
+        throw cleanMsg;
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Error creating album: $e $stackTrace');
-      return false;
+      rethrow;
     }
   }
 

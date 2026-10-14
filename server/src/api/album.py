@@ -80,6 +80,9 @@ async def specific_album_read(
   user_id = token_payload.get('payload', {}).get('sub')
   album = read_specific_album(db, user_id, album_id)
 
+  if not album:
+    raise HTTPException(status_code=404, detail="Album not found.")
+
   return build_album_response(album)
 
 @router.post("/audioloca/album/delete", status_code=200)
@@ -94,7 +97,10 @@ async def album_delete(
   if not deleted_album:
     raise HTTPException(status_code=404, detail="Album not found or already deleted.")
 
-  if os.path.exists(deleted_album.album_cover):
-    os.remove(deleted_album.album_cover)
+  if hasattr(deleted_album, "album_cover") and deleted_album.album_cover and os.path.exists(deleted_album.album_cover):
+    try:
+      os.remove(deleted_album.album_cover)
+    except Exception:
+      pass
 
-  return {"detail": "Album deleted successfully."}
+  return {"message": "Album deleted successfully.", "detail": "Album deleted successfully."}

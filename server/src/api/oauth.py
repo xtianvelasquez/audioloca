@@ -41,8 +41,7 @@ async def spotify_callback(data: Spotify_Token_Request, db: Session = Depends(ge
   token_response = requests.post(TOKEN_URL, data=encoded_payload, headers=token_headers, timeout=20)
 
   if token_response.status_code != 200:
-    token_response_error = token_response.json()
-    raise HTTPException(status_code=500, detail=f"Token exchange failed: {token_response_error}")
+    raise HTTPException(status_code=400, detail="Token exchange failed. Please try again.")
   
   token_data = token_response.json()
   access_token = token_data["access_token"]
@@ -116,7 +115,7 @@ async def audioloca_signup(data: User_Create, db: Session = Depends(get_db)):
     raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
 
   store_specific_user(db, None, data.email, username, hash_password(data.password))
-  return {"message": "User created successfully!"}
+  return {"message": "User created successfully!", "detail": "User created successfully!"}
 
 @router.get("/user/read", response_model=User_Response, status_code=200)
 async def user_read(token_payload = Depends(verify_token), db: Session = Depends(get_db)):
@@ -136,4 +135,4 @@ async def logout(token_payload = Depends(verify_token), db: Session = Depends(ge
   if not success:
     raise HTTPException(status_code=400, detail="User already logged out or invalid token.")
 
-  return {"message": "User logged out successfully!"}
+  return {"message": "User logged out successfully!", "detail": "User logged out successfully!"}

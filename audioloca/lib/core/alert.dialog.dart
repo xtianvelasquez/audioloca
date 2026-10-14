@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:audioloca/theme.dart';
+import 'package:audioloca/core/utils.dart';
 
 class CustomAlertDialog {
-  static void success(BuildContext context, String message) {
+  static void success(BuildContext context, String message, {String title = 'Success'}) {
     _showDialog(
       context: context,
-      title: 'Success',
+      title: title,
       message: message,
       backgroundColor: Colors.white,
       titleColor: const Color(0xFF2E7D32),
@@ -13,11 +14,12 @@ class CustomAlertDialog {
     );
   }
 
-  static void failed(BuildContext context, String message) {
+  static void failed(BuildContext context, dynamic message, {String title = 'Error'}) {
+    final cleanMessage = sanitizeErrorMessage(message);
     _showDialog(
       context: context,
-      title: 'Failed',
-      message: message,
+      title: title,
+      message: cleanMessage,
       backgroundColor: Colors.white,
       titleColor: const Color(0xFFC62828),
       messageColor: AppColors.dark,

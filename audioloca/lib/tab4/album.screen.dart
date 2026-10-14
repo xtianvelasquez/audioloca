@@ -59,10 +59,7 @@ class AlbumScreenState extends State<AlbumScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => isLoading = false);
-        CustomAlertDialog.failed(
-          context,
-          "Failed to fetch album or audio list.",
-        );
+        CustomAlertDialog.failed(context, e);
       }
     }
   }

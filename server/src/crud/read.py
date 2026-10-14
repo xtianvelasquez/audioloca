@@ -7,17 +7,25 @@ from typing import List
 from src.models import Token_Type, Genres, User, Album, Audio, Audio_Genres, Streams, Locations
 from src.utils import normalize_coordinates
 
+import logging
+
 def db_safe(fn):
   def wrapper(*args, **kwargs):
     db = args[0]
     try:
       return fn(*args, **kwargs)
+    except HTTPException:
+      raise
     except SQLAlchemyError as e:
-      db.rollback()
-      raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+      if hasattr(db, "rollback"):
+        db.rollback()
+      logging.error(f"Database error in {fn.__name__}: {e}")
+      raise HTTPException(status_code=500, detail="A database error occurred. Please try again.")
     except Exception as e:
-      db.rollback()
-      raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+      if hasattr(db, "rollback"):
+        db.rollback()
+      logging.error(f"Unexpected error in {fn.__name__}: {e}")
+      raise HTTPException(status_code=500, detail="An unexpected error occurred. Please try again.")
   return wrapper
 
 @db_safe

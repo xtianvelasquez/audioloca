@@ -52,8 +52,10 @@ def verify_token(db: Session = Depends(get_db), raw_token: str = Depends(Oauth2_
 
     return {"raw": raw_token, "payload": payload}
 
+  except HTTPException:
+    raise
   except Exception as e:
-    raise HTTPException(status_code=500, detail="Unexpected error.")
+    raise HTTPException(status_code=500, detail="Authentication failed. Please log in again.")
 
 def hash_password(password: str):
   return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

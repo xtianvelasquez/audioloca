@@ -80,7 +80,7 @@ class LoginPageState extends State<LoginPage>
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Local login error: $e $stackTrace');
-      CustomAlertDialog.failed(context, e.toString());
+      CustomAlertDialog.failed(context, e);
     } finally {
       if (mounted) setState(() => isAuthenticating = false);
     }
@@ -111,7 +111,7 @@ class LoginPageState extends State<LoginPage>
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Error during Spotify authentication: $e $stackTrace');
-      CustomAlertDialog.failed(context, e.toString());
+      CustomAlertDialog.failed(context, e);
     } finally {
       if (mounted) setState(() => isAuthenticating = false);
     }

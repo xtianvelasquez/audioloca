@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:audioloca/environment.dart';
+import 'package:audioloca/core/utils.dart';
 
 final log = Logger();
 
@@ -55,7 +56,7 @@ class LocationServices {
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        ).showSnackBar(SnackBar(content: Text(sanitizeErrorMessage(e))));
       }
       return false;
     }

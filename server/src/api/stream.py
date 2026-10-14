@@ -48,7 +48,7 @@ async def send_stream(
   else:
     store_stream(db, user_id, location.location_id, None, data.spotify_id, data.type)
 
-  return {"message": "Stream recorded successfully."}
+  return {"message": "Stream recorded successfully.", "detail": "Stream recorded successfully."}
 
 @router.post("/audioloca/audio/location", response_model=List[Local_Stream], status_code=200)
 async def audio_location_local(data: Locations_Base, db: Session = Depends(get_db)):

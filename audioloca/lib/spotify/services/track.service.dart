@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/spotify/models/track.model.dart';
+import 'package:audioloca/core/utils.dart';
 
 final log = Logger();
 
@@ -43,20 +44,10 @@ class TrackServices {
         }
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(
+        response,
+        defaultMessage: 'Failed to fetch Spotify tracks.',
+      );
     } catch (e, stackTrace) {
       log.e('[Flutter] Spotify API error: $e $stackTrace');
       rethrow;
@@ -92,20 +83,10 @@ class TrackServices {
         }
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(
+        response,
+        defaultMessage: 'Failed to search Spotify tracks.',
+      );
     } catch (e, stackTrace) {
       log.e('[Flutter] Spotify search error: $e $stackTrace');
       rethrow;
@@ -124,7 +105,7 @@ class TrackServices {
         if (data is List) {
           return data.map((json) => SpotifyTrack.fromJson(json)).toList();
         }
-        throw FormatException('Unexpected audio location format.');
+        throw const FormatException('Unexpected audio location format.');
       },
     );
   }
@@ -155,20 +136,7 @@ class TrackServices {
         return parser(jsonDecode(response.body));
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(response);
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error $e $stackTrace');
       rethrow;

@@ -57,7 +57,10 @@ class OAuthServices {
 
     if (response.statusCode != 200) {
       await storage.deleteCodeVerifier();
-      throw 'Backend token exchange failed: ${response.body}';
+      throw parseApiResponseError(
+        response,
+        defaultMessage: 'Spotify authentication failed. Please try again.',
+      );
     }
 
     final tokenData = jsonDecode(response.body);

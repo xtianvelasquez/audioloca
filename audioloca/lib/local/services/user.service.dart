@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/local/models/user.model.dart';
 import 'package:audioloca/core/secure.storage.dart';
+import 'package:audioloca/core/utils.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
@@ -99,7 +100,10 @@ class UserServices {
       );
 
       if (response.statusCode >= 400) {
-        throw 'Error fetching user profile: ${response.body}';
+        throw parseApiResponseError(
+          response,
+          defaultMessage: 'Failed to fetch user profile.',
+        );
       }
 
       final data = jsonDecode(response.body);
@@ -135,20 +139,7 @@ class UserServices {
         return parser(jsonDecode(response.body));
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(response);
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error: $e\n$stackTrace');
       rethrow;

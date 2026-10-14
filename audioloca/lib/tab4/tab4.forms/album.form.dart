@@ -85,10 +85,7 @@ class AlbumInputFormState extends State<AlbumInputForm> {
     } catch (e, stacktrace) {
       log.e("[Flutter] Error creating album: $e $stacktrace");
       if (!mounted) return;
-      CustomAlertDialog.failed(
-        context,
-        "An unexpected error occurred. Please try again later.",
-      );
+      CustomAlertDialog.failed(context, e);
     }
   }
 

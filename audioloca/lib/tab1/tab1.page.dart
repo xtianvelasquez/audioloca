@@ -242,8 +242,8 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
               )
             : Column(
                 children: [
-                  // App Bar / Segmented Switcher for Emotion & Location
-                  if (_activeSubTab > 0) _buildSubTabHeader(),
+                  // Categories All, Emotion, and Location under Home tab
+                  _buildHomeHeader(),
 
                   // Sub-tab pages
                   Expanded(
@@ -269,32 +269,87 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
   }
 
   // Segmented Pill Navigation Bar [All] [Emotion] [Location]
-  Widget _buildSubTabHeader() {
+  Widget _buildHomeHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ClayCircleButton(
-                icon: Icons.arrow_back_rounded,
-                size: 38,
-                onPressed: () {
-                  _tabController.animateTo(0);
-                },
+              Row(
+                children: [
+                  if (_activeSubTab > 0) ...[
+                    ClayCircleButton(
+                      icon: Icons.arrow_back_rounded,
+                      size: 36,
+                      onPressed: () {
+                        _tabController.animateTo(0);
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.shadowDark.withValues(alpha: 0.18),
+                          offset: const Offset(1, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/audioloca.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    "AudioLoca",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.dark,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              const Text(
-                "AudioLoca",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.dark,
+              GestureDetector(
+                onTap: () => TabsRouting.of(context)?.setTab(4),
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryPurple.withValues(alpha: 0.25),
+                        offset: const Offset(1, 4),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/audioloca.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           _buildSegmentedPills(),
         ],
       ),
@@ -397,37 +452,33 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
 
               const SizedBox(height: 22),
 
-              // Recently Played Header
+              // Discover / Local Tracks Section
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Recently Played",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.dark,
-                    ),
+                children: const [
+                  Icon(
+                    Icons.audiotrack_rounded,
+                    color: AppColors.primaryPurple,
+                    size: 20,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      _tabController.animateTo(1);
-                    },
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: AppColors.pillBg.withValues(alpha: 0.6),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.chevron_right_rounded,
-                        size: 20,
-                        color: AppColors.primaryPurple,
-                      ),
+                  SizedBox(width: 8),
+                  Text(
+                    "Discover picks for you",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primaryPurple,
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                "Local Tracks",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.dark,
+                ),
               ),
               const SizedBox(height: 12),
 
@@ -438,7 +489,7 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
                   decoration: ClayDecorations.card(radius: 20),
                   child: const Center(
                     child: Text(
-                      "No tracks available yet.",
+                      "No local tracks available.",
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ),
@@ -448,19 +499,19 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
 
               // Spotify Section if available
               if (accessToken != null && globalSpotifyTracks.isNotEmpty) ...[
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
                 Row(
-                  children: [
-                    const Icon(
+                  children: const [
+                    Icon(
                       Icons.graphic_eq_rounded,
                       color: AppColors.primaryPurple,
                       size: 20,
                     ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "Spotify Results",
+                    SizedBox(width: 8),
+                    Text(
+                      "Spotify Tracks",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.dark,
                       ),
@@ -479,72 +530,44 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
     );
   }
 
-  // Hero Banner with AudioLoca title, subtitle and 3D headphone graphic
+  // Hero Banner with headline and 3D headphone graphic
   Widget _buildHeroBanner() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
-      decoration: const BoxDecoration(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      padding: const EdgeInsets.fromLTRB(20, 20, 18, 22),
+      decoration: BoxDecoration(
         gradient: AppGradients.headerBanner,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(34),
-          bottomRight: Radius.circular(34),
-        ),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: const [
           BoxShadow(
             color: Color(0x35552AA8),
-            offset: Offset(0, 10),
-            blurRadius: 20,
+            offset: Offset(0, 8),
+            blurRadius: 18,
           ),
         ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Left: Logo and text
+          // Left: Headline and text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.18),
-                            offset: const Offset(0, 2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/audioloca.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "AudioLoca",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                  ],
+                const Text(
+                  "Discover Your Sound",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: -0.4,
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 6),
                 Text(
                   "Music connects people, places and moments.",
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     color: Colors.white.withValues(alpha: 0.9),
                     height: 1.3,
                   ),

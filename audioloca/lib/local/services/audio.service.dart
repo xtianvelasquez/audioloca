@@ -6,6 +6,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:audioloca/environment.dart';
 import 'package:audioloca/local/models/audio.model.dart';
+import 'package:audioloca/core/utils.dart';
 
 final log = Logger();
 
@@ -195,14 +196,16 @@ class AudioServices {
         log.i('Audio created successfully: ${response.body}');
         return true;
       } else {
-        log.w(
-          'Audio creation failed: ${streamedResponse.statusCode} ${response.body}',
+        final cleanMsg = parseApiResponseError(
+          response,
+          defaultMessage: 'Failed to create audio.',
         );
-        return false;
+        log.w('Audio creation failed: $cleanMsg');
+        throw cleanMsg;
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Error creating audio: $e $stackTrace');
-      return false;
+      rethrow;
     }
   }
 
@@ -217,7 +220,7 @@ class AudioServices {
         if (data is List) {
           return data.map((json) => Audio.fromJson(json)).toList();
         }
-        throw FormatException('Unexpected audio list format.');
+        throw const FormatException('Unexpected audio list format.');
       },
     );
   }
@@ -237,20 +240,7 @@ class AudioServices {
         return parser(jsonDecode(response.body));
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(response);
     } catch (e, stackTrace) {
       log.e('[Fluttter] GET $endpoint error $e $stackTrace');
       rethrow;
@@ -274,20 +264,7 @@ class AudioServices {
         return parser(jsonDecode(response.body));
       }
 
-      String message = 'Request failed with status: ${response.statusCode}.';
-
-      try {
-        final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded.containsKey('detail')) {
-          message = decoded['detail'];
-        } else if (decoded is Map && decoded.containsKey('message')) {
-          message = decoded['message'];
-        }
-      } catch (_) {
-        message = response.body.toString();
-      }
-
-      throw message;
+      throw parseApiResponseError(response);
     } catch (e, stackTrace) {
       log.e('[Flutter] POST $endpoint error $e $stackTrace');
       rethrow;

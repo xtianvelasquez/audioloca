@@ -101,6 +101,9 @@ async def specific_audio_read(
   user_id = token_payload.get("payload", {}).get("sub")
   audio = read_specific_audio(db, user_id, audio_id)
   
+  if not audio:
+    raise HTTPException(status_code=404, detail="Audio not found.")
+
   return build_audio_response(audio)
 
 @router.get("/audioloca/audios/global", response_model=List[Audio_Response], status_code=200)
@@ -152,7 +155,10 @@ async def audio_delete(
   if not deleted_audio:
     raise HTTPException(status_code=404, detail="Audio not found or already deleted.")
 
-  if os.path.exists(deleted_audio.audio_record):
-    os.remove(deleted_audio.audio_record)
+  if hasattr(deleted_audio, "audio_record") and deleted_audio.audio_record and os.path.exists(deleted_audio.audio_record):
+    try:
+      os.remove(deleted_audio.audio_record)
+    except Exception:
+      pass
 
-  return {"detail": "Audio deleted successfully."}
+  return {"message": "Audio deleted successfully.", "detail": "Audio deleted successfully."}

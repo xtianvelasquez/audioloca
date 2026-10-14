@@ -113,7 +113,7 @@ class SignupPageState extends State<SignupPage>
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Signup error: $e $stackTrace');
-      CustomAlertDialog.failed(context, e.toString());
+      CustomAlertDialog.failed(context, e);
     } finally {
       if (mounted) setState(() => isAuthenticating = false);
     }
@@ -144,7 +144,7 @@ class SignupPageState extends State<SignupPage>
       }
     } catch (e, stackTrace) {
       log.e('[Flutter] Error during Spotify authentication: $e $stackTrace');
-      CustomAlertDialog.failed(context, e.toString());
+      CustomAlertDialog.failed(context, e);
     } finally {
       if (mounted) setState(() => isAuthenticating = false);
     }

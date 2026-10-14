@@ -13,7 +13,6 @@ import 'package:audioloca/tab4/tab4.forms/audio.form.dart';
 import 'package:audioloca/tab4/album.screen.dart';
 import 'package:audioloca/login/login.page.dart';
 import 'package:audioloca/player/views/mini.player.dart';
-import 'package:audioloca/tabs/tabs.routing.dart';
 
 final log = Logger();
 final storage = SecureStorageService();
@@ -29,7 +28,6 @@ class Tab4State extends State<Tab4> {
   String? jwtToken;
   List<Album> albums = [];
   bool isLoading = true;
-  int _activeCategory = 0;
 
   @override
   void initState() {
@@ -128,7 +126,7 @@ class Tab4State extends State<Tab4> {
       }
     } catch (e) {
       if (context.mounted) {
-        CustomAlertDialog.failed(context, e.toString());
+        CustomAlertDialog.failed(context, e);
       }
     }
   }
@@ -205,36 +203,6 @@ class Tab4State extends State<Tab4> {
                     ),
                   ),
                 ],
-              ),
-
-              const SizedBox(height: 12),
-
-              // Segmented Pills [All] [Emotion] [Location] (matching Screen 6 & 8)
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE5DCF8),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadowDark.withValues(alpha: 0.12),
-                      offset: const Offset(1, 3),
-                      blurRadius: 6,
-                    ),
-                    const BoxShadow(
-                      color: Colors.white,
-                      offset: Offset(-1, -1),
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    _buildPillItem(0, "All"),
-                    _buildPillItem(1, "Emotion"),
-                    _buildPillItem(2, "Location"),
-                  ],
-                ),
               ),
 
               const SizedBox(height: 20),
@@ -461,52 +429,6 @@ class Tab4State extends State<Tab4> {
         ),
       ),
       bottomNavigationBar: const MiniPlayer(),
-    );
-  }
-
-  Widget _buildPillItem(int index, String label) {
-    final isSelected = _activeCategory == index;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() => _activeCategory = index);
-          if (index == 0) {
-            // All stays on tab 4 or switches
-          } else if (index == 1) {
-            TabsRouting.of(context)?.setTab(0);
-          } else if (index == 2) {
-            TabsRouting.of(context)?.setTab(0);
-          }
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: isSelected
-              ? BoxDecoration(
-                  gradient: AppGradients.primaryButton,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryPurple.withValues(alpha: 0.35),
-                      offset: const Offset(1, 3),
-                      blurRadius: 8,
-                    ),
-                  ],
-                )
-              : const BoxDecoration(),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                color: isSelected ? Colors.white : AppColors.primaryPurple,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

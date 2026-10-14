@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+import logging
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -11,12 +13,18 @@ def db_safe(fn):
     db = args[0]
     try:
       return fn(*args, **kwargs)
+    except HTTPException:
+      raise
     except SQLAlchemyError as e:
-      db.rollback()
-      raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+      if hasattr(db, "rollback"):
+        db.rollback()
+      logging.error(f"Database error in {fn.__name__}: {e}")
+      raise HTTPException(status_code=500, detail="A database error occurred. Please try again.")
     except Exception as e:
-      db.rollback()
-      raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+      if hasattr(db, "rollback"):
+        db.rollback()
+      logging.error(f"Unexpected error in {fn.__name__}: {e}")
+      raise HTTPException(status_code=500, detail="An unexpected error occurred. Please try again.")
   return wrapper
 
 @db_safe
@@ -26,18 +34,21 @@ def delete_specific_album(db: Session, user_id: int, album_id: int):
   if not album:
     raise HTTPException(status_code=404, detail="Album not found.")
 
+  album_cover = album.album_cover
   db.query(Audio).filter_by(album_id=album_id).delete()
 
   db.delete(album)
   db.commit()
-  return True
+  return SimpleNamespace(album_cover=album_cover)
 
+@db_safe
 def delete_specific_audio(db: Session, user_id: int, audio_id: int):
   audio = db.query(Audio).filter_by(user_id=user_id, audio_id=audio_id).first()
 
   if not audio:
-    raise HTTPException(status_code=404, detail="Album not found.")
+    raise HTTPException(status_code=404, detail="Audio not found.")
   
+  audio_record = audio.audio_record
   db.delete(audio)
   db.commit()
-  return True
+  return SimpleNamespace(audio_record=audio_record)
