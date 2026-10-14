@@ -10,18 +10,23 @@ import 'package:audioloca/core/utils.dart';
 final log = Logger();
 
 class Tab3 extends StatefulWidget {
-  const Tab3({super.key});
+  final bool isActive;
+  const Tab3({super.key, this.isActive = false});
+
   @override
   State<Tab3> createState() => Tab3State();
 }
 
-class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
+class Tab3State extends State<Tab3>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   CameraController? _cameraController;
   String _predictedEmotion = "Initializing...";
   double _confidence = 0.0;
   String _debugInfo = "";
   bool _isProcessing = false;
   bool _isInitialized = false;
+  bool _isCameraInitializing = false;
+  AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
   int _frameCount = 0;
 
   static const platform = MethodChannel('com.example.audioloca/emotion');
@@ -29,18 +34,18 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  bool get _isAppResumed => _lifecycleState == AppLifecycleState.resumed;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeAll();
   }
 
   Future<void> _initializeAll() async {
     try {
       log.i("Starting native emotion detection initialization...");
-
-      // Initialize camera first
-      await _initCamera();
 
       // Initialize native detector
       final bool initialized = await platform.invokeMethod(
@@ -56,6 +61,11 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
             _predictedEmotion = "Ready - show your face";
           });
         }
+
+        // Only start camera if this tab is active and app is in foreground
+        if (mounted && widget.isActive && _isAppResumed) {
+          await _initCamera();
+        }
       } else {
         throw Exception("Failed to initialize native detector");
       }
@@ -70,10 +80,17 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
   }
 
   Future<void> _initCamera() async {
+    if (_isCameraInitializing || !widget.isActive || !_isAppResumed) return;
+    _isCameraInitializing = true;
+
     try {
       log.i("Getting cameras...");
       final cameras = await availableCameras();
       log.i("Found ${cameras.length} cameras");
+
+      if (!mounted || !widget.isActive || !_isAppResumed) {
+        return;
+      }
 
       // Find front camera
       CameraDescription? frontCamera;
@@ -90,17 +107,66 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
         throw Exception("No cameras available.");
       }
 
-      _cameraController = CameraController(
+      // Dispose existing controller if any
+      if (_cameraController != null) {
+        try {
+          if (_cameraController!.value.isStreamingImages) {
+            await _cameraController!.stopImageStream();
+          }
+          await _cameraController!.dispose();
+        } catch (_) {}
+        _cameraController = null;
+      }
+
+      final controller = CameraController(
         frontCamera,
         ResolutionPreset.low,
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
 
-      await _cameraController!.initialize();
+      await controller.initialize();
 
-      // Start frame processing
-      _cameraController!.startImageStream((CameraImage image) {
+      if (!mounted || !widget.isActive || !_isAppResumed) {
+        await controller.dispose();
+        return;
+      }
+
+      _cameraController = controller;
+      if (mounted) {
+        setState(() {});
+      }
+
+      await _startImageStream();
+    } catch (e, stackTrace) {
+      log.e("Camera initialization error: $e $stackTrace");
+      if (mounted) {
+        setState(() {
+          _predictedEmotion = "Camera error: ${sanitizeErrorMessage(e)}";
+        });
+      }
+    } finally {
+      _isCameraInitializing = false;
+    }
+  }
+
+  Future<void> _startImageStream() async {
+    final controller = _cameraController;
+    if (controller == null ||
+        !controller.value.isInitialized ||
+        controller.value.isStreamingImages ||
+        !widget.isActive ||
+        !_isAppResumed) {
+      return;
+    }
+
+    try {
+      await controller.startImageStream((CameraImage image) {
+        if (!mounted || !widget.isActive || !_isAppResumed) {
+          _stopImageStream();
+          return;
+        }
+
         if (_isProcessing || !_isInitialized) return;
 
         // Frame skipping for performance
@@ -112,7 +178,9 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
         // Send to native for processing
         Future.microtask(() async {
           try {
-            await _processFrameWithNative(image);
+            if (mounted && widget.isActive && _isAppResumed) {
+              await _processFrameWithNative(image);
+            }
           } catch (e, stackTrace) {
             log.e("Native processing error: $e $stackTrace");
           } finally {
@@ -120,20 +188,112 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
           }
         });
       });
+    } catch (e) {
+      log.w("Error starting image stream: $e");
+    }
+  }
 
-      if (mounted) setState(() {});
-    } catch (e, stackTrace) {
-      log.e("Camera initialization error: $e $stackTrace");
-      if (mounted) {
-        setState(() {
-          _predictedEmotion = "Camera error: ${sanitizeErrorMessage(e)}";
-        });
+  Future<void> _stopImageStream() async {
+    final controller = _cameraController;
+    _isProcessing = false;
+    if (controller != null &&
+        controller.value.isInitialized &&
+        controller.value.isStreamingImages) {
+      try {
+        await controller.stopImageStream();
+      } catch (e) {
+        log.w("Error stopping image stream: $e");
       }
+    }
+  }
+
+  Future<void> _pauseCamera() async {
+    await _stopImageStream();
+    final controller = _cameraController;
+    if (controller != null && controller.value.isInitialized) {
+      try {
+        await controller.pausePreview();
+      } catch (e) {
+        log.w("Error pausing camera preview: $e");
+      }
+    }
+  }
+
+  Future<void> _resumeCamera() async {
+    if (!mounted || !widget.isActive || !_isAppResumed) return;
+
+    final controller = _cameraController;
+    if (controller == null || !controller.value.isInitialized) {
+      await _initCamera();
+      return;
+    }
+
+    try {
+      await controller.resumePreview();
+      await _startImageStream();
+    } catch (e) {
+      log.w("Failed to resume preview, re-initializing: $e");
+      await _stopAndDisposeCamera();
+      if (mounted && widget.isActive && _isAppResumed) {
+        await _initCamera();
+      }
+    }
+  }
+
+  Future<void> _stopAndDisposeCamera() async {
+    final controller = _cameraController;
+    _cameraController = null;
+    _isProcessing = false;
+
+    if (controller != null) {
+      try {
+        if (controller.value.isStreamingImages) {
+          await controller.stopImageStream();
+        }
+      } catch (e) {
+        log.w("Error stopping image stream during dispose: $e");
+      }
+      try {
+        await controller.dispose();
+      } catch (e) {
+        log.w("Error disposing camera controller: $e");
+      }
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void didUpdateWidget(Tab3 oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive != oldWidget.isActive) {
+      if (widget.isActive) {
+        _resumeCamera();
+      } else {
+        _pauseCamera();
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lifecycleState = state;
+    if (state == AppLifecycleState.resumed) {
+      if (widget.isActive) {
+        _resumeCamera();
+      }
+    } else {
+      _stopAndDisposeCamera();
     }
   }
 
   Future<void> _processFrameWithNative(CameraImage image) async {
     try {
+      final controller = _cameraController;
+      if (controller == null || !controller.value.isInitialized) return;
+
       // Prepare image data for native processing
       final Map<String, dynamic> imageData = {
         'yPlane': image.planes[0].bytes,
@@ -146,7 +306,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
         'vRowStride': image.planes[2].bytesPerRow,
         'uPixelStride': image.planes[1].bytesPerPixel ?? 1,
         'vPixelStride': image.planes[2].bytesPerPixel ?? 1,
-        'sensorOrientation': _cameraController!.description.sensorOrientation,
+        'sensorOrientation': controller.description.sensorOrientation,
       };
 
       // Call native method
@@ -162,8 +322,8 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
       final bool multipleFaces = result['multipleFaces'] ?? false;
       final String? debugInfo = result['debugInfo'];
 
-      // Update UI
-      if (mounted) {
+      // Update UI only if still mounted and active
+      if (mounted && widget.isActive && _isAppResumed) {
         setState(() {
           if (hasFace) {
             _predictedEmotion = emotion;
@@ -180,7 +340,7 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
       }
     } catch (e, stackTrace) {
       log.e("Native processing error: $e $stackTrace");
-      if (mounted) {
+      if (mounted && widget.isActive && _isAppResumed) {
         setState(() {
           _debugInfo = "Error: ${sanitizeErrorMessage(e)}";
         });
@@ -190,9 +350,10 @@ class Tab3State extends State<Tab3> with AutomaticKeepAliveClientMixin {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     log.i("Disposing resources...");
+    _stopAndDisposeCamera();
     platform.invokeMethod('disposeEmotionDetector');
-    _cameraController?.dispose();
     super.dispose();
   }
 

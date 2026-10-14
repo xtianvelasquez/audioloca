@@ -19,12 +19,12 @@ class TabsRouting extends StatefulWidget {
 class TabsRoutingState extends State<TabsRouting> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = const [
-    Tab1(),
-    Tab2(),
-    Tab3(),
-    Tab4(),
-    Tab5(),
+  List<Widget> get pages => [
+    const Tab1(),
+    const Tab2(),
+    Tab3(isActive: selectedIndex == 2),
+    const Tab4(),
+    const Tab5(),
   ];
 
   void onItemTapped(int index) {
