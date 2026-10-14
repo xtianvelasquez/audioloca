@@ -68,72 +68,100 @@ class MiniPlayerState extends State<MiniPlayer> {
         final useSpotify = manager.notifier.value == NowPlayingSource.spotify;
 
         return Container(
-          height: 72,
+          margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          height: 66,
           decoration: BoxDecoration(
-            color: AppColors.color3,
-            border: Border(top: BorderSide(color: Colors.grey.shade200)),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.95),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowDark.withValues(alpha: 0.22),
+                offset: const Offset(0, 6),
+                blurRadius: 16,
+              ),
+              const BoxShadow(
+                color: Colors.white,
+                offset: Offset(0, -2),
+                blurRadius: 6,
+              ),
+            ],
           ),
           child: Row(
             children: [
               // Cover image
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.only(left: 8.0, right: 10.0),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(14),
                   child: imageUrl.isNotEmpty
                       ? Image.network(
                           imageUrl,
-                          width: 56,
-                          height: 56,
+                          width: 48,
+                          height: 48,
                           fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 48,
+                            height: 48,
+                            color: AppColors.pillBg,
+                            child: const Icon(
+                              Icons.music_note_rounded,
+                              color: AppColors.primaryPurple,
+                            ),
+                          ),
                         )
                       : Container(
-                          width: 56,
-                          height: 56,
-                          color: Colors.grey[300],
+                          width: 48,
+                          height: 48,
+                          color: AppColors.pillBg,
+                          child: const Icon(
+                            Icons.music_note_rounded,
+                            color: AppColors.primaryPurple,
+                          ),
                         ),
                 ),
               ),
 
               // Title & subtitle
               Expanded(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FullPlayerScreen(),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            title,
-                            style: AppTextStyles.keyword.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            subtitle,
-                            style: AppTextStyles.keyword.copyWith(
-                              color: Colors.grey[700],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FullPlayerScreen(),
                       ),
-                    ),
+                    );
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dark,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -148,30 +176,35 @@ class MiniPlayerState extends State<MiniPlayer> {
 
                   return Row(
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          playing
-                              ? Icons.pause_circle_filled
-                              : Icons.play_circle_fill,
-                          size: 36,
+                      Text(
+                        formatDuration(position),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
                         ),
-                        onPressed: () {
-                          if (playing) {
-                            useSpotify ? spotify.pause() : local.pause();
-                          } else {
-                            useSpotify
-                                ? spotify.resume()
-                                : local.player.play().catchError((e) {
-                                    debugPrint('Local play error: $e');
-                                  });
-                          }
-                        },
                       ),
+                      const SizedBox(width: 8),
                       Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(
-                          formatDuration(position),
-                          style: AppTextStyles.keyword,
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: ClayCircleButton(
+                          icon: playing
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          size: 38,
+                          iconSize: 22,
+                          isPrimary: true,
+                          onPressed: () {
+                            if (playing) {
+                              useSpotify ? spotify.pause() : local.pause();
+                            } else {
+                              useSpotify
+                                  ? spotify.resume()
+                                  : local.player.play().catchError((e) {
+                                      debugPrint('Local play error: $e');
+                                    });
+                            }
+                          },
                         ),
                       ),
                     ],

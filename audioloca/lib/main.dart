@@ -4,6 +4,7 @@ import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/business/emotion.recognition.dart';
 import 'package:audioloca/login/login.page.dart';
 import 'package:audioloca/tabs/tabs.routing.dart';
+import 'package:audioloca/theme.dart';
 
 final storage = SecureStorageService();
 
@@ -34,19 +35,25 @@ class AudioLoca extends StatelessWidget {
     return MaterialApp(
       title: 'AudioLoca',
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
       home: FutureBuilder<bool>(
         future: isAuthenticated(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
+              backgroundColor: AppColors.bgMid,
+              body: Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryPurple,
+                ),
+              ),
             );
           }
 
           if (snapshot.hasData && snapshot.data == true) {
-            return TabsRouting();
+            return const TabsRouting();
           } else {
-            return LoginPage();
+            return const LoginPage();
           }
         },
       ),

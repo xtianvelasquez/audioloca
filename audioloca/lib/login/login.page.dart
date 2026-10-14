@@ -120,188 +120,234 @@ class LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.color3,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-          child: FadeTransition(
-            opacity: fadeAnimation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // LOGO
-                Image.asset(
-                  'assets/images/audioloca.png',
-                  width: 180,
-                  height: 180,
-                ),
-                const SizedBox(height: 20),
+      backgroundColor: AppColors.bgMid,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppGradients.background,
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+            child: FadeTransition(
+              opacity: fadeAnimation,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // App Card Container
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: ClayDecorations.card(radius: 32),
+                    child: Column(
+                      children: [
+                        // LOGO inside clay frame
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const RadialGradient(
+                              colors: [Color(0xFFBA9EF9), Color(0xFF6F43CC)],
+                              center: Alignment(-0.3, -0.3),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryPurple.withValues(
+                                  alpha: 0.35,
+                                ),
+                                offset: const Offset(2, 6),
+                                blurRadius: 12,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.headphones_rounded,
+                            size: 52,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
 
-                // APP NAME
-                const Text('AUDIOLOCA', style: AppTextStyles.title),
-                const SizedBox(height: 40),
+                        // APP NAME
+                        const Text(
+                          'AudioLoca',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.dark,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Discover music around you',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
 
-                // USERNAME FIELD
-                TextField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    hintText: 'USERNAME',
-                    hintStyle: const TextStyle(color: AppColors.color1),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: AppColors.color1,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: AppColors.color1,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // PASSWORD FIELD
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'PASSWORD',
-                    hintStyle: const TextStyle(color: AppColors.color1),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: AppColors.color1,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: AppColors.color1,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // LOGIN BUTTON
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: isAuthenticating ? null : handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.color1,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    child: isAuthenticating
-                        ? const CircularProgressIndicator(
-                            color: AppColors.light,
-                            strokeWidth: 2.5,
-                          )
-                        : const Text(
-                            'LOGIN',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.light,
-                              fontWeight: FontWeight.bold,
+                        // USERNAME FIELD
+                        TextField(
+                          controller: usernameController,
+                          style: const TextStyle(
+                            color: AppColors.dark,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Username',
+                            hintStyle: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 13,
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.person_outline_rounded,
+                              color: AppColors.primaryPurple,
+                              size: 20,
+                            ),
+                            filled: true,
+                            fillColor: AppColors.pillBg.withValues(alpha: 0.45),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
                             ),
                           ),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                        ),
+                        const SizedBox(height: 14),
 
-                // DIVIDER
-                Row(
-                  children: const [
-                    Expanded(
-                      child: Divider(thickness: 1, color: AppColors.color1),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'OR',
-                        style: TextStyle(color: AppColors.color1),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(thickness: 1, color: AppColors.color1),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                // CONTINUE WITH SPOTIFY BUTTON
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: isAuthenticating ? null : handleSpotifyLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.color1,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    child: isAuthenticating
-                        ? const CircularProgressIndicator(
-                            color: AppColors.light,
-                            strokeWidth: 2.5,
-                          )
-                        : const Text(
-                            'CONTINUE WITH SPOTIFY',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: AppColors.light,
-                              fontWeight: FontWeight.bold,
+                        // PASSWORD FIELD
+                        TextField(
+                          controller: passwordController,
+                          obscureText: true,
+                          style: const TextStyle(
+                            color: AppColors.dark,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            hintStyle: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 13,
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline_rounded,
+                              color: AppColors.primaryPurple,
+                              size: 20,
+                            ),
+                            filled: true,
+                            fillColor: AppColors.pillBg.withValues(alpha: 0.45),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
                             ),
                           ),
-                  ),
-                ),
-                const SizedBox(height: 24),
+                        ),
+                        const SizedBox(height: 24),
 
-                // SIGN UP LINK
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Don't have an account? ",
-                      style: TextStyle(color: AppColors.color1),
+                        // LOGIN BUTTON
+                        SizedBox(
+                          width: double.infinity,
+                          child: ClayButton(
+                            text: isAuthenticating ? 'LOGGING IN...' : 'LOGIN',
+                            icon: isAuthenticating ? null : Icons.login_rounded,
+                            radius: 24,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            onPressed: isAuthenticating ? null : handleLogin,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+
+                        // DIVIDER
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: AppColors.pillBg,
+                                thickness: 1.5,
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: AppColors.pillBg,
+                                thickness: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+
+                        // CONTINUE WITH SPOTIFY BUTTON
+                        SizedBox(
+                          width: double.infinity,
+                          child: ClayButton(
+                            text: 'CONTINUE WITH SPOTIFY',
+                            icon: Icons.graphic_eq_rounded,
+                            isSecondary: true,
+                            radius: 24,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            onPressed:
+                                isAuthenticating ? null : handleSpotifyLogin,
+                          ),
+                        ),
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const SignupPage()),
-                        );
-                      },
-                      child: const Text(
-                        'Sign up',
+                  ),
+                  const SizedBox(height: 24),
+
+                  // SIGN UP LINK
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account? ",
                         style: TextStyle(
-                          color: AppColors.color1,
-                          fontWeight: FontWeight.bold,
+                          color: AppColors.textSecondary,
+                          fontSize: 13,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SignupPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Sign up',
+                          style: TextStyle(
+                            color: AppColors.primaryPurple,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

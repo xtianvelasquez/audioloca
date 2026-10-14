@@ -11,6 +11,7 @@ import 'package:audioloca/local/models/album.model.dart';
 import 'package:audioloca/local/models/audio.model.dart';
 import 'package:audioloca/view/audio.card.dart';
 import 'package:audioloca/view/album.header.dart';
+import 'package:audioloca/player/views/mini.player.dart';
 
 final albumServices = AlbumServices();
 final audioServices = AudioServices();
@@ -29,6 +30,7 @@ class AlbumScreen extends StatefulWidget {
 class AlbumScreenState extends State<AlbumScreen> {
   Album? album;
   List<Audio> audios = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -52,9 +54,11 @@ class AlbumScreenState extends State<AlbumScreen> {
       setState(() {
         album = fetchedAlbum;
         audios = fetchedAudios;
+        isLoading = false;
       });
     } catch (e) {
       if (mounted) {
+        setState(() => isLoading = false);
         CustomAlertDialog.failed(
           context,
           "Failed to fetch album or audio list.",
@@ -98,38 +102,76 @@ class AlbumScreenState extends State<AlbumScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Your Album", style: AppTextStyles.subtitle),
-        backgroundColor: AppColors.color1,
-        foregroundColor: AppColors.light,
-        elevation: 0,
-      ),
-      body: album == null
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: AlbumHeader(
-                    imageUrl: resolveImageUrl(album!.albumCover),
-                    title: album!.albumName,
-                    subtitle: album!.createdAt,
+      backgroundColor: AppColors.bgMid,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Top Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Row(
+                children: [
+                  ClayCircleButton(
+                    icon: Icons.arrow_back_rounded,
+                    size: 40,
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                ),
-                Expanded(
-                  child: audios.isEmpty
-                      ? const Center(
-                          child: Text(
-                            "No audio found.",
-                            style: AppTextStyles.keyword,
+                  const SizedBox(width: 12),
+                  const Text(
+                    "Album Details",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.dark,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Content
+            Expanded(
+              child: isLoading || album == null
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryPurple,
+                      ),
+                    )
+                  : ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      children: [
+                        AlbumHeader(
+                          imageUrl: resolveImageUrl(album!.albumCover),
+                          title: album!.albumName,
+                          subtitle: album!.createdAt,
+                        ),
+                        const SizedBox(height: 18),
+                        const Text(
+                          "Tracks",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.dark,
                           ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          itemCount: audios.length,
-                          itemBuilder: (context, index) {
-                            final audio = audios[index];
-                            return AudioListItem(
+                        ),
+                        const SizedBox(height: 12),
+                        if (audios.isEmpty)
+                          ClayCard(
+                            radius: 20,
+                            padding: const EdgeInsets.all(24),
+                            child: const Center(
+                              child: Text(
+                                "No audio found in this album.",
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          ...audios.map(
+                            (audio) => AudioListItem(
                               imageUrl: resolveImageUrl(audio.albumCover),
                               title: audio.audioTitle,
                               subtitle: audio.username,
@@ -138,12 +180,16 @@ class AlbumScreenState extends State<AlbumScreen> {
                                 audio.duration,
                               ),
                               onTap: () => handleTrackTap(audio),
-                            );
-                          },
-                        ),
-                ),
-              ],
+                            ),
+                          ),
+                        const SizedBox(height: 80),
+                      ],
+                    ),
             ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: const MiniPlayer(),
     );
   }
 }

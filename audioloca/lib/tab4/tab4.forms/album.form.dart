@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
+import 'package:audioloca/theme.dart';
 import 'package:audioloca/core/alert.dialog.dart';
 import 'package:audioloca/core/secure.storage.dart';
 import 'package:audioloca/local/services/album.service.dart';
@@ -76,6 +77,7 @@ class AlbumInputFormState extends State<AlbumInputForm> {
         CustomAlertDialog.success(context, "Album successfully stored.");
         albumNameController.clear();
         setState(() => image = null);
+        Navigator.of(context).pop();
       } else {
         log.e("[Flutter] Album creation failed: $response");
         CustomAlertDialog.failed(context, "Failed to store album.");
@@ -112,20 +114,77 @@ class AlbumInputFormState extends State<AlbumInputForm> {
       key: formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ElevatedButton(
-            onPressed: selectImage,
-            child: const Text("Select Album Cover"),
-          ),
-          if (image != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.file(File(image!.path), height: 120),
+          // Select Image Clay Box
+          GestureDetector(
+            onTap: selectImage,
+            child: Container(
+              height: 140,
+              decoration: BoxDecoration(
+                color: AppColors.pillBg.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.primaryPurple.withValues(alpha: 0.3),
+                  style: BorderStyle.solid,
+                  width: 1.5,
+                ),
+              ),
+              child: image != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.file(
+                        File(image!.path),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.add_photo_alternate_rounded,
+                          size: 40,
+                          color: AppColors.primaryPurple,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Select Album Cover",
+                          style: TextStyle(
+                            color: AppColors.primaryPurple,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Album Name Field
           TextFormField(
             controller: albumNameController,
             maxLength: 50,
-            decoration: const InputDecoration(labelText: "Album Name"),
+            style: const TextStyle(
+              color: AppColors.dark,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            decoration: InputDecoration(
+              labelText: "Album Name",
+              labelStyle: const TextStyle(color: AppColors.textSecondary),
+              filled: true,
+              fillColor: AppColors.pillBg.withValues(alpha: 0.4),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+            ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return "Album name is required";
@@ -133,18 +192,30 @@ class AlbumInputFormState extends State<AlbumInputForm> {
               return null;
             },
           ),
-          const SizedBox(height: 10),
+
+          const SizedBox(height: 16),
+
+          // Actions
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text("Cancel"),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
+              ClayButton(
+                text: "Create Album",
+                icon: Icons.check_rounded,
+                radius: 20,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 onPressed: handleSubmit,
-                child: const Text("Submit"),
               ),
             ],
           ),

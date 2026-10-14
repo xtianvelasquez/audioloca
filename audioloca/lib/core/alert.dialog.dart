@@ -7,9 +7,9 @@ class CustomAlertDialog {
       context: context,
       title: 'Success',
       message: message,
-      backgroundColor: AppColors.light,
-      titleColor: Colors.green.shade800,
-      messageColor: AppColors.color1,
+      backgroundColor: Colors.white,
+      titleColor: const Color(0xFF2E7D32),
+      messageColor: AppColors.dark,
     );
   }
 
@@ -18,9 +18,9 @@ class CustomAlertDialog {
       context: context,
       title: 'Failed',
       message: message,
-      backgroundColor: AppColors.light,
-      titleColor: Colors.red.shade800,
-      messageColor: AppColors.color1,
+      backgroundColor: Colors.white,
+      titleColor: const Color(0xFFC62828),
+      messageColor: AppColors.dark,
     );
   }
 
@@ -38,28 +38,38 @@ class CustomAlertDialog {
         return Center(
           child: AlertDialog(
             backgroundColor: backgroundColor,
-            elevation: 10,
+            elevation: 16,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
             ),
             title: Text(
               title,
               style: TextStyle(
                 color: titleColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 18,
               ),
               textAlign: TextAlign.center,
             ),
             content: Text(
               message,
-              style: TextStyle(color: messageColor, fontSize: 16),
+              style: TextStyle(
+                color: messageColor,
+                fontSize: 14,
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
             ),
             actionsAlignment: MainAxisAlignment.center,
             actions: [
-              TextButton(
+              ClayButton(
+                text: 'OK',
+                radius: 20,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 10,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
               ),
             ],
           ),
@@ -78,40 +88,46 @@ class CustomAlertDialog {
       builder: (BuildContext context) {
         return Center(
           child: AlertDialog(
-            backgroundColor: AppColors.light,
-            elevation: 10,
+            backgroundColor: Colors.white,
+            elevation: 16,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
             ),
             title: Text(
               title,
-              style: TextStyle(
-                color: Colors.orange.shade800,
+              style: const TextStyle(
+                color: AppColors.dark,
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 18,
               ),
               textAlign: TextAlign.center,
             ),
             content: Text(
               message,
-              style: TextStyle(color: AppColors.color1, fontSize: 16),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
             ),
             actionsAlignment: MainAxisAlignment.spaceEvenly,
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange.shade800,
-                  foregroundColor: AppColors.light,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+              ClayButton(
+                text: 'Confirm',
+                radius: 20,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Confirm'),
               ),
             ],
           ),

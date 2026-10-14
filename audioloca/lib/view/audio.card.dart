@@ -32,87 +32,161 @@ class AudioListItem extends StatelessWidget {
         ? NumberFormat.decimalPattern().format(streamCount)
         : null;
 
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: AppColors.color3,
-      margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: GestureDetector(
         onTap: onTap,
-        leading: Stack(
-          alignment: Alignment.topLeft,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: CachedNetworkImage(
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-                imageUrl: imageUrl,
-                placeholder: (_, __) => const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.color1,
-                    strokeWidth: 2,
-                  ),
-                ),
-                errorWidget: (_, __, ___) => Container(
-                  color: Colors.grey[300],
-                  child: Icon(
-                    Icons.broken_image,
-                    size: 40,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ),
-            ),
-            if (showRank && rank != null)
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: AppColors.color1,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    bottomRight: Radius.circular(4),
-                  ),
-                ),
-                child: Text(
-                  "#$rank",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-        subtitle: RichText(
-          text: TextSpan(
-            style: const TextStyle(fontSize: 12, color: AppColors.dark),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: ClayDecorations.card(radius: 20),
+          child: Row(
             children: [
-              TextSpan(text: subtitle),
-              if (formattedCount != null) ...[
-                const WidgetSpan(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 6),
-                    child: Icon(
-                      Icons.play_arrow,
-                      size: 14,
-                      color: AppColors.dark,
+              // Thumbnail with rank or rounded corners
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      width: 52,
+                      height: 52,
+                      fit: BoxFit.cover,
+                      imageUrl: imageUrl,
+                      placeholder: (_, __) => Container(
+                        width: 52,
+                        height: 52,
+                        color: AppColors.pillBg,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryPurple,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (_, __, ___) => Container(
+                        width: 52,
+                        height: 52,
+                        color: AppColors.pillBg,
+                        child: const Icon(
+                          Icons.music_note_rounded,
+                          size: 28,
+                          color: AppColors.color2,
+                        ),
+                      ),
                     ),
                   ),
+                  if (showRank && rank != null)
+                    Positioned(
+                      top: -6,
+                      left: -6,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: AppGradients.primaryButton,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primaryPurple.withValues(
+                                alpha: 0.4,
+                              ),
+                              offset: const Offset(1, 2),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          "#$rank",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 14),
+
+              // Title and subtitle/stream count
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: AppColors.dark,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 3),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            subtitle,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                        if (formattedCount != null) ...[
+                          const SizedBox(width: 6),
+                          const Text(
+                            "•",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            "$formattedCount plays",
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ),
-                TextSpan(text: "$formattedCount plays"),
-              ],
+              ),
+
+              const SizedBox(width: 8),
+
+              // Duration
+              Text(
+                duration,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+
+              const SizedBox(width: 10),
+
+              // Clay Play Button
+              ClayPlayButton(
+                size: 34,
+                onPressed: onTap,
+              ),
             ],
           ),
         ),
-        trailing: Text(duration),
       ),
     );
   }

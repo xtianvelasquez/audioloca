@@ -16,45 +16,57 @@ class AlbumListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                height: 100,
-                width: 100,
-                color: Colors.grey[300],
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.color1,
-                    strokeWidth: 2,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: ClayDecorations.card(radius: 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                height: 90,
+                width: 90,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  height: 90,
+                  width: 90,
+                  color: AppColors.pillBg,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primaryPurple,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 90,
+                  width: 90,
+                  color: AppColors.pillBg,
+                  child: const Icon(
+                    Icons.album_rounded,
+                    color: AppColors.color2,
+                    size: 36,
                   ),
                 ),
               ),
-              errorWidget: (context, url, error) => Container(
-                height: 100,
-                width: 100,
-                color: Colors.grey[300],
-                child: Icon(Icons.broken_image, color: Colors.grey[700]),
-              ),
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: AppColors.dark,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ],
+        ),
       ),
     );
   }

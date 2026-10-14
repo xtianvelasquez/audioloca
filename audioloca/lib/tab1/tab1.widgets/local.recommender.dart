@@ -43,18 +43,28 @@ class LocalListViewState extends State<LocalListView> {
     visibleTracks = widget.allTracks.take(initialLimit).toList();
   }
 
+  @override
+  void didUpdateWidget(covariant LocalListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.allTracks != widget.allTracks) {
+      visibleTracks = widget.allTracks.take(visibleTracks.length).toList();
+    }
+  }
+
   void loadMore() async {
     if (isLoadingMore) return;
     setState(() => isLoadingMore = true);
 
     await Future.delayed(const Duration(milliseconds: 300));
     final nextLimit = visibleTracks.length + increment;
-    setState(() {
-      visibleTracks = widget.allTracks
-          .take(nextLimit.clamp(0, widget.allTracks.length))
-          .toList();
-      isLoadingMore = false;
-    });
+    if (mounted) {
+      setState(() {
+        visibleTracks = widget.allTracks
+            .take(nextLimit.clamp(0, widget.allTracks.length))
+            .toList();
+        isLoadingMore = false;
+      });
+    }
   }
 
   @override
@@ -64,7 +74,7 @@ class LocalListViewState extends State<LocalListView> {
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(bottom: 80),
+          padding: const EdgeInsets.only(bottom: 12),
           itemCount: visibleTracks.length,
           itemBuilder: (context, index) {
             final audio = visibleTracks[index];
@@ -89,22 +99,18 @@ class LocalListViewState extends State<LocalListView> {
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: isLoadingMore
                 ? const SizedBox(
-                    width: 20,
-                    height: 20,
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(
-                      color: AppColors.color1,
-                      strokeWidth: 2,
+                      color: AppColors.primaryPurple,
+                      strokeWidth: 2.5,
                     ),
                   )
-                : GestureDetector(
-                    onTap: loadMore,
-                    child: const Text(
-                      'Load More',
-                      style: TextStyle(
-                        color: AppColors.color1,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                : ClayButton(
+                    text: 'Load More',
+                    icon: Icons.expand_more_rounded,
+                    isSecondary: true,
+                    onPressed: loadMore,
                   ),
           ),
       ],

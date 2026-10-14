@@ -7,3 +7,11 @@ RUNNING.md
 !.env.example
 **/__pycache__/
 *.pyc
+
+audioloca\audioloca\assets\basic_model.tflite
+audioloca\audioloca\assets\best_model.tflite
+audioloca\audioloca\assets\compound_mobilenetv2_rafdb_finetuned.tflite
+audioloca\audioloca\assets\emotion_model.tflite
+audioloca\audioloca\assets\mobilenetv2_rafdb_finetuned.tflite
+audioloca\audioloca\assets\mobilenetv2_stage4_final.tflite
+audioloca\audioloca\assets\model.tflite
