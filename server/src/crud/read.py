@@ -158,7 +158,11 @@ def read_audio_by_genre(db: Session, genre_ids: List[int]):
 def read_local_audio_location(db: Session, location_id: int):
   return (
     db.query(Streams)
-    .filter(Streams.location_id == location_id, Streams.type == "local")
+    .options(
+      selectinload(Streams.audio).selectinload(Audio.user),
+      selectinload(Streams.audio).selectinload(Audio.album)
+    )
+    .filter(Streams.location_id == location_id, Streams.type == "local", Streams.audio_id.isnot(None))
     .order_by(desc(Streams.stream_count))
     .all()
   )
@@ -185,7 +189,17 @@ def read_bounding_location(db: Session, min_lat: float, max_lat: float, min_lon:
 
 @db_safe
 def read_local_streams(db: Session):
-  return (db.query(Streams).filter(Streams.type == "local").order_by(desc(Streams.stream_count)).limit(50).all())
+  return (
+    db.query(Streams)
+    .options(
+      selectinload(Streams.audio).selectinload(Audio.user),
+      selectinload(Streams.audio).selectinload(Audio.album)
+    )
+    .filter(Streams.type == "local", Streams.audio_id.isnot(None))
+    .order_by(desc(Streams.stream_count))
+    .limit(50)
+    .all()
+  )
 
 @db_safe
 def read_spotify_streams(db: Session):
@@ -193,18 +207,23 @@ def read_spotify_streams(db: Session):
 
 @db_safe
 def read_latest_streams(db: Session, user_id: int):
-    return (
-        db.query(Streams)
-        .filter(
-            Streams.user_id == user_id,
-            Streams.last_played.isnot(None),
-            Streams.type == "local"
-        )
-        .distinct(Streams.audio_id)
-        .order_by(Streams.audio_id, desc(Streams.last_played))
-        .limit(10)
-        .all()
+  return (
+    db.query(Streams)
+    .options(
+      selectinload(Streams.audio).selectinload(Audio.user),
+      selectinload(Streams.audio).selectinload(Audio.album)
     )
+    .filter(
+      Streams.user_id == user_id,
+      Streams.last_played.isnot(None),
+      Streams.type == "local",
+      Streams.audio_id.isnot(None)
+    )
+    .distinct(Streams.audio_id)
+    .order_by(Streams.audio_id, desc(Streams.last_played))
+    .limit(10)
+    .all()
+  )
 
 @db_safe
 def read_audio_search(db: Session, query: str):

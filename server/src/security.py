@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.models import Token
-from src.config import TOKEN_EXPIRATION
+from src.config import get_token_expiration
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -19,7 +19,7 @@ def create_jwt_token(user):
   payload = {
     "sub": str(user.user_id),
     "user": user.username,
-    "exp": TOKEN_EXPIRATION
+    "exp": get_token_expiration()
   }
 
   return jwt.encode(payload, SECRET_KEY, algorithm="HS256")

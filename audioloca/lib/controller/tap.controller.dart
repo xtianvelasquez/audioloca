@@ -47,6 +47,10 @@ class TapController {
     final photoUrl = "${Environment.audiolocaBaseUrl}/${audio.albumCover}";
 
     try {
+      try {
+        await SpotifyPlayerService().pause();
+      } catch (_) {}
+
       await localPlayer.playFromUrl(
         url: audioUrl,
         title: audio.audioTitle,

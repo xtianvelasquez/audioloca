@@ -9,13 +9,19 @@ from src.schemas import Locations_Base, Streams_Create, Local_Stream, Spotify_St
 from typing import List
 from math import radians, cos
 
+from typing import List, Optional
+
 router = APIRouter()
 
-def build_local_stream(stream) -> Local_Stream:
+def build_local_stream(stream) -> Optional[Local_Stream]:
+  if not stream or not stream.audio:
+    return None
+  username = stream.audio.user.username if stream.audio.user else "Unknown"
+  album_cover = stream.audio.album.album_cover if stream.audio.album else None
   return Local_Stream(
     audio_id=int(stream.audio.audio_id),
-    username=stream.audio.user.username,
-    album_cover=stream.audio.album.album_cover,
+    username=username,
+    album_cover=album_cover,
     stream_count=stream.stream_count,
     album_id=stream.audio.album_id,
     audio_record=stream.audio.audio_record,
@@ -72,9 +78,11 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
   for location in locations:
     streams = read_local_audio_location(db, location.location_id)
     for stream in streams:
-      if stream.audio.visibility == "public":
+      if stream.audio and stream.audio.visibility == "public":
         print(f"Fetched audio: {stream.audio.audio_title} at lat: {location.latitude}, lon: {location.longitude}")
-        results.append(build_local_stream(stream))
+        item = build_local_stream(stream)
+        if item:
+          results.append(item)
 
   print(f"Total public audio streams fetched: {len(results)}")
 
@@ -82,7 +90,13 @@ async def audio_location_local(data: Locations_Base, db: Session = Depends(get_d
     return results
 
   streams = read_local_streams(db)
-  return [build_local_stream(stream) for stream in streams if stream.audio.visibility == "public"]
+  fallback = []
+  for stream in streams:
+    if stream.audio and stream.audio.visibility == "public":
+      item = build_local_stream(stream)
+      if item:
+        fallback.append(item)
+  return fallback
 
 @router.post("/spotify/audio/location", response_model=List[Spotify_Stream], status_code=200)
 async def audio_location_spotify(data: Locations_Base, db: Session = Depends(get_db)):
@@ -97,8 +111,13 @@ async def audio_location_spotify(data: Locations_Base, db: Session = Depends(get
   streams = read_spotify_streams(db)
   return [build_spotify_stream(stream) for stream in streams]
 
-@router.get("/audioloca/audio/stream", status_code=200)
+@router.get("/audioloca/audio/stream", response_model=List[Local_Stream], status_code=200)
 async def audio_latest_streams(token_payload=Depends(verify_token), db: Session = Depends(get_db)):
   user_id = token_payload.get("payload", {}).get("sub")
   streams = read_latest_streams(db, user_id)
-  return [build_local_stream(stream) for stream in streams]
+  valid_streams = []
+  for stream in streams:
+    item = build_local_stream(stream)
+    if item:
+      valid_streams.append(item)
+  return valid_streams

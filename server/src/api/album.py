@@ -103,4 +103,12 @@ async def album_delete(
     except Exception:
       pass
 
+  if hasattr(deleted_album, "audio_records"):
+    for audio_path in deleted_album.audio_records:
+      if audio_path and os.path.exists(audio_path):
+        try:
+          os.remove(audio_path)
+        except Exception:
+          pass
+
   return {"message": "Album deleted successfully.", "detail": "Album deleted successfully."}

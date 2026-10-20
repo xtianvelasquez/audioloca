@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-MANILA = ZoneInfo("Asia/Manila")
-TOKEN_EXPIRATION = datetime.utcnow().replace(second=0, microsecond=0) + timedelta(days=29) # Token expires in 29 days
+TOKEN_EXPIRATION_DAYS = 29
+
+def get_token_expiration(days: int = TOKEN_EXPIRATION_DAYS) -> datetime:
+  return datetime.utcnow().replace(second=0, microsecond=0) + timedelta(days=days)
 
 VALID_PHOTO_EXTENSION = [".jpg", ".jpeg", ".png"]
 VALID_AUDIO_EXTENSION = [".mp3", ".aac", ".wav", ".x-wav"]

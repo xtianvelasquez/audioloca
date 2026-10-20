@@ -16,17 +16,25 @@ from src.config import VALID_AUDIO_EXTENSION, VALID_AUDIO_MIME_TYPES
 router = APIRouter()
 
 def build_audio_response(audio) -> Audio_Response:
+  genres = [
+    Genres_Response(genre_id=link.genre.genre_id, genre_name=link.genre.genre_name)
+    for link in (audio.genre_links or []) if link and link.genre
+  ]
+  album_cover = audio.album.album_cover if audio.album else None
+  username = audio.user.username if audio.user else "Unknown"
+  stream_count = sum(stream.stream_count for stream in (audio.streams or []))
+
   return Audio_Response(
-    genres=[Genres_Response(genre_id=link.genre.genre_id, genre_name=link.genre.genre_name) for link in audio.genre_links],
+    genres=genres,
     album_id=audio.album_id,
     visibility=audio.visibility,
     audio_record=audio.audio_record,
     audio_title=audio.audio_title,
     duration=audio.duration,
     audio_id=audio.audio_id,
-    username=audio.user.username,
-    album_cover=audio.album.album_cover,
-    stream_count=sum(stream.stream_count for stream in audio.streams),
+    username=username,
+    album_cover=album_cover,
+    stream_count=stream_count,
     created_at=audio.created_at,
     modified_at=audio.modified_at
   )

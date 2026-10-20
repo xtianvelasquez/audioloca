@@ -3,16 +3,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.requests import Request
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
+from pathlib import Path
 import traceback
 
 from src.database import init_db
 from src.api import router
 
-app = FastAPI(title="AudioLoca")
+BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_DIR = BASE_DIR / "media"
+MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+  init_db()
+  yield
+
+app = FastAPI(title="AudioLoca", lifespan=lifespan)
 
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["http://localhost:8100", "http://127.0.0.1:8100", "http://192.168.1.22:8100"],
+  allow_origins=["http://localhost:8100", "http://127.0.0.1:8100", "http://192.168.1.12:8100"],
   allow_credentials=True,
   allow_methods=["OPTIONS", "POST", "GET", "DELETE", "PATCH", "PUT"],
   allow_headers=["Content-Type", "Authorization"]
@@ -67,12 +78,7 @@ async def debug_headers(request: Request):
   print("Headers:", request.headers)
   return {"headers": dict(request.headers)}
 
-app.mount("/media", StaticFiles(directory="./media"), name="media")
-
-# Initialize Database
-@app.on_event("startup")
-def on_startup():
-  init_db()
+app.mount("/media", StaticFiles(directory=str(MEDIA_DIR)), name="media")
 
 # Routers
 app.include_router(router)

@@ -213,51 +213,58 @@ class Tab1State extends State<Tab1> with TickerProviderStateMixin {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  if (_activeSubTab > 0) ...[
-                    ClayCircleButton(
-                      icon: Icons.arrow_back_rounded,
-                      size: 36,
-                      onPressed: () {
-                        _tabController.animateTo(0);
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.shadowDark.withValues(alpha: 0.18),
-                          offset: const Offset(1, 2),
-                          blurRadius: 4,
+              Expanded(
+                child: Row(
+                  children: [
+                    if (_activeSubTab > 0) ...[
+                      ClayCircleButton(
+                        icon: Icons.arrow_back_rounded,
+                        size: 36,
+                        onPressed: () {
+                          _tabController.animateTo(0);
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.shadowDark.withValues(alpha: 0.18),
+                            offset: const Offset(1, 2),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/audioloca.png',
+                          fit: BoxFit.cover,
                         ),
-                      ],
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/audioloca.png',
-                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    "AudioLoca",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.dark,
-                      letterSpacing: -0.3,
+                    const SizedBox(width: 10),
+                    const Flexible(
+                      child: Text(
+                        "AudioLoca",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dark,
+                          letterSpacing: -0.3,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: () => TabsRouting.of(context)?.setTab(4),
                 child: Container(

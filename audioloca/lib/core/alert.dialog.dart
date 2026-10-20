@@ -3,8 +3,12 @@ import 'package:audioloca/theme.dart';
 import 'package:audioloca/core/utils.dart';
 
 class CustomAlertDialog {
-  static void success(BuildContext context, String message, {String title = 'Success'}) {
-    _showDialog(
+  static Future<void> success(
+    BuildContext context,
+    String message, {
+    String title = 'Success',
+  }) {
+    return _showDialog(
       context: context,
       title: title,
       message: message,
@@ -14,9 +18,13 @@ class CustomAlertDialog {
     );
   }
 
-  static void failed(BuildContext context, dynamic message, {String title = 'Error'}) {
+  static Future<void> failed(
+    BuildContext context,
+    dynamic message, {
+    String title = 'Error',
+  }) {
     final cleanMessage = sanitizeErrorMessage(message);
-    _showDialog(
+    return _showDialog(
       context: context,
       title: title,
       message: cleanMessage,
@@ -26,7 +34,7 @@ class CustomAlertDialog {
     );
   }
 
-  static void _showDialog({
+  static Future<void> _showDialog({
     required BuildContext context,
     required String title,
     required String message,
@@ -34,7 +42,7 @@ class CustomAlertDialog {
     required Color titleColor,
     required Color messageColor,
   }) {
-    showDialog(
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return Center(

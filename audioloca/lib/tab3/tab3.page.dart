@@ -36,6 +36,7 @@ class Tab3State extends State<Tab3>
   bool _isProcessing = false;
   bool _isInitialized = false;
   bool _isCameraInitializing = false;
+  bool _isCameraTransitioning = false;
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
   int _frameCount = 0;
 
@@ -295,15 +296,42 @@ class Tab3State extends State<Tab3>
     }
   }
 
+  Future<void> _handleTabActivated() async {
+    while (_isCameraTransitioning) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      if (!mounted || !widget.isActive) return;
+    }
+    _isCameraTransitioning = true;
+    try {
+      if (mounted && widget.isActive && _isAppResumed) {
+        await _resumeCamera();
+      }
+    } finally {
+      _isCameraTransitioning = false;
+    }
+  }
+
+  Future<void> _handleTabDeactivated() async {
+    while (_isCameraTransitioning) {
+      await Future.delayed(const Duration(milliseconds: 50));
+    }
+    _isCameraTransitioning = true;
+    try {
+      await _pauseCamera();
+    } finally {
+      _isCameraTransitioning = false;
+    }
+  }
+
   @override
   void didUpdateWidget(Tab3 oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isActive != oldWidget.isActive) {
       if (widget.isActive) {
-        _resumeCamera();
+        _handleTabActivated();
       } else {
         _emotionDebounceTimer?.cancel();
-        _pauseCamera();
+        _handleTabDeactivated();
       }
     }
   }
@@ -313,7 +341,7 @@ class Tab3State extends State<Tab3>
     _lifecycleState = state;
     if (state == AppLifecycleState.resumed) {
       if (widget.isActive) {
-        _resumeCamera();
+        _handleTabActivated();
       }
     } else {
       _emotionDebounceTimer?.cancel();

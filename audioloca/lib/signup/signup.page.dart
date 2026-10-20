@@ -98,11 +98,12 @@ class SignupPageState extends State<SignupPage>
         log.i('[Flutter] Signup successful!');
 
         if (!mounted) return;
-        CustomAlertDialog.success(
+        await CustomAlertDialog.success(
           context,
-          'Account created! You can now login.',
+          'Account created successfully! You can now log in.',
         );
 
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -129,8 +130,9 @@ class SignupPageState extends State<SignupPage>
         log.i('[Flutter] Spotify login successful!');
 
         if (!mounted) return;
-        CustomAlertDialog.success(context, 'Login successful!');
+        await CustomAlertDialog.success(context, 'Login successful!');
 
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const TabsRouting()),
@@ -155,23 +157,24 @@ class SignupPageState extends State<SignupPage>
       hintText: hint,
       hintStyle: const TextStyle(
         color: AppColors.textSecondary,
-        fontSize: 13,
+        fontSize: 12,
       ),
       prefixIcon: Icon(
         icon,
         color: AppColors.primaryPurple,
-        size: 20,
+        size: 18,
       ),
       filled: true,
       fillColor: AppColors.pillBg.withValues(alpha: 0.45),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
       ),
       contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 14,
+        horizontal: 14,
+        vertical: 8,
       ),
+      isDense: true,
     );
   }
 
@@ -180,233 +183,246 @@ class SignupPageState extends State<SignupPage>
     return Scaffold(
       backgroundColor: AppColors.bgMid,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: AppGradients.background,
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-            child: FadeTransition(
-              opacity: fadeAnimation,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(28),
-                    decoration: ClayDecorations.card(radius: 32),
-                    child: Column(
-                      children: [
-                        // Logo inside clay circle
-                        Container(
-                          width: 84,
-                          height: 84,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryPurple.withValues(
-                                  alpha: 0.25,
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: FadeTransition(
+                opacity: fadeAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                      decoration: ClayDecorations.card(radius: 26),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Logo inside clay circle
+                          Container(
+                            width: 52,
+                            height: 52,
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primaryPurple.withValues(
+                                    alpha: 0.25,
+                                  ),
+                                  offset: const Offset(2, 5),
+                                  blurRadius: 10,
                                 ),
-                                offset: const Offset(2, 6),
-                                blurRadius: 12,
+                                const BoxShadow(
+                                  color: Colors.white,
+                                  offset: Offset(-2, -2),
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/images/audioloca.png',
+                                fit: BoxFit.cover,
                               ),
-                              const BoxShadow(
-                                color: Colors.white,
-                                offset: Offset(-2, -2),
-                                blurRadius: 6,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+
+                          const Text(
+                            'Join AudioLoca',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          const Text(
+                            'Create your account to start listening',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // EMAIL FIELD
+                          TextField(
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(
+                              color: AppColors.dark,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: _inputDeco(
+                              'Email',
+                              Icons.email_outlined,
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+
+                          // USERNAME FIELD
+                          TextField(
+                            controller: usernameController,
+                            style: const TextStyle(
+                              color: AppColors.dark,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: _inputDeco(
+                              'Username (min 6 chars)',
+                              Icons.person_outline_rounded,
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+
+                          // PASSWORD FIELD
+                          TextField(
+                            controller: passwordController,
+                            obscureText: true,
+                            style: const TextStyle(
+                              color: AppColors.dark,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: _inputDeco(
+                              'Password (min 6 chars)',
+                              Icons.lock_outline_rounded,
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+
+                          // CONFIRM PASSWORD FIELD
+                          TextField(
+                            controller: confirmPasswordController,
+                            obscureText: true,
+                            style: const TextStyle(
+                              color: AppColors.dark,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: _inputDeco(
+                              'Confirm Password',
+                              Icons.lock_clock_outlined,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // SIGNUP BUTTON
+                          SizedBox(
+                            width: double.infinity,
+                            child: ClayButton(
+                              text: isAuthenticating
+                                  ? 'CREATING ACCOUNT...'
+                                  : 'CREATE ACCOUNT',
+                              icon: isAuthenticating
+                                  ? null
+                                  : Icons.arrow_forward_rounded,
+                              radius: 20,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10),
+                              onPressed: isAuthenticating ? null : handleSignup,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          // DIVIDER
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  color: AppColors.pillBg,
+                                  thickness: 1.5,
+                                ),
+                              ),
+                              const Padding(
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Text(
+                                  'OR',
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: AppColors.pillBg,
+                                  thickness: 1.5,
+                                ),
                               ),
                             ],
                           ),
-                          child: ClipOval(
-                            child: Image.asset(
-                              'assets/images/audioloca.png',
-                              fit: BoxFit.cover,
+                          const SizedBox(height: 8),
+
+                          // SPOTIFY BUTTON
+                          SizedBox(
+                            width: double.infinity,
+                            child: ClayButton(
+                              text: 'CONTINUE WITH SPOTIFY',
+                              icon: Icons.graphic_eq_rounded,
+                              isSecondary: true,
+                              radius: 20,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10),
+                              onPressed:
+                                  isAuthenticating ? null : handleSpotifyLogin,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 14),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
 
+                    // LOGIN LINK
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         const Text(
-                          'Join AudioLoca',
+                          "Already have an account? ",
                           style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.dark,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Create your account to start listening',
-                          style: TextStyle(
-                            fontSize: 12,
                             color: AppColors.textSecondary,
+                            fontSize: 12,
                           ),
                         ),
-                        const SizedBox(height: 24),
-
-                        // EMAIL FIELD
-                        TextField(
-                          controller: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(
-                            color: AppColors.dark,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: _inputDeco(
-                            'Email',
-                            Icons.email_outlined,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // USERNAME FIELD
-                        TextField(
-                          controller: usernameController,
-                          style: const TextStyle(
-                            color: AppColors.dark,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: _inputDeco(
-                            'Username (min 6 chars)',
-                            Icons.person_outline_rounded,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // PASSWORD FIELD
-                        TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          style: const TextStyle(
-                            color: AppColors.dark,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: _inputDeco(
-                            'Password',
-                            Icons.lock_outline_rounded,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // CONFIRM PASSWORD FIELD
-                        TextField(
-                          controller: confirmPasswordController,
-                          obscureText: true,
-                          style: const TextStyle(
-                            color: AppColors.dark,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: _inputDeco(
-                            'Confirm Password',
-                            Icons.lock_clock_outlined,
-                          ),
-                        ),
-                        const SizedBox(height: 22),
-
-                        // SIGNUP BUTTON
-                        SizedBox(
-                          width: double.infinity,
-                          child: ClayButton(
-                            text: isAuthenticating
-                                ? 'CREATING ACCOUNT...'
-                                : 'CREATE ACCOUNT',
-                            icon: isAuthenticating
-                                ? null
-                                : Icons.arrow_forward_rounded,
-                            radius: 24,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            onPressed: isAuthenticating ? null : handleSignup,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // DIVIDER
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: AppColors.pillBg,
-                                thickness: 1.5,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const LoginPage(),
                               ),
+                            );
+                          },
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              color: AppColors.primaryPurple,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Text(
-                                'OR',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: AppColors.pillBg,
-                                thickness: 1.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-
-                        // SPOTIFY BUTTON
-                        SizedBox(
-                          width: double.infinity,
-                          child: ClayButton(
-                            text: 'CONTINUE WITH SPOTIFY',
-                            icon: Icons.graphic_eq_rounded,
-                            isSecondary: true,
-                            radius: 24,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            onPressed:
-                                isAuthenticating ? null : handleSpotifyLogin,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // LOGIN LINK
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Already have an account? ",
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 13,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const LoginPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: AppColors.primaryPurple,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

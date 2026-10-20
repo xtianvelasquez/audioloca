@@ -35,11 +35,13 @@ def delete_specific_album(db: Session, user_id: int, album_id: int):
     raise HTTPException(status_code=404, detail="Album not found.")
 
   album_cover = album.album_cover
-  db.query(Audio).filter_by(album_id=album_id).delete()
+  audios = db.query(Audio).filter_by(album_id=album_id).all()
+  audio_records = [a.audio_record for a in audios if a.audio_record]
 
+  db.query(Audio).filter_by(album_id=album_id).delete()
   db.delete(album)
   db.commit()
-  return SimpleNamespace(album_cover=album_cover)
+  return SimpleNamespace(album_cover=album_cover, audio_records=audio_records)
 
 @db_safe
 def delete_specific_audio(db: Session, user_id: int, audio_id: int):
