@@ -1,17 +1,47 @@
-audioloca/build_log_2.txt
-audioloca/build_log.txt
-audioloca/android/.kotlin/sessions/kotlin-compiler-12529699316616925083.salive
-RUNNING.md
+# Environment and sensitive keys
 .env
 *.env
 !.env.example
-**/__pycache__/
-*.pyc
+audioloca/lib/environment.local.dart
 
-audioloca\audioloca\assets\basic_model.tflite
-audioloca\audioloca\assets\best_model.tflite
-audioloca\audioloca\assets\compound_mobilenetv2_rafdb_finetuned.tflite
-audioloca\audioloca\assets\emotion_model.tflite
-audioloca\audioloca\assets\mobilenetv2_rafdb_finetuned.tflite
-audioloca\audioloca\assets\mobilenetv2_stage4_final.tflite
-audioloca\audioloca\assets\model.tflite
+# Machine Learning / Emotion Recognition Models
+# Users must supply their own 7-class TFLite emotion model (see README.md)
+*.tflite
+**/*.tflite
+audioloca/assets/*.tflite
+audioloca/android/app/src/main/assets/*.tflite
+
+# Flutter and Dart artifacts
+audioloca/.dart_tool/
+audioloca/.flutter-plugins
+audioloca/.flutter-plugins-dependencies
+audioloca/.pub-cache/
+audioloca/.pub/
+audioloca/build/
+audioloca/build_log*.txt
+
+# Android build outputs and caches
+audioloca/android/.gradle/
+audioloca/android/app/build/
+audioloca/android/app/debug/
+audioloca/android/app/profile/
+audioloca/android/app/release/
+audioloca/android/.kotlin/
+
+# Python & FastAPI backend
+**/__pycache__/
+*.py[cod]
+*$py.class
+server/.venv/
+server/venv/
+server/media/
+server/*.db
+server/audioloca.db
+
+# OS & IDE temporary files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+RUNNING.md

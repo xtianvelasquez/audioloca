@@ -110,18 +110,31 @@ class MainActivity: FlutterActivity() {
     }
     
     private fun initNativeDetectors() {
-        // 1. Initialize TensorFlow Lite interpreter
-        try {
-            val model = FileUtil.loadMappedFile(this, "basic_finetuned.tflite")
-            val options = Interpreter.Options()
-            options.setNumThreads(4)
-            options.setUseNNAPI(true)
-            
-            tfliteInterpreter = Interpreter(model, options)
-            Log.d("NativeEmotion", "TFLite model loaded successfully.")
-        } catch (e: Exception) {
-            Log.e("NativeEmotion", "Failed to load TFLite model: ${e.message}")
-            throw e
+        // 1. Initialize TensorFlow Lite interpreter (7-emotion classifier)
+        val candidateModels = arrayOf("emotion_model.tflite", "basic_finetuned.tflite")
+        var loaded = false
+        var lastException: Exception? = null
+
+        for (modelName in candidateModels) {
+            try {
+                val model = FileUtil.loadMappedFile(this, modelName)
+                val options = Interpreter.Options()
+                options.setNumThreads(4)
+                options.setUseNNAPI(true)
+                
+                tfliteInterpreter = Interpreter(model, options)
+                Log.d("NativeEmotion", "TFLite model '$modelName' loaded successfully.")
+                loaded = true
+                break
+            } catch (e: Exception) {
+                lastException = e
+            }
+        }
+
+        if (!loaded) {
+            val errorMsg = "Emotion model not found. Please place your 7-class TFLite model ('emotion_model.tflite' or 'basic_finetuned.tflite') into 'android/app/src/main/assets/'."
+            Log.e("NativeEmotion", errorMsg)
+            throw IllegalStateException(errorMsg, lastException)
         }
         
         // 2. Initialize ML Kit Face Detector

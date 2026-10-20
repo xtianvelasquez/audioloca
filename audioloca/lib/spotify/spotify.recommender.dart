@@ -185,7 +185,7 @@ class SpotifyRecommender {
     return await trackServices.fetchGlobalRecommendation(accessToken);
   }
 
-  /// ---- STATIC MAPPINGS ----
+  /// ---- STATIC MAPPINGS (7 Basic Emotions) ----
   static const Map<String, List<String>> moodToQueries = {
     'happiness': ['energetic', 'upbeat', 'party', 'dance'],
     'anger': ['energetic', 'upbeat', 'party', 'dance'],
@@ -194,16 +194,5 @@ class SpotifyRecommender {
     'disgust': ['serene', 'relaxing', 'peaceful'],
     'surprise': ['exciting', 'unexpected', 'novelty'],
     'neutral': ['chill', 'lofi', 'mellow'],
-    'happily surprised': ['joyful', 'celebratory', 'fun'],
-    'happily disgusted': ['ironic', 'quirky', 'indie'],
-    'sadly fearful': ['melancholic', 'dark ambient', 'introspective'],
-    'sadly angry': ['emotional rock', 'post-punk', 'emo'],
-    'sadly surprised': ['nostalgic', 'bittersweet', 'soul'],
-    'sadly disgusted': ['haunting', 'grunge', 'alt rock'],
-    'fearfully angry': ['intense', 'metal', 'dark rap'],
-    'fearfully surprised': ['mystical', 'cinematic', 'epic'],
-    'angrily surprised': ['aggressive', 'punk', 'rap'],
-    'angrily disgusted': ['hard rock', 'industrial', 'edgy'],
-    'disgustedly surprised': ['experimental', 'weird pop', 'avant-garde'],
   };
 }

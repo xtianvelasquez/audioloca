@@ -271,16 +271,16 @@ class EmotionRecognition {
     try {
       final tempDir = await getTemporaryDirectory();
 
-      // Basic model
+      // 7-Emotion Basic model
       final basicData = await rootBundle.load(
-        'assets/mobilenetv2_rafdb_finetuned.tflite',
+        'assets/emotion_model.tflite',
       );
       final basicFile = File(
-        '${tempDir.path}/mobilenetv2_rafdb_finetuned.tflite',
+        '${tempDir.path}/emotion_model.tflite',
       );
       await basicFile.writeAsBytes(basicData.buffer.asUint8List());
       basicInterpreter = Interpreter.fromFile(basicFile);
-      log.i('[Flutter] Basic model loaded.');
+      log.i('[Flutter] 7-Emotion model loaded.');
     } catch (e, stackTrace) {
       log.e('[Flutter] Error loading models: $e $stackTrace');
     }
